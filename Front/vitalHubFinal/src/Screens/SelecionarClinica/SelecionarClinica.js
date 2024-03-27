@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Button } from "../../Components/Button/Style";
 import { ButtonTitle } from "../../Components/ButtonTitle/Style";
 import { Avaliacao, AvaliacaoText, CardClinica, CidadeClinica, ConteudoCardClinica, DiaSemana, DiaSemanaText } from "../../Components/ClinicasCard/Style"
@@ -17,6 +18,19 @@ export const SelecionarClinica = ({navigation}) => {
         navigation.navigate("HomePaciente")
     }
 
+    async function ListarClinicas() {
+        await api.get("/Clinica/ListarTodas")
+            .then(response => {
+                setMedicoLista(response.data)
+            }).catch(error => {
+                console.log(error)
+            })
+    }
+
+    useEffect(() => {
+        ListarClinicas();
+    },[])
+
     return(
         <Container>
             <ContainerSpace>
@@ -27,13 +41,6 @@ export const SelecionarClinica = ({navigation}) => {
         <ContainerClinicas>
 
             <CardClinica>
-                <ListComponent
-                    data={Consultas}
-                    keyExtractor={(item) => item.id}
-                    renderItem={({ item }) =>
-                    }
-                    showsVerticalScrollIndicator={false}
-                />
                 <ConteudoCardClinica>
                     <TitleClinica>Clínica Natureh</TitleClinica>
                     <Avaliacao>

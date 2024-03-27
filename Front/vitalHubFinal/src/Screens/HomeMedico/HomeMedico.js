@@ -227,28 +227,3 @@ export const HomeMedico = () => {
     </Container>
   )
 }
-
-{/* <ContainerHeader>
-  
-  <BoxUser>
-  
-  <ImageUser />
-  
-  <DataUser>
-  <TextDefault>Bem vindo</TextDefault>
-  <NomeUser>Dr. Claudio</NomeUser>
-  </DataUser>
-  
-  </BoxUser>
-  
-  <MaterialIcons/>
-  
-    </ContainerHeader> */}
-{/* <FlatList>
-  <CardConsulta>
-    <FotoPaciente
-      source={require('../../Assets/Images/Niccole.png')}
-    />
-    <CardNome>Niccole Sarga</CardNome>
-  </CardConsulta>
-</FlatList> */}
