@@ -1,27 +1,16 @@
-import { TouchableOpacity } from "react-native"
 import { Container, ContainerSpace } from "../../Components/Container/Style"
 import { Logo } from "../../Components/Logo/Style"
 import { Title } from "../../Components/Title/Style"
 import { Input } from "../../Components/Input/Style"
-import { useNavigation } from "@react-navigation/native"
 import { Button } from "../../Components/Button/Style"
-import { ButtonTitle, ButtonTitleGoogle } from "../../Components/ButtonTitle/Style"
-import { ButtonGoogle } from "../../Components/Button/Style"
-import { LinkMedium } from "../../Components/Link/Style"
-import { AntDesign } from '@expo/vector-icons';
-import { ContentAccount, TextAccount, TextAccountLink } from "../../Components/ContentAccount/Style"
-import { RecuperarSenha } from "../RecuperarSenha/RecuperarSenha"
+import { ButtonTitle} from "../../Components/ButtonTitle/Style"
+import { ContentAccount, TextAccountLink } from "../../Components/ContentAccount/Style"
 import { SubTitle } from "../../Components/SubTitle/Style"
-import { InputCodigo } from "../../Components/InputCodigo/Style"
-import { ContainerRow } from "../../Components/ContainerRow/Style"
-import { Login } from "../Login/Login"
 
-export const CriarConta = () => {
-
-    const Navigation = useNavigation();
+export const CriarConta = ({navigation}) => {
 
     const Cancelar = () => {
-        Navigation.navigate(Login)
+        navigation.navigate("Login")
     }
 
 
@@ -55,7 +44,7 @@ export const CriarConta = () => {
                 </Button>
 
 
-                <ContentAccount onPress={Cancelar}>
+                <ContentAccount onPress={() => Cancelar()}>
                     <TextAccountLink>Cancelar</TextAccountLink>
                 </ContentAccount>
 

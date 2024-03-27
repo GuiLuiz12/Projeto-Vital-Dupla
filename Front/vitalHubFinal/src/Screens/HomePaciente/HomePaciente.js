@@ -157,7 +157,7 @@ export const HomePaciente = ({navigation}) => {
 
                         <BemVindo>Bem Vindo</BemVindo>
 
-                        <UsuarioAtual>Dr. {token.name}</UsuarioAtual>
+                        <UsuarioAtual>{token.name}</UsuarioAtual>
 
                     </DataUser>
 
@@ -167,7 +167,6 @@ export const HomePaciente = ({navigation}) => {
                 </Sino>
 
             </FaixaAzul>
-            <TitleData>Novembro 2023</TitleData>
 
             <StyledCalendarStrip
                 // animação e seleção de cada data

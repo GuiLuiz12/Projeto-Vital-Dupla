@@ -16,7 +16,7 @@ import { ConfirmarModal } from "../../Components/ConfirmarModal/ConfirmarModal";
 import { useNavigation } from "@react-navigation/native";
 import { SelecionarMedico } from "../SelecionarMedico/SelecionarMedico";
 
-export const SelecionarData = () => {
+export const SelecionarData = ({navigation}) => {
 
     const [showModalConfirm, setShowModalConfirm] = useState(false);
 
@@ -33,10 +33,8 @@ export const SelecionarData = () => {
     const currentDate = new Date();
     const startingDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate());
 
-    const Navigation = useNavigation();
-
     const Voltar = () => {
-        Navigation.navigate(SelecionarMedico)
+        navigation.navigate(SelecionarMedico)
     }
 
     LocaleConfig.locales["pt-br"] = {

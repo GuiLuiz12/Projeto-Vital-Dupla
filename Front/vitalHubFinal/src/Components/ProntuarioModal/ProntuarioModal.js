@@ -5,17 +5,16 @@ import { IdadeEmail, ImagemProntuario, TextoProntuario } from "./Style"
 import { ButtonModal, ButtonSecondary } from "../Button/Style"
 import { ModalContent, PatientModal } from "../CancelationModal/Style"
 import { ProntuarioPronto } from "../../Screens/ProntuarioPronto/ProntuarioPronto"
-import { useNavigation } from "@react-navigation/native"
 
 export const ProntuarioModal = ({
     visible,
     setShowModalAppointment,
+    navigation,
     ...rest
 }) => {
-    const Navigation = useNavigation();
 
     const Prontuario = () => {
-        Navigation.navigate(ProntuarioPronto)
+        navigation.navigate(ProntuarioPronto)
     }
 
     return(

@@ -9,19 +9,19 @@ import { Local } from "../../Screens/Local/Local"
 
 export const LocalModal = ({
     visible,
+    navigation,
     setShowModalLocal,
     ...rest
 }) => {
-    const Navigation = useNavigation();
 
     const Local = () => {
-        Navigation.navigate(Local)
+        navigation.navigate(Local)
     }
 
     async function handleClose(){
         await setShowModalLocal(false)
 
-        Navigation.replace("Local")
+        navigation.navigate("Local")
     }
 
     return(

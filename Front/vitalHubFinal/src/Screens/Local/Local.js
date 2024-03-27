@@ -6,14 +6,11 @@ import Maps from "../../Components/Maps/Maps"
 import { SubTitle } from "../../Components/SubTitle/Style"
 import { Title } from "../../Components/Title/Style"
 import { TitleComponent } from "../../Components/TitleComponent/TitleComponent"
-import { HomePaciente } from "../HomePaciente/HomePaciente"
-import { useNavigation } from "@react-navigation/native"
 
-export const Local = () => {
-    const Navigation = useNavigation();
+export const Local = ({navigation}) => {
 
     const VoltarHome = () => {
-        Navigation.navigate(HomePaciente)
+        navigation.navigate("HomePaciente")
     }
     return (
 
@@ -55,7 +52,7 @@ export const Local = () => {
                 </ContainerRow>
 
 
-                <ContentAccount onPress={VoltarHome}>
+                <ContentAccount onPress={() => VoltarHome()}>
                     <TextAccountLink>Voltar</TextAccountLink>
                 </ContentAccount>
 

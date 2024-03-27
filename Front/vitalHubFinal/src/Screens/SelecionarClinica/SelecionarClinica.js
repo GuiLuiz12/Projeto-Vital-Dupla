@@ -1,26 +1,20 @@
-import { TouchableOpacity } from "react-native";
-import { ButtonCard, ButtonText } from "../../Components/AppointmentCard/Style";
 import { Button } from "../../Components/Button/Style";
 import { ButtonTitle } from "../../Components/ButtonTitle/Style";
 import { Avaliacao, AvaliacaoText, CardClinica, CidadeClinica, ConteudoCardClinica, DiaSemana, DiaSemanaText } from "../../Components/ClinicasCard/Style"
 import { Container, ContainerClinicas, ContainerSpace } from "../../Components/Container/Style"
 import { ContentAccount, TextAccountLink } from "../../Components/ContentAccount/Style";
+import { ListComponent } from "../../Components/List/List";
 import { Title, TitleClinica } from "../../Components/Title/Style"
 import { AntDesign } from '@expo/vector-icons';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { useNavigation } from "@react-navigation/native"
-import { SelecionarMedico } from "../SelecionarMedico/SelecionarMedico";
-import { HomePaciente } from "../HomePaciente/HomePaciente";
 
-export const SelecionarClinica = () => {
-
-    const Navigation = useNavigation();
+export const SelecionarClinica = ({navigation}) => {
 
     const Continuar = () => {
-        Navigation.navigate(SelecionarMedico)
+        navigation.navigate("SelecionarMedico")
     }
     const Voltar = () => {
-        Navigation.navigate(HomePaciente)
+        navigation.navigate("HomePaciente")
     }
 
     return(
@@ -33,7 +27,13 @@ export const SelecionarClinica = () => {
         <ContainerClinicas>
 
             <CardClinica>
-            
+                <ListComponent
+                    data={Consultas}
+                    keyExtractor={(item) => item.id}
+                    renderItem={({ item }) =>
+                    }
+                    showsVerticalScrollIndicator={false}
+                />
                 <ConteudoCardClinica>
                     <TitleClinica>Clínica Natureh</TitleClinica>
                     <Avaliacao>

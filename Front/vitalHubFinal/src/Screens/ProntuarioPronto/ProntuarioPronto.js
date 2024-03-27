@@ -10,8 +10,6 @@ import { CameraButton, CancelarButton, CancelarText } from "../../Components/But
 import { CameraButtonTitle } from "../../Components/ButtonTitle/Style"
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { ContentAccount, TextAccountLink } from "../../Components/ContentAccount/Style"
-import { HomePaciente } from "../HomePaciente/HomePaciente"
-import { useNavigation } from "@react-navigation/native"
 import { useEffect, useState } from "react"
 
 import { Image } from "react-native"
@@ -22,25 +20,23 @@ export const ProntuarioPronto = ({ navigation, route }) => {
 
     const [showCamera, setShowCamera] = useState(false);
 
-    // const Navigation = useNavigation();
-
     const Voltar = () => {
-        navigation.navigate(HomePaciente)
+        navigation.navigate("HomePaciente")
     }
 
     const handleOpenCamera = () => {
         navigation.navigate('CameraProntuario');
-      };
+    };
 
-      useEffect(() => {
+    useEffect(() => {
         // async function xpto  ()  {
-            if( route.params != undefined ){
-                setSavePhoto( route.params.photo )
-            }
+        if (route.params != undefined) {
+            setSavePhoto(route.params.photo)
+        }
         // };
 
         // xpto()
-      }, [route])
+    }, [route])
 
 
     return (
@@ -60,46 +56,46 @@ export const ProntuarioPronto = ({ navigation, route }) => {
                     </ContainerRow>
 
                     <ContainerLeft>
-                    <TitleProntuario>Descrição da consulta</TitleProntuario>
-                    <CaixaProntuario>
-                        <TextCaixaProntuario>O paciente possui uma infecção no
-                            ouvido. Necessário repouse de 2 dias
-                            e acompanhamento médico constante</TextCaixaProntuario>
-                    </CaixaProntuario>
+                        <TitleProntuario>Descrição da consulta</TitleProntuario>
+                        <CaixaProntuario>
+                            <TextCaixaProntuario>O paciente possui uma infecção no
+                                ouvido. Necessário repouse de 2 dias
+                                e acompanhamento médico constante</TextCaixaProntuario>
+                        </CaixaProntuario>
                     </ContainerLeft>
 
                     <ContainerLeft>
 
-                    <TitleProntuario>Diagnóstico do paciente</TitleProntuario>
-                    <CaixaProntuarioMenor>
-                        <TextCaixaProntuario>Infecção no ouvido</TextCaixaProntuario>
-                    </CaixaProntuarioMenor>
+                        <TitleProntuario>Diagnóstico do paciente</TitleProntuario>
+                        <CaixaProntuarioMenor>
+                            <TextCaixaProntuario>Infecção no ouvido</TextCaixaProntuario>
+                        </CaixaProntuarioMenor>
                     </ContainerLeft>
                     <ContainerLeft>
 
-                    <TitleProntuario>Prescrição médica</TitleProntuario>
-                    <CaixaProntuario>
-                        <TextCaixaProntuario>Medicamento: Advil</TextCaixaProntuario>
-                        <TextCaixaProntuario>Dosagem: 50 mg</TextCaixaProntuario>
-                        <TextCaixaProntuario>Frequência: 3 vezes ao dia</TextCaixaProntuario>
-                        <TextCaixaProntuario>Duração: 3 dias</TextCaixaProntuario>
-                    </CaixaProntuario>
+                        <TitleProntuario>Prescrição médica</TitleProntuario>
+                        <CaixaProntuario>
+                            <TextCaixaProntuario>Medicamento: Advil</TextCaixaProntuario>
+                            <TextCaixaProntuario>Dosagem: 50 mg</TextCaixaProntuario>
+                            <TextCaixaProntuario>Frequência: 3 vezes ao dia</TextCaixaProntuario>
+                            <TextCaixaProntuario>Duração: 3 dias</TextCaixaProntuario>
+                        </CaixaProntuario>
                     </ContainerLeft>
 
                     <ContainerLeft>
 
-                    <TitleProntuario>Exames médicos</TitleProntuario>
-                    <CaixaProntuarioRow>
-                        {
-                            savePhoto != null 
-                                ? ( <Image style={{ width : '100%', height : 100}} source={{ uri : route.params.photo }} />)
-                                : ( <>
+                        <TitleProntuario>Exames médicos</TitleProntuario>
+                        <CaixaProntuarioRow>
+                            {
+                                savePhoto != null
+                                    ? (<Image style={{ width: '100%', height: 100 }} source={{ uri: route.params.photo }} />)
+                                    : (<>
                                         <SimpleLineIcons name="exclamation" size={24} color="black" />
                                         <TextCaixaProntuario>Nenhuma foto informada</TextCaixaProntuario>
                                     </>)
-                        }
-                        
-                    </CaixaProntuarioRow>
+                            }
+
+                        </CaixaProntuarioRow>
                     </ContainerLeft>
 
                     <ContainerRow>
@@ -116,10 +112,10 @@ export const ProntuarioPronto = ({ navigation, route }) => {
                     <ContainerLeft>
 
 
-                    <CaixaProntuario>
-                        <TextCaixaProntuario>Resultado do exame de sangue:</TextCaixaProntuario>
-                        <TextCaixaProntuario>tudo normal</TextCaixaProntuario>
-                    </CaixaProntuario>
+                        <CaixaProntuario>
+                            <TextCaixaProntuario>Resultado do exame de sangue:</TextCaixaProntuario>
+                            <TextCaixaProntuario>tudo normal</TextCaixaProntuario>
+                        </CaixaProntuario>
                     </ContainerLeft>
 
                     <ContentAccount onPress={Voltar}>
