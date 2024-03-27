@@ -27,13 +27,6 @@ export const SelecionarClinica = ({navigation}) => {
         <ContainerClinicas>
 
             <CardClinica>
-                <ListComponent
-                    data={Consultas}
-                    keyExtractor={(item) => item.id}
-                    renderItem={({ item }) =>
-                    }
-                    showsVerticalScrollIndicator={false}
-                />
                 <ConteudoCardClinica>
                     <TitleClinica>Clínica Natureh</TitleClinica>
                     <Avaliacao>
