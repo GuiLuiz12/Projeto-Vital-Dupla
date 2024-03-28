@@ -10,7 +10,7 @@ import { TitleComponent } from "../../Components/TitleComponent/TitleComponent"
 export const Local = ({navigation}) => {
 
     const VoltarHome = () => {
-        navigation.navigate("HomePaciente")
+        navigation.navigate("Main")
     }
     return (
 
