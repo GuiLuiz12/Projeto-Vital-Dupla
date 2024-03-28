@@ -47,6 +47,7 @@ export const ContainerSpace = styled.View`
     align-items: center;
     gap: 20px;
     width: 100%;
+    padding-top: 30px;
 `
 
 export const ContainerLocal = styled.View`

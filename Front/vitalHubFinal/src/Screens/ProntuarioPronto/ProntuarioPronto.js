@@ -21,7 +21,7 @@ export const ProntuarioPronto = ({ navigation, route }) => {
     const [showCamera, setShowCamera] = useState(false);
 
     const Voltar = () => {
-        navigation.navigate("HomePaciente")
+        navigation.navigate("Main")
     }
 
     const handleOpenCamera = () => {
