@@ -14,7 +14,7 @@ export const SelecionarClinica = ({navigation}) => {
         navigation.navigate("SelecionarMedico")
     }
     const Voltar = () => {
-        navigation.navigate("HomePaciente")
+        navigation.navigate("Main")
     }
 
     return(

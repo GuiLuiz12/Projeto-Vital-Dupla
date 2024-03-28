@@ -1,4 +1,4 @@
-import { TouchableOpacity } from "react-native"
+import { Alert, TouchableOpacity } from "react-native"
 import { Container } from "../../Components/Container/Style"
 import { Logo } from "../../Components/Logo/Style"
 import { Title } from "../../Components/Title/Style"
@@ -26,19 +26,25 @@ export const Login = ({navigation}) => {
     const [press, setPress] = useState(false) 
 
     async function LoginFunct(){
-        setShowSpinner(true)
-        setPress(true)
-        await api.post('/Login', {
-            email : email,
-            senha : senha
-        }).then(async response => {
-            await AsyncStorage.setItem("token", JSON.stringify(response.data))
-            navigation.navigate("Main")
-        }).catch(error => {
+        if (!email || !senha) { // Verifica se os campos de e-mail e senha estão preenchidos
+            Alert.alert("Erro", "Por favor, preencha todos os campos."); // Exibe uma mensagem de erro se algum campo estiver vazio
+            return;
+        }
+
+        setShowSpinner(true);
+        setPress(true);
+
+        try {
+            const response = await api.post('/Login', { email, senha });
+            await AsyncStorage.setItem("token", JSON.stringify(response.data));
+            navigation.navigate("Main");
+        } catch (error) {
             console.log(error);
-        })
-        setPress(false)
-        setShowSpinner(false)
+            Alert.alert("Erro", "Erro ao fazer login. Por favor, verifique suas credenciais."); // Exibe uma mensagem de erro em caso de falha no login
+        } finally {
+            setPress(false);
+            setShowSpinner(false);
+        }
     }
 
     const ForgotSenha = () => {
