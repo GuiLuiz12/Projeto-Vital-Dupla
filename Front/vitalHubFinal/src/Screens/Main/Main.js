@@ -1,14 +1,11 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { HomePaciente } from '../HomePaciente/HomePaciente';
-import { useState } from 'react';
-import { HomeMedico } from '../HomeMedico/HomeMedico';
 import { Perfil } from '../Perfil/Perfil';
 import { ButtonFooter } from '../../Components/ButtonFooter/ButtonsFooter';
+import { Home } from '../Home/Home';
 
 const Tab = createBottomTabNavigator();
 
 export function Main() {
-    const [role, setRole] = useState("comum")
     return (
         <Tab.Navigator
             screenOptions={{
@@ -27,11 +24,11 @@ export function Main() {
                 },
                 headerShown: false,
             }}
-            initialRouteName={role === "ADM" ? "HomeMedico" : "HomePaciente"}
+            initialRouteName='Home'
             backBehavior='initialRoute'
             detachInactiveScreens={true}
         >
-            <Tab.Screen name="Agenda" component={role === "ADM" ? HomeMedico : HomePaciente} options={{
+            <Tab.Screen name="Agenda" component={Home} options={{
                 tabBarIcon:
                     ({ focused }) => (
                         <ButtonFooter

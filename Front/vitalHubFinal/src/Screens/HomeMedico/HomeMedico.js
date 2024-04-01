@@ -5,7 +5,6 @@ import { TitleData } from "../../Components/TitleData/Style";
 import { StyleSheet } from 'react-native';
 import moment from "moment";
 import { StyledCalendarStrip } from "../../Components/Calendario/Style";
-import CalendarStrip from "react-native-calendar-strip";
 import { FilterAppointment } from "../../Components/FilterAppointment/FilterAppointment";
 import { BtnListAppointment } from "../../Components/BtnListAppointment/BtnListAppointment";
 import { useEffect, useState } from "react";

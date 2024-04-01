@@ -67,7 +67,7 @@ const styles = StyleSheet.create({
     }
 })
 
-export const HomePaciente = ({navigation}) => {
+export const HomePaciente = ({ navigation }) => {
     const [token, setToken] = useState({})
 
     const [showModalCancel, setShowModalCancel] = useState(false);
@@ -132,7 +132,7 @@ export const HomePaciente = ({navigation}) => {
     const endingDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
 
     async function ProfileLoad() {
-        const token  = await userDecodeToken();
+        const token = await userDecodeToken();
 
         if (token) {
             setToken(token)
@@ -143,7 +143,7 @@ export const HomePaciente = ({navigation}) => {
         ProfileLoad();
     }, [])
 
-    
+
     return (
         <Container>
             <FaixaAzul>
@@ -230,15 +230,15 @@ export const HomePaciente = ({navigation}) => {
                     statusLista == item.situacao && (
                         <TouchableOpacity onPress={handleOpenModalLocal}>
 
-                        <AppointmentCardDr
-                            situacao={item.situacao}
-                            navigation={navigation}
-                            onPressLocal={() => setShowModalLocal(true)}
-                            onPressCancel={() => setShowModalCancel(true)}
-                            onPressAppointment={() => setShowModalAppointment(true)}
-                            onPress={handleOpenModalLocal}
+                            <AppointmentCardDr
+                                situacao={item.situacao}
+                                navigation={navigation}
+                                onPressLocal={() => setShowModalLocal(true)}
+                                onPressCancel={() => setShowModalCancel(true)}
+                                onPressAppointment={() => setShowModalAppointment(true)}
+                                onPress={handleOpenModalLocal}
                             />
-                            </TouchableOpacity>
+                        </TouchableOpacity>
                     )
                 }
                 showsVerticalScrollIndicator={false}
@@ -262,8 +262,6 @@ export const HomePaciente = ({navigation}) => {
             />
 
             <ViewIcon>
-
-
                 <IconModal>
 
                     <TouchableOpacity onPress={handleOpenModal}>
