@@ -70,11 +70,7 @@ namespace WebAPI.Repositories
             return ctx.Pacientes
                 .Include(x => x.IdNavigation)
                 .Include(x => x.Endereco)
-<<<<<<< HEAD
                 .FirstOrDefault(x => x.Id == Id);
-=======
-                .FirstOrDefault(x => x.Id == Id)!;
->>>>>>> Gui-Luiz
         }
 
         public List<Consulta> BuscarRealizadas(Guid Id)
