@@ -18,6 +18,8 @@ export const userDecodeToken = async() => {
     }
     const decoded = jwtDecode( token )
 
+    console.log(decoded);
+    
     return {
         name : decoded.name,
         role : decoded.role,

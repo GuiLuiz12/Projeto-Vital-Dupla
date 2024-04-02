@@ -61,9 +61,9 @@ export const AppointmentCardDr = ({
     navigation,
     situacao = "pendente",
     onPressCancel,
-    onPressAppointment
+    onPressAppointment,
+    profile
 }) => {
-    const [profile, setProfile] = useState("Paciente")
     return(
             <ContainerCardsList>
 
@@ -101,7 +101,7 @@ export const AppointmentCardDr = ({
                                         <ButtonText situacao={situacao}>Cancelar</ButtonText>
                                     </ButtonCard>
                                 ) : (
-                                    <ButtonCard onPress={profile !== "Paciente" ? onPressAppointment : () => navigation.replace("Prontuario")}>
+                                    <ButtonCard onPress={profile != "comum" ? onPressAppointment : navigation}>
                                         <ButtonText situacao={situacao}>Ver prontuário</ButtonText>
                                     </ButtonCard>
                                 )
