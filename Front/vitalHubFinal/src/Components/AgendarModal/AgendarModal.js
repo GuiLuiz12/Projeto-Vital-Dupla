@@ -17,11 +17,21 @@ export const AgendarModal = ({
     ...rest
 }) => {
 
+    const handleNavigation = (resultadosDaPesquisa) => {
+        navigation.navigate("SelecionarClinica", { buscarCidade: resultadosDaPesquisa });
+    }
+
+    // async function handleClose(){
+    //     // Suponha que você tenha os resultados da pesquisa aqui
+    //     const resultadosDaPesquisa = "São Paulo"
+
+    //     handleNavigation(resultadosDaPesquisa);}
+
     const [tipoConsulta, setTipoConsulta] = useState('')
 
     const Navigation = useNavigation();
 
-    async function handleClose(){
+    async function handleClose() {
         await setShowModalAgendar(false)
 
         Navigation.replace("SelecionarClinica")
@@ -58,6 +68,7 @@ export const AgendarModal = ({
                     <SubTitleModal>Informe a localização desejada</SubTitleModal>
 
                     <ProntuarioInputMenor
+                        onPress={handleNavigation}
                         placeholder="Informe a localização"
                     />
 

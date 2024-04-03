@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { Button } from "../../Components/Button/Style";
 import { ButtonTitle } from "../../Components/ButtonTitle/Style";
 import { Avaliacao, AvaliacaoText, CardClinica, CidadeClinica, ConteudoCardClinica, DiaSemana, DiaSemanaText } from "../../Components/ClinicasCard/Style"
@@ -8,7 +9,12 @@ import { Title, TitleClinica } from "../../Components/Title/Style"
 import { AntDesign } from '@expo/vector-icons';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
-export const SelecionarClinica = ({navigation}) => {
+export const SelecionarClinica = ({navigation, route}) => {
+
+    const buscarCidade  = route.params;
+
+    const [procurarCidade, setBuscarCidade] = useState([])
+    const [selected, setSelected] = useState("")
 
     const Continuar = () => {
         navigation.navigate("SelecionarMedico")
@@ -16,6 +22,26 @@ export const SelecionarClinica = ({navigation}) => {
     const Voltar = () => {
         navigation.navigate("Main")
     }
+
+    async function BuscarClinicas() {
+        await api.get("/Clinica/BuscarPorCidade", {
+            params: {
+                cidade: buscarCidade
+            }
+        })
+        .then(response => {
+            setBuscarCidade(response.data);
+        })
+        .catch(error => {
+            console.log(error);
+        });
+    }
+
+
+    useEffect(() => {
+        console.log(buscarCidade);
+        BuscarClinicas();
+    }, [])
 
     return(
         <Container>
@@ -25,73 +51,21 @@ export const SelecionarClinica = ({navigation}) => {
         <Title>Selecionar clínica</Title>
 
         <ContainerClinicas>
+                    <ListComponent
+                        data={buscarCidade}
+                        renderItem={({ item }) => <ClinicCard
+                            Selected={item.nomeFantasia === selected}
+                            NomeFantasia={item.nomeFantasia}
+                            Cidade={item.endereco.cidade}
+                            OnPress={() => setSelected(item.nomeFantasia)}
+                        />}
+                        keyExtractor={(item) => {
+                            item.id;
+                        }}
+                        showsVerticalScrollIndicator={false}
 
-            <CardClinica>
-                <ConteudoCardClinica>
-                    <TitleClinica>Clínica Natureh</TitleClinica>
-                    <Avaliacao>
-                    <AntDesign name="star" size={20} color="#F9A620" />
-                    <AvaliacaoText>4,5</AvaliacaoText>
-                    </Avaliacao>
-                </ConteudoCardClinica>
-                <ConteudoCardClinica>
-                    <CidadeClinica>São Paulo, SP</CidadeClinica>
-                    <DiaSemana>
-                    <MaterialCommunityIcons name="calendar" size={14} color="#49B3BA" />
-                        <DiaSemanaText>Seg-Sex</DiaSemanaText>
-                    </DiaSemana>
-                </ConteudoCardClinica>
-          
-            </CardClinica>
-            <CardClinica>
-                <ConteudoCardClinica>
-                    <TitleClinica>Diamond Pró-Mulher</TitleClinica>
-                    <Avaliacao>
-                    <AntDesign name="star" size={20} color="#F9A620" />
-                    <AvaliacaoText>4,8</AvaliacaoText>
-                    </Avaliacao>
-                </ConteudoCardClinica>
-                <ConteudoCardClinica>
-                    <CidadeClinica>São Paulo, SP</CidadeClinica>
-                    <DiaSemana>
-                    <MaterialCommunityIcons name="calendar" size={14} color="#49B3BA" />
-                        <DiaSemanaText>Seg-Sex</DiaSemanaText>
-                    </DiaSemana>
-                </ConteudoCardClinica>
-            </CardClinica>
-            <CardClinica>
-                <ConteudoCardClinica>
-                    <TitleClinica>Clinica Villa Lobos</TitleClinica>
-                    <Avaliacao>
-                    <AntDesign name="star" size={20} color="#F9A620" />
-                    <AvaliacaoText>4,2</AvaliacaoText>
-                    </Avaliacao>
-                </ConteudoCardClinica>
-                <ConteudoCardClinica>
-                    <CidadeClinica>Taboão, SP</CidadeClinica>
-                    <DiaSemana>
-                    <MaterialCommunityIcons name="calendar" size={14} color="#49B3BA" />
-                        <DiaSemanaText>Seg-Sab</DiaSemanaText>
-                    </DiaSemana>
-                </ConteudoCardClinica>
-            </CardClinica>
-            <CardClinica>
-                <ConteudoCardClinica>
-                    <TitleClinica>SP Oncologia Clínica</TitleClinica>
-                    <Avaliacao>
-                    <AntDesign name="star" size={20} color="#F9A620" />
-                    <AvaliacaoText>4,2</AvaliacaoText>
-                    </Avaliacao>
-                </ConteudoCardClinica>
-                <ConteudoCardClinica>
-                    <CidadeClinica>Taboão, SP</CidadeClinica>
-                    <DiaSemana>
-                    <MaterialCommunityIcons name="calendar" size={14} color="#49B3BA" />
-                        <DiaSemanaText>Seg-Sab</DiaSemanaText>
-                    </DiaSemana>
-                </ConteudoCardClinica>
-            </CardClinica>
-        </ContainerClinicas>
+                    />
+                </ContainerClinicas>
 
         <Button onPress={Continuar}>
             <ButtonTitle>Continuar</ButtonTitle>

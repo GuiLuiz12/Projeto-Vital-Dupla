@@ -78,6 +78,8 @@ export const HomePaciente = ({navigation}) => {
 
     const [showModalLocal, setShowModalLocal] = useState(false);
 
+    const [profile, setProfile] = useState({});
+
     const handleOpenModal = () => {
         setShowModalAgendar(true);
     };
@@ -271,6 +273,7 @@ export const HomePaciente = ({navigation}) => {
                     </TouchableOpacity>
 
                     <AgendarModal
+                        navigation={navigation}
                         visible={showModalAgendar}
                         setShowModalAgendar={setShowModalAgendar}
                         onClose={handleCloseModal}
