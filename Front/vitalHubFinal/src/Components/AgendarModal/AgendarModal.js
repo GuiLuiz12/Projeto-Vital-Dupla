@@ -23,8 +23,9 @@ export const AgendarModal = ({
 
     async function handleClose(){
         await setShowModalAgendar(false)
+        console.log( tipoConsulta )
 
-        Navigation.replace("SelecionarClinica")
+        Navigation.replace("SelecionarClinica", { cidade : tipoConsulta})
     }
 
     return (
@@ -59,6 +60,9 @@ export const AgendarModal = ({
 
                     <ProntuarioInputMenor
                         placeholder="Informe a localização"
+
+                        value={tipoConsulta}
+                        onChangeText={txt => setTipoConsulta(txt)}
                     />
 
                     <Button onPress={() => handleClose()}>

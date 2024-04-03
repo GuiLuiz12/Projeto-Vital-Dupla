@@ -9,7 +9,7 @@ import { Title } from "../../Components/Title/Style"
 import api from '../../Service/Service'
 import { ClinicCard } from "../../Components/ClinicasCard/CardClinica";
 
-export const SelecionarClinica = ({ navigation }) => {
+export const SelecionarClinica = ({ navigation, route }) => {
     const [clinicaLista, setClinicaLista] = useState([])
     const [selected, setSelected] = useState("")
 
@@ -21,7 +21,7 @@ export const SelecionarClinica = ({ navigation }) => {
     }
 
     async function ListarClinicas() {
-        await api.get("/Clinica/ListarTodas")
+        await api.get(`/Clinica/BuscarPorCidade?cidade=${route.params.cidade}`)
         .then(response => {
             setClinicaLista(response.data)
         }).catch(error => {
@@ -32,6 +32,10 @@ export const SelecionarClinica = ({ navigation }) => {
     useEffect(() => {
         ListarClinicas();
     }, [])
+
+    useEffect(() => {
+        console.log(route);
+    }, [route.params])
 
     return (
         <Container>
