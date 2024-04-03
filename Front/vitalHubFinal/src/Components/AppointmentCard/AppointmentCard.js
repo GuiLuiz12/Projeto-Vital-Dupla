@@ -5,7 +5,10 @@ import { useState } from 'react';
 export const AppointmentCard = ({
     situacao = "pendente",
     onPressCancel,
-    onPressAppointment
+    onPressAppointment,
+    prioridade,
+    nome,
+    idade,
 }) => {
     
     return(
@@ -19,11 +22,11 @@ export const AppointmentCard = ({
                 <ContentCard>
                     <DataProfileCard>
 
-                        <ProfileName>Niccole Sarga</ProfileName>
+                        <ProfileName>{nome}</ProfileName>
 
                         <ProfileData>
-                            <TextAge>19 anos</TextAge>
-                            <TextBold>Rotina</TextBold>
+                            <TextAge>{idade} anos</TextAge>
+                            <TextBold>{prioridade == "3" ? "Urgência" : prioridade == "2" ? "Exame" : "Rotina"}</TextBold>
                         </ProfileData>
 
                     </DataProfileCard>

@@ -27,7 +27,7 @@ export const Home = ({ navigation }) => {
 
     const [listaConsultas, setListaConsultas] = useState([])
 
-    const [dateConsulta, setDateConsulta] = useState({})
+    const [dateConsulta, setDateConsulta] = useState("")
 
 
 
@@ -95,23 +95,21 @@ export const Home = ({ navigation }) => {
         }
     }
 
-    async function ListarPacientes(idPaciente, dataConsulta) {
-        console.log(idPaciente);
-        const response = await api.get(`/Pacientes/BuscarPorData?data=${dataConsulta}&id=${idPaciente}`) 
-        console.log(response);
-        setListaConsultas(response)
+    async function ListarPacientes() {
+        const url = (token.role == 'Médico' ? 'Medicos' : "Pacientes")
+
+        const response = await api.get(`/${url}/BuscarPorData?data=${dateConsulta}&id=${token.jti}`)
+        setListaConsultas(response.data)
+    }
+
+    function ContaIdade(idade) {
     }
 
     useEffect(() => {
         ProfileLoad();
 
-        if (token.role === "Médico") {
-            
-        }
-        else{
-            ListarPacientes(token.jti, dateConsulta)
-        }
-    }, [])
+        ListarPacientes();
+    }, [dateConsulta])
 
     return (
         <Container>
@@ -126,7 +124,7 @@ export const Home = ({ navigation }) => {
 
                         <BemVindo>Bem Vindo</BemVindo>
 
-                        <UsuarioAtual>Dr Sla</UsuarioAtual>
+                        <UsuarioAtual>{token.role == "Médico" ? `Dr. ${token.name}` : `${token.name}`}</UsuarioAtual>
 
                     </DataUser>
 
@@ -136,7 +134,6 @@ export const Home = ({ navigation }) => {
                 </Sino>
 
             </FaixaAzul>
-            <TitleData>Novembro 2023</TitleData>
 
             <StyledCalendarStrip
                 // animação e seleção de cada data
@@ -172,7 +169,7 @@ export const Home = ({ navigation }) => {
                 //scroll da barra
                 scrollable={true}
 
-                onDateSelected={txt => setDateConsulta(txt)}
+                onDateSelected={date => setDateConsulta(moment(date).format('YYYY-MM-DD'))}
             />
 
             <FilterAppointment>
@@ -199,11 +196,14 @@ export const Home = ({ navigation }) => {
                     keyExtractor={(item) => item.id}
                     renderItem={({ item }) =>
 
-                        statusLista == item.situacao && (
+                        statusLista == item.situacao.situacao && (
                             <AppointmentCard
-                                situacao={item.situacao}
+                                situacao={item.situacao.situacao}
                                 onPressCancel={() => setShowModalCancel(true)}
                                 onPressAppointment={() => setShowModalAppointment(true)}
+                                prioridade={item.prioridade.prioridade}
+                                nome={item.paciente.idNavigation.nome}
+                                idade={null}
                             />
                         )
                     }
