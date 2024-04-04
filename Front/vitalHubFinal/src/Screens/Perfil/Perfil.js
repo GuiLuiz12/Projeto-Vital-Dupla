@@ -10,9 +10,11 @@ import { ScrollView } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useEffect, useState } from "react";
 import { userDecodeToken } from "../../Utils/Auth";
+import api from "../../Service/Service";
 
-export const Perfil = ({ navigation }) => {
+export const Perfil = ({ navigation, route }) => {
     const [token, setToken] = useState({})
+    const [buscarId, setBuscarId] = useState({})
 
     async function Logout() {
         await AsyncStorage.removeItem("token")
@@ -28,8 +30,19 @@ export const Perfil = ({ navigation }) => {
         }
     }
 
+    async function BuscarUsuario() {
+        const url = (token.role == 'Medico' ? 'Medicos' : "Pacientes")
+
+        const response = await api.get(`/${url}/BuscarPorId`)
+        setBuscarId(response.data)
+    }
+
     useEffect(() => {
         ProfileLoad();
+    }, [])
+
+    useEffect(() => {
+        BuscarUsuario();
     }, [])
 
     return (
@@ -51,7 +64,7 @@ export const Perfil = ({ navigation }) => {
                     <TitleComponent>Data de nascimento</TitleComponent>
 
                     <InputCinza
-                        placeholder="04/05/1999"
+                        placeholder={token.data}
                     />
                 </ContainerLeft>
 
@@ -60,7 +73,7 @@ export const Perfil = ({ navigation }) => {
                     <TitleComponent>CPF</TitleComponent>
 
                     <InputCinza
-                        placeholder="85968457319"
+                        placeholder={token.cpf}
                     />
                 </ContainerLeft>
 
@@ -69,7 +82,7 @@ export const Perfil = ({ navigation }) => {
                     <TitleComponent>Endereço</TitleComponent>
 
                     <InputCinza
-                        placeholder="Rua Vicenso Silva, 987"
+                        placeholder={token.endereco}
                     />
                 </ContainerLeft>
 
@@ -80,7 +93,7 @@ export const Perfil = ({ navigation }) => {
                         <TitleComponent>CEP</TitleComponent>
 
                         <InputCinzaMenor
-                            placeholder="06548-909"
+                            placeholder={token.cep}
                         />
                     </ContainerLocal>
 
@@ -89,7 +102,7 @@ export const Perfil = ({ navigation }) => {
                         <TitleComponent>Cidade</TitleComponent>
 
                         <InputCinzaMenor
-                            placeholder="Moema-SP"
+                            placeholder={token.cidade}
                         />
                     </ContainerLocal>
 
