@@ -37,11 +37,11 @@ export const LocalModal = ({
                         source={require('../../Assets/Images/MaskGroup.png')}
                     />
 
-                    <Title>Dr. Cleber</Title>
+                    <Title>Dr. {consulta.medicoClinica.medico.idNavigation.nome}</Title>
 
                     <IdadeEmail>
                         <TextoProntuario>Clínico Geral</TextoProntuario>
-                        <TextoProntuario>CRM - </TextoProntuario>
+                        <TextoProntuario>CRM - {consulta.medicoClinica.medico.crm}</TextoProntuario>
                     </IdadeEmail>
 
                     {/* button */}

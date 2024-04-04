@@ -103,7 +103,7 @@ export const Perfil = ({ navigation }) => {
                     <ButtonTitle>Editar</ButtonTitle>
                 </Button>
 
-                <ButtonCinzaPequeno onPress={() => Logout()}>
+                <ButtonCinzaPequeno onPress={() => Logout()} disabled={false}>
                     <ButtonTitle>Sair do APP</ButtonTitle>
                 </ButtonCinzaPequeno>
 
