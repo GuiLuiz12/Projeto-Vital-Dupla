@@ -4,24 +4,22 @@ import { ButtonSecondaryTitle, ButtonTitle } from "../ButtonTitle/Style"
 import { IdadeEmail, ImagemProntuario, TextoProntuario } from "../ProntuarioModal/Style"
 import { ButtonModal, ButtonSecondary } from "../Button/Style"
 import { ModalContent, PatientModal } from "../CancelationModal/Style"
-import { useNavigation } from "@react-navigation/native"
-import { Local } from "../../Screens/Local/Local"
 
 export const LocalModal = ({
     visible,
     navigation,
     setShowModalLocal,
+    roleUsuario,
+    consulta,
     ...rest
 }) => {
 
-    const Local = () => {
-        navigation.navigate(Local)
-    }
+    function handlePress( rota ){
+        
+        setShowModalLocal(false)
 
-    async function handleClose(){
-        await setShowModalLocal(false)
+        navigation.navigate(rota, {clinicaId : consulta.medicoClinica.clinicaId})
 
-        navigation.navigate("Local")
     }
 
     return(
@@ -39,15 +37,15 @@ export const LocalModal = ({
                         source={require('../../Assets/Images/MaskGroup.png')}
                     />
 
-                    <Title>Dr Claudio</Title>
+                    <Title>Dr. Cleber</Title>
 
                     <IdadeEmail>
                         <TextoProntuario>Clínico Geral</TextoProntuario>
-                        <TextoProntuario>CRM - 15286</TextoProntuario>
+                        <TextoProntuario>CRM - </TextoProntuario>
                     </IdadeEmail>
 
                     {/* button */}
-                    <ButtonModal onPress={() => handleClose()}>
+                    <ButtonModal onPress={() => handlePress( "Local" )}>
                        
                         <ButtonTitle>Ver Local da Consulta</ButtonTitle>
                        

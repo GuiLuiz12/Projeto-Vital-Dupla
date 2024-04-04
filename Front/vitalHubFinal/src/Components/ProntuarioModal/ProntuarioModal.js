@@ -4,17 +4,18 @@ import { ButtonSecondaryTitle, ButtonTitle } from "../ButtonTitle/Style"
 import { IdadeEmail, ImagemProntuario, TextoProntuario } from "./Style"
 import { ButtonModal, ButtonSecondary } from "../Button/Style"
 import { ModalContent, PatientModal } from "../CancelationModal/Style"
-import { ProntuarioPronto } from "../../Screens/ProntuarioPronto/ProntuarioPronto"
 
 export const ProntuarioModal = ({
     visible,
     setShowModalAppointment,
     navigation,
+    consulta,
+    roleUsuario,
     ...rest
 }) => {
 
-    const Prontuario = () => {
-        navigation.navigate(ProntuarioPronto)
+    function HandlePress( rota ) {
+        navigation.navigate(rota, {clinicaId : consulta.medicoClinica.clinicaId})
     }
 
     return(
@@ -40,7 +41,7 @@ export const ProntuarioModal = ({
                     </IdadeEmail>
 
                     {/* button */}
-                    <ButtonModal onPress={Prontuario}>
+                    <ButtonModal onPress={() => HandlePress('Local')}>
                        
                         <ButtonTitle>Inserir prontuário</ButtonTitle>
                        

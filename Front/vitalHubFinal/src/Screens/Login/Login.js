@@ -20,7 +20,11 @@ import api from "../../Service/Service"
 
 export const Login = ({navigation}) => {
 
+<<<<<<< HEAD
     const [email, setEmail] = useState('gui@email.com')
+=======
+    const [email, setEmail] = useState('joao@email.com')
+>>>>>>> 516ea7c7ae78c6d09d800bcf25dff4efa0346045
     const [senha, setSenha] = useState('12345')
     const [showSpinner, setShowSpinner] = useState(false)
     const [press, setPress] = useState(false) 
