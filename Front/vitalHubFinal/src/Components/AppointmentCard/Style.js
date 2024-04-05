@@ -66,7 +66,7 @@ export const ClockCard = styled.View`
 
 export const ButtonCard = styled.TouchableOpacity`
     font-size: 12px;
-
+    margin-top: 30px;
 `
 
 export const ButtonText = styled.Text`

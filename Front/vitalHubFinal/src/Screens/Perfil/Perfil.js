@@ -30,6 +30,7 @@ export const Perfil = ({ navigation }) => {
 
     useEffect(() => {
         ProfileLoad();
+        console.log(token.name);
     }, [])
 
     return (
@@ -47,6 +48,14 @@ export const Perfil = ({ navigation }) => {
                 <SubTitle>{token.email}</SubTitle>
 
                 <ContainerLeft>
+                    <TitleComponent>Nome</TitleComponent>
+
+                    <InputCinza
+                        placeholder="04/05/1999"
+                    />
+                </ContainerLeft>
+
+                <ContainerLeft>
 
                     <TitleComponent>Data de nascimento</TitleComponent>
 
@@ -58,6 +67,15 @@ export const Perfil = ({ navigation }) => {
                 <ContainerLeft>
 
                     <TitleComponent>CPF</TitleComponent>
+
+                    <InputCinza
+                        placeholder="85968457319"
+                    />
+                </ContainerLeft>
+                
+                <ContainerLeft>
+
+                    <TitleComponent>Rg</TitleComponent>
 
                     <InputCinza
                         placeholder="85968457319"

@@ -1,4 +1,4 @@
-import {Modal, TouchableOpacity} from "react-native"
+import { Modal } from "react-native"
 import { Title } from "../Title/Style"
 import { ButtonSecondaryTitle, ButtonTitle } from "../ButtonTitle/Style"
 import { IdadeEmail, ImagemProntuario, TextoProntuario } from "../ProntuarioModal/Style"
@@ -14,50 +14,59 @@ export const LocalModal = ({
     ...rest
 }) => {
 
-    function handlePress( rota ){
-        
+    function handlePress(rota) {
+
         setShowModalLocal(false)
 
-        navigation.navigate(rota, {clinicaId : consulta.medicoClinica.clinicaId})
+        navigation.navigate(rota, { clinicaId: consulta.medicoClinica.clinicaId })
 
     }
 
-    return(
-        <Modal 
-        {...rest} 
-        visible={visible} 
-        transparent={true} 
-        animationType="fade"
-        >
-            {/* container */}
-            <PatientModal>
-                {/* content */}
-                <ModalContent>
-                    <ImagemProntuario
-                        source={require('../../Assets/Images/MaskGroup.png')}
-                    />
+    return (
+        <>
+            {consulta != null ?
 
-                    <Title>Dr. {consulta.medicoClinica.medico.idNavigation.nome}</Title>
+                <></>
 
-                    <IdadeEmail>
-                        <TextoProntuario>Clínico Geral</TextoProntuario>
-                        <TextoProntuario>CRM - {consulta.medicoClinica.medico.crm}</TextoProntuario>
-                    </IdadeEmail>
+                :
 
-                    {/* button */}
-                    <ButtonModal onPress={() => handlePress( "Local" )}>
-                       
-                        <ButtonTitle>Ver Local da Consulta</ButtonTitle>
-                       
-                    </ButtonModal>
+                <Modal
+                    {...rest}
+                    visible={visible}
+                    transparent={true}
+                    animationType="fade"
+                >
+                    {/* container */}
+                    <PatientModal>
+                        {/* content */}
+                        <ModalContent>
+                            <ImagemProntuario
+                                source={require('../../Assets/Images/MaskGroup.png')}
+                            />
 
-                    {/* button cancel */}
-                    <ButtonSecondary onPress={() => setShowModalLocal(false)}>
-                        <ButtonSecondaryTitle>Cancelar</ButtonSecondaryTitle>
-                    </ButtonSecondary>
+                            <Title>Dr. {consulta.medicoClinica.medico.idNavigation.nome}</Title>
 
-                </ModalContent>
-            </PatientModal>
-        </Modal>
+                            <IdadeEmail>
+                                <TextoProntuario>Clínico Geral</TextoProntuario>
+                                <TextoProntuario>CRM - {consulta.medicoClinica.medico.crm}</TextoProntuario>
+                            </IdadeEmail>
+
+                            {/* button */}
+                            <ButtonModal onPress={() => handlePress("Local")}>
+
+                                <ButtonTitle>Ver Local da Consulta</ButtonTitle>
+
+                            </ButtonModal>
+
+                            {/* button cancel */}
+                            <ButtonSecondary onPress={() => setShowModalLocal(false)}>
+                                <ButtonSecondaryTitle>Cancelar</ButtonSecondaryTitle>
+                            </ButtonSecondary>
+
+                        </ModalContent>
+                    </PatientModal>
+                </Modal>
+            }
+        </>
     )
 }
