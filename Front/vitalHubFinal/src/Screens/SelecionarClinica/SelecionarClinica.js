@@ -9,7 +9,11 @@ import { Title } from "../../Components/Title/Style"
 import api from '../../Service/Service'
 import { ClinicCard } from "../../Components/ClinicasCard/CardClinica";
 
+<<<<<<< HEAD
 export const SelecionarClinica = ({ navigation }) => {
+=======
+export const SelecionarClinica = ({ navigation, route }) => {
+>>>>>>> Gui-Luiz
     const [clinicaLista, setClinicaLista] = useState([])
     const [selected, setSelected] = useState("")
 
@@ -21,7 +25,11 @@ export const SelecionarClinica = ({ navigation }) => {
     }
 
     async function ListarClinicas() {
+<<<<<<< HEAD
         await api.get("/Clinica/ListarTodas")
+=======
+        await api.get(`/Clinica/BuscarPorCidade?cidade=${route.params.cidade}`)
+>>>>>>> Gui-Luiz
         .then(response => {
             setClinicaLista(response.data)
         }).catch(error => {
@@ -33,6 +41,13 @@ export const SelecionarClinica = ({ navigation }) => {
         ListarClinicas();
     }, [])
 
+<<<<<<< HEAD
+=======
+    useEffect(() => {
+        console.log(route);
+    }, [route.params])
+
+>>>>>>> Gui-Luiz
     return (
         <Container>
             <ContainerSpace>

@@ -25,11 +25,6 @@ export const LocalModal = ({
     return (
         <>
             {consulta != null ?
-
-                <></>
-
-                :
-
                 <Modal
                     {...rest}
                     visible={visible}
@@ -66,7 +61,11 @@ export const LocalModal = ({
                         </ModalContent>
                     </PatientModal>
                 </Modal>
-            }
+                : 
+                <>
+                </>
+            } 
+            
         </>
     )
 }

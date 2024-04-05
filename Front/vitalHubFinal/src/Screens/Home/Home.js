@@ -79,7 +79,7 @@ export const Home = ({ navigation }) => {
         setListaConsultas(response.data)
     }
 
-    function MostrarModal( modal = "", consulta) {
+    function MostrarModal( modal, consulta) {
         setConsultaSelecionada(consulta)
 
         if(modal == 'cancelar'){
@@ -111,7 +111,6 @@ export const Home = ({ navigation }) => {
                     <DataUser>
 
                         <BemVindo>Bem Vindo</BemVindo>
-
                         <UsuarioAtual>{token.role == "Médico" ? `Dr. ${token.name}` : `${token.name}`}</UsuarioAtual>
 
                     </DataUser>
@@ -245,7 +244,7 @@ export const Home = ({ navigation }) => {
                 consulta={consultaSelecionada}
             />
             
-            {token.role === "Médico" ?
+            {token.role === "Medico" ?
                 <></>
                 :
                 <ViewIcon>
@@ -258,6 +257,7 @@ export const Home = ({ navigation }) => {
                         <AgendarModal
                             visible={showModalAgendar}
                             setShowModalAgendar={setShowModalAgendar}
+                            onClose={handleCloseModal}
                         />
                     </IconModal>
                 </ViewIcon>

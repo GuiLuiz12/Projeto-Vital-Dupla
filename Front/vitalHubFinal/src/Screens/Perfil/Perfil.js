@@ -10,9 +10,11 @@ import { ScrollView } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useEffect, useState } from "react";
 import { userDecodeToken } from "../../Utils/Auth";
+import api from "../../Service/Service";
 
-export const Perfil = ({ navigation }) => {
+export const Perfil = ({ navigation, route }) => {
     const [token, setToken] = useState({})
+    const [buscarId, setBuscarId] = useState({})
 
     async function Logout() {
         await AsyncStorage.removeItem("token")
@@ -20,112 +22,160 @@ export const Perfil = ({ navigation }) => {
     }
 
     async function ProfileLoad() {
-        const token  = await userDecodeToken();
+        const tokenDecode = await userDecodeToken();
 
-        if (token) {
-            console.log(token);
-            setToken(token)
+
+        if (tokenDecode) {
+            await BuscarUsuario(tokenDecode)
+            console.log(buscarId != null);
+
+            setToken(tokenDecode)
         }
     }
 
+    async function BuscarUsuario(tokenUsuario) {
+        const url = (tokenUsuario.role == 'Medico' ? 'Medicos' : "Pacientes")
+
+        const response = await api.get(`/${url}/BuscarPorId?id=${tokenUsuario.jti}`)
+        setBuscarId(response.data)
+        console.log("oi");
+        console.log(response.data);
+    }
+
+
+
+    // useEffect(() => {
+    //     ProfileLoad()
+    //     if (buscarId == null) {
+    //         BuscarUsuario()
+    //     }
+    // }, [])
+
     useEffect(() => {
         ProfileLoad();
-        console.log(token.name);
     }, [])
+
+    // useEffect(() => {
+    //     BuscarUsuario();
+    // }, [])
 
     return (
 
         <ScrollView>
+            {buscarId != null ?
+                <Container>
+                    <Container>
 
-            <Container>
-
-                <FotoPerfil
-                    source={require('../../Assets/Images/Richard.png')}
-                />
-
-                <Title>{token.name}</Title>
-
-                <SubTitle>{token.email}</SubTitle>
-
-                <ContainerLeft>
-                    <TitleComponent>Nome</TitleComponent>
-
-                    <InputCinza
-                        placeholder="04/05/1999"
-                    />
-                </ContainerLeft>
-
-                <ContainerLeft>
-
-                    <TitleComponent>Data de nascimento</TitleComponent>
-
-                    <InputCinza
-                        placeholder="04/05/1999"
-                    />
-                </ContainerLeft>
-
-                <ContainerLeft>
-
-                    <TitleComponent>CPF</TitleComponent>
-
-                    <InputCinza
-                        placeholder="85968457319"
-                    />
-                </ContainerLeft>
-                
-                <ContainerLeft>
-
-                    <TitleComponent>Rg</TitleComponent>
-
-                    <InputCinza
-                        placeholder="85968457319"
-                    />
-                </ContainerLeft>
-
-                <ContainerLeft>
-
-                    <TitleComponent>Endereço</TitleComponent>
-
-                    <InputCinza
-                        placeholder="Rua Vicenso Silva, 987"
-                    />
-                </ContainerLeft>
-
-                <ContainerRow>
-
-                    <ContainerLocal>
-
-                        <TitleComponent>CEP</TitleComponent>
-
-                        <InputCinzaMenor
-                            placeholder="06548-909"
+                        <FotoPerfil
+                            source={require('../../Assets/Images/Richard.png')}
                         />
-                    </ContainerLocal>
 
-                    <ContainerLocal>
+                        <Title>{token.name}</Title>
 
-                        <TitleComponent>Cidade</TitleComponent>
+                        <SubTitle>{token.email}</SubTitle>
 
-                        <InputCinzaMenor
-                            placeholder="Moema-SP"
-                        />
-                    </ContainerLocal>
+                        <ContainerLeft>
+                            <TitleComponent>Nome</TitleComponent>
 
-                </ContainerRow>
+                            <InputCinza
+                                placeholder="04/05/1999"
+                            />
+                        </ContainerLeft>
 
-                <Button>
-                    <ButtonTitle>Salvar</ButtonTitle>
-                </Button>
+                        <ContainerLeft>
 
-                <Button>
-                    <ButtonTitle>Editar</ButtonTitle>
-                </Button>
+                            <TitleComponent>Data de nascimento</TitleComponent>
 
-                <ButtonCinzaPequeno onPress={() => Logout()} disabled={false}>
-                    <ButtonTitle>Sair do APP</ButtonTitle>
-                </ButtonCinzaPequeno>
+                            <InputCinza
+                                placeholder="04/05/1999"
+                            />
 
-            </Container>
-        </ScrollView>
+                            <Title>{buscarId.idNavigation.nome}</Title>
+
+                            <SubTitle>{token.email}</SubTitle>
+                            {token.role === "Medico" ? (
+                                <>
+
+                                    <ContainerLeft>
+                                        <TitleComponent>Especialidade</TitleComponent>
+                                        <InputCinza placeholder={buscarId.especialidade.especialidade1} />
+                                    </ContainerLeft>
+
+                                    <ContainerLeft>
+                                        <TitleComponent>CRM</TitleComponent>
+                                        <InputCinza placeholder={buscarId.crm} />
+                                    </ContainerLeft>
+
+
+                                </>
+                            ) : (
+                                <>
+                                    <ContainerLeft>
+                                        <TitleComponent>Nome</TitleComponent>
+                                        <InputCinza placeholder={buscarId.idNavigation.nome} />
+                                    </ContainerLeft>
+
+                                    <ContainerLeft>
+                                        <TitleComponent>RG</TitleComponent>
+                                        <InputCinza placeholder={buscarId.rg} />
+                                    </ContainerLeft>
+
+                                    <ContainerLeft>
+                                        <TitleComponent>Data de nascimento</TitleComponent>
+                                        <InputCinza placeholder={buscarId.dataNascimento} />
+                                    </ContainerLeft>
+
+                                    <ContainerLeft>
+                                        <TitleComponent>CPF</TitleComponent>
+                                        <InputCinza placeholder={buscarId.cpf} />
+                                    </ContainerLeft>
+                                </>
+                            )}
+                            <ContainerRow>
+                                <ContainerLocal>
+                                    <TitleComponent>Logradouro</TitleComponent>
+                                    <InputCinzaMenor placeholder={buscarId.endereco.logradouro} />
+                                </ContainerLocal>
+
+                                <ContainerLocal>
+                                    <TitleComponent>Número</TitleComponent>
+                                    <InputCinzaMenor placeholder={buscarId.endereco.numero} />
+                                </ContainerLocal>
+                            </ContainerRow>
+
+                            <ContainerRow>
+                                <ContainerLocal>
+                                    <TitleComponent>CEP</TitleComponent>
+                                    <InputCinzaMenor placeholder={buscarId.endereco.cep} />
+                                </ContainerLocal>
+
+                                <ContainerLocal>
+                                    <TitleComponent>Cidade</TitleComponent>
+                                    <InputCinzaMenor placeholder={buscarId.endereco.cidade} />
+                                </ContainerLocal>
+                            </ContainerRow>
+
+                            <Button>
+                                <ButtonTitle>Salvar</ButtonTitle>
+                            </Button>
+
+                            <Button>
+                                <ButtonTitle>Editar</ButtonTitle>
+                            </Button>
+
+                            <ButtonCinzaPequeno onPress={() => Logout()}>
+                                <ButtonTitle>Sair do APP</ButtonTitle>
+                            </ButtonCinzaPequeno>
+
+                    </Container>
+                    :
+                    <></>
+
+                    <ButtonCinzaPequeno onPress={() => Logout()} disabled={false}>
+                        <ButtonTitle>Sair do APP</ButtonTitle>
+                    </ButtonCinzaPequeno>
+            }
+
+                </ScrollView>
     )
 }
