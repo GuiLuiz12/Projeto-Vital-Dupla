@@ -3,7 +3,7 @@ import styled from "styled-components";
 export const AppointmentModal = styled.View`
     flex: 1;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-end;
     background-color: rgba(0, 0, 0, 0.60);
 `
 
@@ -21,6 +21,7 @@ export const SubTitleModal = styled.Text`
     font-size: 14px;
     font-family: "Quicksand_600SemiBold";
     color: #000000;
+    margin-top: 10px;
 `
 
 export const ButtonTextConsulta = styled.Text`

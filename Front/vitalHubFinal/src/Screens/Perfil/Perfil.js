@@ -10,9 +10,11 @@ import { ScrollView } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useEffect, useState } from "react";
 import { userDecodeToken } from "../../Utils/Auth";
+import api from "../../Service/Service";
 
-export const Perfil = ({ navigation }) => {
+export const Perfil = ({ navigation, route }) => {
     const [token, setToken] = useState({})
+    const [buscarId, setBuscarId] = useState({})
 
     async function Logout() {
         await AsyncStorage.removeItem("token")
@@ -20,94 +22,137 @@ export const Perfil = ({ navigation }) => {
     }
 
     async function ProfileLoad() {
-        const token  = await userDecodeToken();
+        const tokenDecode = await userDecodeToken();
 
-        if (token) {
-            console.log(token);
-            setToken(token)
+
+        if (tokenDecode) {
+            await BuscarUsuario(tokenDecode)
+            console.log(buscarId != null);
+
+            setToken(tokenDecode)
         }
     }
 
+    async function BuscarUsuario(tokenUsuario) {
+        const url = (tokenUsuario.role == 'Medico' ? 'Medicos' : "Pacientes")
+
+        const response = await api.get(`/${url}/BuscarPorId?id=${tokenUsuario.jti}`)
+        setBuscarId(response.data)
+        console.log("oi");
+        console.log(response.data);
+    }
+
+    
+
+    // useEffect(() => {
+    //     ProfileLoad()
+    //     if (buscarId == null) {
+    //         BuscarUsuario()
+    //     }
+    // }, [])
+
     useEffect(() => {
-        ProfileLoad();
+
+        console.log(buscarId);
     }, [])
+
+    // useEffect(() => {
+    //     BuscarUsuario();
+    // }, [])
 
     return (
 
         <ScrollView>
+            {buscarId != null ?
+                <Container>
 
-            <Container>
-
-                <FotoPerfil
-                    source={require('../../Assets/Images/Richard.png')}
-                />
-
-                <Title>{token.name}</Title>
-
-                <SubTitle>{token.email}</SubTitle>
-
-                <ContainerLeft>
-
-                    <TitleComponent>Data de nascimento</TitleComponent>
-
-                    <InputCinza
-                        placeholder="04/05/1999"
+                    <FotoPerfil
+                        source={require('../../Assets/Images/Richard.png')}
                     />
-                </ContainerLeft>
 
-                <ContainerLeft>
+                    <Title>{buscarId.idNavigation.nome}</Title>
 
-                    <TitleComponent>CPF</TitleComponent>
+                    <SubTitle>{token.email}</SubTitle>
+                    {token.role === "Medico" ? (
+                        <>
 
-                    <InputCinza
-                        placeholder="85968457319"
-                    />
-                </ContainerLeft>
+                            <ContainerLeft>
+                                <TitleComponent>Especialidade</TitleComponent>
+                                <InputCinza placeholder={buscarId.especialidade.especialidade1} />
+                            </ContainerLeft>
 
-                <ContainerLeft>
+                            <ContainerLeft>
+                                <TitleComponent>CRM</TitleComponent>
+                                <InputCinza placeholder={buscarId.crm} />
+                            </ContainerLeft>
 
-                    <TitleComponent>Endereço</TitleComponent>
 
-                    <InputCinza
-                        placeholder="Rua Vicenso Silva, 987"
-                    />
-                </ContainerLeft>
+                        </>
+                    ) : (
+                        <>
+                            <ContainerLeft>
+                                <TitleComponent>Nome</TitleComponent>
+                                <InputCinza placeholder={buscarId.idNavigation.nome} />
+                            </ContainerLeft>
 
-                <ContainerRow>
+                            <ContainerLeft>
+                                <TitleComponent>RG</TitleComponent>
+                                <InputCinza placeholder={buscarId.rg} />
+                            </ContainerLeft>
 
-                    <ContainerLocal>
+                            <ContainerLeft>
+                                <TitleComponent>Data de nascimento</TitleComponent>
+                                <InputCinza placeholder={buscarId.dataNascimento} />
+                            </ContainerLeft>
 
-                        <TitleComponent>CEP</TitleComponent>
+                            <ContainerLeft>
+                                <TitleComponent>CPF</TitleComponent>
+                                <InputCinza placeholder={buscarId.cpf} />
+                            </ContainerLeft>
+                        </>
+                    )}
+                    <ContainerRow>
+                        <ContainerLocal>
+                            <TitleComponent>Logradouro</TitleComponent>
+                            <InputCinzaMenor placeholder={buscarId.endereco.logradouro} />
+                        </ContainerLocal>
 
-                        <InputCinzaMenor
-                            placeholder="06548-909"
-                        />
-                    </ContainerLocal>
+                        <ContainerLocal>
+                            <TitleComponent>Número</TitleComponent>
+                            <InputCinzaMenor placeholder={buscarId.endereco.numero} />
+                        </ContainerLocal>
+                    </ContainerRow>
 
-                    <ContainerLocal>
+                    <ContainerRow>
+                        <ContainerLocal>
+                            <TitleComponent>CEP</TitleComponent>
+                            <InputCinzaMenor placeholder={buscarId.endereco.cep} />
+                        </ContainerLocal>
 
-                        <TitleComponent>Cidade</TitleComponent>
+                        <ContainerLocal>
+                            <TitleComponent>Cidade</TitleComponent>
+                            <InputCinzaMenor placeholder={buscarId.endereco.cidade} />
+                        </ContainerLocal>
+                    </ContainerRow>
 
-                        <InputCinzaMenor
-                            placeholder="Moema-SP"
-                        />
-                    </ContainerLocal>
+                    <Button>
+                        <ButtonTitle>Salvar</ButtonTitle>
+                    </Button>
 
-                </ContainerRow>
+                    <Button>
+                        <ButtonTitle>Editar</ButtonTitle>
+                    </Button>
 
-                <Button>
-                    <ButtonTitle>Salvar</ButtonTitle>
-                </Button>
+                    <ButtonCinzaPequeno onPress={() => Logout()}>
+                        <ButtonTitle>Sair do APP</ButtonTitle>
+                    </ButtonCinzaPequeno>
 
-                <Button>
-                    <ButtonTitle>Editar</ButtonTitle>
-                </Button>
+                </Container>
+                :
+                <></>
 
-                <ButtonCinzaPequeno onPress={() => Logout()}>
-                    <ButtonTitle>Sair do APP</ButtonTitle>
-                </ButtonCinzaPequeno>
+            }
 
-            </Container>
         </ScrollView>
     )
 }

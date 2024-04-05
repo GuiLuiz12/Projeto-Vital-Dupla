@@ -1,6 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
-import { Navegacao } from './src/Screens/Navegacao/Navegacao';
+import { StyleSheet } from 'react-native';
 import { Login } from './src/Screens/Login/Login';
 import { Quicksand_500Medium, Quicksand_600SemiBold, Quicksand_400Regular } from '@expo-google-fonts/quicksand';
 import { useFonts, MontserratAlternates_600SemiBold, MontserratAlternates_500Medium, MontserratAlternates_700Bold } from "@expo-google-fonts/montserrat-alternates"
@@ -13,14 +12,13 @@ import { CriarConta } from './src/Screens/CriarConta/CriarConta';
 import { Perfil } from './src/Screens/Perfil/Perfil';
 import { Local } from './src/Screens/Local/Local';
 import { Prontuario } from './src/Screens/Prontuario/Prontuario';
-import { HomePaciente } from './src/Screens/HomePaciente/HomePaciente';
 import { SelecionarClinica } from './src/Screens/SelecionarClinica/SelecionarClinica';
 import { SelecionarMedico } from './src/Screens/SelecionarMedico/SelecionarMedico';
 import { SelecionarData } from './src/Screens/SelecionarData/SelecionarData';
-import { HomeMedico } from './src/Screens/HomeMedico/HomeMedico';
 import { ProntuarioPronto } from './src/Screens/ProntuarioPronto/ProntuarioPronto';
 import CameraProntuario from './src/Components/Camera/Camera';
 import { Main } from './src/Screens/Main/Main';
+import { Home } from './src/Screens/Home/Home';
 
 const Stack = createNativeStackNavigator();
 
@@ -76,11 +74,6 @@ export default function App() {
           options={{title: "CriarConta", headerShown: false}}
         />
         <Stack.Screen
-          name="HomeMedico"
-          component={HomeMedico}
-          options={{title: "HomeMedico", headerShown: false}}
-        />
-        <Stack.Screen
           name="Perfil"
           component={Perfil}
           options={{title: "Perfil", headerShown: false}}
@@ -94,11 +87,6 @@ export default function App() {
           name="Prontuario"
           component={Prontuario}
           options={{title: "Prontuario", headerShown: false}}
-        />
-        <Stack.Screen
-          name="HomePaciente"
-          component={HomePaciente}
-          options={{title: "HomePaciente", headerShown: false}}
         />
         <Stack.Screen
           name="SelecionarClinica"
@@ -129,6 +117,11 @@ export default function App() {
           name="Main"
           component={Main}
           options={{title: "Main", headerShown: false}}
+        />
+        <Stack.Screen
+          name="Home"
+          component={Home}
+          options={{title: "Home", headerShown: false}}
         />
       </Stack.Navigator>
     </NavigationContainer>

@@ -1,15 +1,12 @@
+import { css } from 'styled-components'
 import styled from 'styled-components/native'
 
 export const CardClinica = styled.TouchableOpacity`
     width: 100%;
-    height: 84px;
-    /* border: 2px; */
-    border-color: #496BBA;
-    border-radius: 5px;
+    height: 100%;
     flex-direction: column;
     padding: 10px;
     gap: 10px;
-    elevation: 3;
 `
 
 export const ConteudoCardClinica = styled.View`
@@ -35,7 +32,7 @@ export const AvaliacaoText = styled.Text`
     font-family: "Quicksand_600SemiBold";
 `
 
-export const DiaSemana = styled.TouchableOpacity`
+export const DiaSemana = styled.View`
     padding: 5px;
     align-items: center;
     gap: 5px;
@@ -49,4 +46,17 @@ export const DiaSemanaText = styled.Text`
     font-size: 14px;
     font-family: "Quicksand_600SemiBold";
 `
-
+export const Card = styled.View`
+    width: 100%;
+    height: 84px;
+    /* elevation: 4; */
+    ${(props) => props.ClickButton ? 
+    css`
+        border: 2px solid #496BBA;
+    `
+    :
+    css`
+        border: 1px solid white;
+    `
+    }
+`

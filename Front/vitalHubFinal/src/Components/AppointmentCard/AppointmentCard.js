@@ -5,7 +5,10 @@ import { useState } from 'react';
 export const AppointmentCard = ({
     situacao = "pendente",
     onPressCancel,
-    onPressAppointment
+    onPressAppointment,
+    prioridade,
+    nome,
+    idade,
 }) => {
     
     return(
@@ -19,11 +22,11 @@ export const AppointmentCard = ({
                 <ContentCard>
                     <DataProfileCard>
 
-                        <ProfileName>Niccole Sarga</ProfileName>
+                        <ProfileName>{nome}</ProfileName>
 
                         <ProfileData>
-                            <TextAge>19 anos</TextAge>
-                            <TextBold>Rotina</TextBold>
+                            <TextAge>{idade} anos</TextAge>
+                            <TextBold>{prioridade == "3" ? "Urgência" : prioridade == "2" ? "Exame" : "Rotina"}</TextBold>
                         </ProfileData>
 
                     </DataProfileCard>
@@ -61,9 +64,11 @@ export const AppointmentCardDr = ({
     navigation,
     situacao = "pendente",
     onPressCancel,
-    onPressAppointment
+    nome,
+    crm,
+    prioridade
+
 }) => {
-    const [profile, setProfile] = useState("Paciente")
     return(
             <ContainerCardsList>
 
@@ -75,11 +80,11 @@ export const AppointmentCardDr = ({
                 <ContentCard>
                     <DataProfileCard>
 
-                        <ProfileName>Dr. Claudio</ProfileName>
+                        <ProfileName>Dr. {nome}</ProfileName>
 
                         <ProfileData>
-                            <TextAge>22 anos</TextAge>
-                            <TextBold>Rotina</TextBold>
+                            <TextAge>{crm}</TextAge>
+                            <TextBold>{prioridade == "3" ? "Urgência" : prioridade == "2" ? "Exame" : "Rotina"}</TextBold>
                         </ProfileData>
 
                     </DataProfileCard>
@@ -101,7 +106,7 @@ export const AppointmentCardDr = ({
                                         <ButtonText situacao={situacao}>Cancelar</ButtonText>
                                     </ButtonCard>
                                 ) : (
-                                    <ButtonCard onPress={profile !== "Paciente" ? onPressAppointment : () => navigation.replace("Prontuario")}>
+                                    <ButtonCard onPress={navigation}>
                                         <ButtonText situacao={situacao}>Ver prontuário</ButtonText>
                                     </ButtonCard>
                                 )
