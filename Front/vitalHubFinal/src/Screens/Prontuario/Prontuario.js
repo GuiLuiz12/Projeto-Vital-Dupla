@@ -9,7 +9,7 @@ import { SubTitle } from "../../Components/SubTitle/Style"
 import { Title, TitleProntuario } from "../../Components/Title/Style"
 import { ButtonTitle } from "../../Components/ButtonTitle/Style"
 
-export const Prontuario = () => {
+export const Prontuario = ({navigation}) => {
     return (
         <ScrollView>
             <Container>
@@ -60,7 +60,7 @@ export const Prontuario = () => {
                     <ButtonTitle>Editar</ButtonTitle>
                 </ButtonCinza>
 
-                <ButtonCard>
+                <ButtonCard onPress={() => navigation.navigate("Main")}>
                     <ButtonText>Cancelar</ButtonText>
                 </ButtonCard>
 

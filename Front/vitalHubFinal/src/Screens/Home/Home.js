@@ -27,24 +27,7 @@ export const Home = ({ navigation }) => {
     const [showModalCancel, setShowModalCancel] = useState(false);
     const [showModalAppointment, setShowModalAppointment] = useState(false);
     const [statusLista, setStatusLista] = useState("pendente")
-    const [consultaSelecionada, setConsultaSelecionada] = useState(null)
-
-
-
-    const handleOpenModal = () => {
-        setShowModalAgendar(true);
-    };
-
-    // Função para fechar o modal
-    const handleCloseModal = () => {
-        setShowModalAgendar(false);
-    };
-
-    // Função para fechar o modal
-    const handleCloseModalLocal = () => {
-        setShowModalLocal(false);
-    };
-    
+    const [consultaSelecionada, setConsultaSelecionada] = useState({})
 
     //define padrão pt-br para calendário
     moment.updateLocale("pt-br", {
@@ -96,7 +79,7 @@ export const Home = ({ navigation }) => {
         setListaConsultas(response.data)
     }
 
-    function MostrarModal( modal, consulta) {
+    function MostrarModal( modal = "", consulta) {
         setConsultaSelecionada(consulta)
 
         if(modal == 'cancelar'){
@@ -108,7 +91,6 @@ export const Home = ({ navigation }) => {
         }else{
             setShowModalAgendar(true)
         }
-
     }
 
     useEffect(() => {
@@ -225,7 +207,7 @@ export const Home = ({ navigation }) => {
                             <TouchableOpacity onPress={() => MostrarModal("local", item)}>
                                 <AppointmentCardDr
                                     situacao={item.situacao.situacao}
-                                    navigation={() => navigation.navigate("Prontuario")}
+                                    navigation={() => navigation.navigate("ProntuarioPronto")}
                                     onPressLocal={() => MostrarModal('local', item)}
                                     onPressCancel={() => MostrarModal('cancelar', item)}
                                     profile={token.role}
@@ -250,14 +232,17 @@ export const Home = ({ navigation }) => {
             <ProntuarioModal
                 visible={showModalAppointment}
                 setShowModalAppointment={setShowModalAppointment}
+                consulta={ consultaSelecionada }
+                roleUsuario={token.role}
+                navigation={navigation}
             />
 
             <LocalModal
                 visible={showModalLocal}
                 setShowModalLocal={setShowModalLocal}
-                consulta={ consultaSelecionada }
                 roleUsuario={token.role}
                 navigation={navigation}
+                consulta={consultaSelecionada}
             />
             
             {token.role === "Médico" ?
@@ -273,7 +258,6 @@ export const Home = ({ navigation }) => {
                         <AgendarModal
                             visible={showModalAgendar}
                             setShowModalAgendar={setShowModalAgendar}
-                            onClose={handleCloseModal}
                         />
                     </IconModal>
                 </ViewIcon>

@@ -38,12 +38,14 @@ export const ButtonMenorBranco = styled(ButtonMenor)`
 `
 
 export const ButtonModal = styled(Button)`
-    width: 80%;
+    width: 90%;
+    margin-bottom: 30px;
 `
 
 export const ButtonSecondary = styled(Button)`
     background-color: transparent;
     border: none;
+    
 `
 export const ButtonCinza = styled(Button)`
     background-color: #ACABB7;

@@ -1,4 +1,4 @@
-import {Modal, TouchableOpacity} from "react-native"
+import { Modal, TouchableOpacity } from "react-native"
 import { Title } from "../Title/Style"
 import { ButtonSecondaryTitle, ButtonTitle } from "../ButtonTitle/Style"
 import { IdadeEmail, ImagemProntuario, TextoProntuario } from "./Style"
@@ -14,46 +14,50 @@ export const ProntuarioModal = ({
     ...rest
 }) => {
 
-    function HandlePress( rota ) {
-        navigation.navigate(rota, {clinicaId : consulta.medicoClinica.clinicaId})
+    function HandlePress(rota) {
+        navigation.navigate(rota, { clinicaId: consulta.medicoClinica.clinicaId })
     }
 
-    return(
-        <Modal 
-        {...rest} 
-        visible={visible} 
-        transparent={true} 
-        animationType="fade"
-        >
-            {/* container */}
-            <PatientModal>
-                {/* content */}
-                <ModalContent>
-                    <ImagemProntuario
-                        source={require('../../Assets/Images/Niccole.png')}
-                    />
+    return (
+        consulta == null ?
 
-                    <Title>Niccole Sarga</Title>
+            <></>
+            :
+            <Modal
+                {...rest}
+                visible={visible}
+                transparent={true}
+                animationType="fade"
+            >
+                {/* container */}
+                <PatientModal>
+                    {/* content */}
+                    <ModalContent>
+                        <ImagemProntuario
+                            source={require('../../Assets/Images/Niccole.png')}
+                        />
 
-                    <IdadeEmail>
-                        <TextoProntuario>22 anos</TextoProntuario>
-                        <TextoProntuario>niccole.sarga@gmail.com</TextoProntuario>
-                    </IdadeEmail>
+                        <Title>Niccole Sarga</Title>
 
-                    {/* button */}
-                    <ButtonModal onPress={() => HandlePress('Local')}>
-                       
-                        <ButtonTitle>Inserir prontuário</ButtonTitle>
-                       
-                    </ButtonModal>
+                        <IdadeEmail>
+                            <TextoProntuario>22 anos</TextoProntuario>
+                            <TextoProntuario>niccole.sarga@gmail.com</TextoProntuario>
+                        </IdadeEmail>
 
-                    {/* button cancel */}
-                    <ButtonSecondary onPress={() => setShowModalAppointment(false)}>
-                        <ButtonSecondaryTitle>Cancelar</ButtonSecondaryTitle>
-                    </ButtonSecondary>
+                        {/* button */}
+                        <ButtonModal onPress={() => HandlePress('Prontuario')}>
 
-                </ModalContent>
-            </PatientModal>
-        </Modal>
+                            <ButtonTitle>Inserir prontuário</ButtonTitle>
+
+                        </ButtonModal>
+
+                        {/* button cancel */}
+                        <ButtonSecondary onPress={() => setShowModalAppointment(false)}>
+                            <ButtonSecondaryTitle>Cancelar</ButtonSecondaryTitle>
+                        </ButtonSecondary>
+
+                    </ModalContent>
+                </PatientModal>
+            </Modal>
     )
 }
