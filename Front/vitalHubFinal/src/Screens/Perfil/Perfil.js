@@ -1,4 +1,4 @@
-import { Container, ContainerRow, ContainerLeft, ContainerLocal } from "../../Components/Container/Style";
+import { Container, ContainerRow, ContainerLeft, ContainerLocal, ContainerLocalEderecoP, ContainerLocalNumeroP } from "../../Components/Container/Style";
 import { FotoPerfil } from "../../Components/FotoPerfil/Style";
 import { SubTitle } from "../../Components/SubTitle/Style";
 import { Title } from "../../Components/Title/Style";
@@ -14,36 +14,15 @@ import api from "../../Service/Service";
 
 export const Perfil = ({ navigation, route }) => {
     const [token, setToken] = useState({})
-    const [buscarId, setBuscarId] = useState(null)
+    const [editing, setEditing] = useState(false)
+    const [desativarNavigation, setDesativarNavigation] = useState(false)
+    const [oqueFazer, setOqueFazer] = useState(false)
 
-    // async function BuscarUsuario(token) {
-    //     await api.get(`/${url}/BuscarPorId?id=${tokenUsuario.jti}`)
-    //     .then(response => {
-    //         const responseData = response.data;
-
-    //         let resultados = null;
-    //         if (token.role === "Medico") {
-    //             resultados = {
-    //                 ...token,
-    //                 ...responseData.endereco,
-    //                 ...responseData.especialidade,
-    //                 crm : responseData.crm
-    //             };
-    //             console.log(resultados);
-    //         } else{
-    //             resultados = {
-    //                 ...token,
-    //                 ...responseData.endereco,
-    //                 cpf: responseData.cpf,
-    //                 dataNascimento: responseData.dataNascimento
-    //             };
-    //         }
-    //         setStatusEdicao({
-    //             ...paciente.idNavigation,
-    //             ...medicoClinicas.medico.IdNavigation
-    //         })
-    //     })
-    // }
+    function EditarFunction() {
+        setEditing(false)
+        setOqueFazer(true)
+        setDesativarNavigation(true)
+    }
 
     async function Logout() {
         await AsyncStorage.removeItem("token")
@@ -52,7 +31,6 @@ export const Perfil = ({ navigation, route }) => {
 
     async function ProfileLoad() {
         const tokenDecode = await userDecodeToken();
-        console.log(tokenDecode);
 
         if (tokenDecode) {
             BuscarUsuario(tokenDecode)
@@ -73,6 +51,7 @@ export const Perfil = ({ navigation, route }) => {
 
     useEffect(() => {
         ProfileLoad();
+        EditarFunction();
     }, [])
 
     // useEffect(() => {
@@ -92,6 +71,21 @@ export const Perfil = ({ navigation, route }) => {
                     <FotoPerfil
                         source={require('../../Assets/Images/Richard.png')}
                     />
+
+                    {!editing ?
+                        <>
+                            <Title>{token.name}</Title>
+                            <SubTitle>{token.email}</SubTitle>
+                        </>
+                        :
+                        <ContainerLeft>
+                            <TitleComponent>Nome</TitleComponent>
+
+                            <InputCinza
+                                placeholder="Miguel Moreira"
+                            />
+                        </ContainerLeft>
+                    }
 
                     <Title>{token.name}</Title>
 
@@ -132,46 +126,68 @@ export const Perfil = ({ navigation, route }) => {
                                 source={require('../../Assets/Images/Richard.png')}
                             />
 
-                            <SubTitle>{token.email}</SubTitle>
 
-                            {token.role == "Medico" ?
+                            {
+                                token.role == "Medico" ?
 
-                                <>
+                                    <>
+                                        <ContainerRow>
 
-                                    <ContainerLeft>
-                                        <TitleComponent>Especialidade</TitleComponent>
-                                        <InputCinza placeholder={buscarId.especialidade.especialidade1} />
-                                    </ContainerLeft>
+                                            <ContainerLocalEderecoP>
 
-                                    <ContainerLeft>
-                                        <TitleComponent>CRM</TitleComponent>
-                                        <InputCinza placeholder={buscarId.crm} />
-                                    </ContainerLeft>
+                                                <TitleComponent>Rua/Logadouro</TitleComponent>
+
+                                                <InputCinzaMenor
+                                                    placeholder="Rua Vicenso Silva"
+                                                />
+                                            </ContainerLocalEderecoP>
+
+                                            <ContainerLocalNumeroP>
+
+                                                <TitleComponent>Número</TitleComponent>
+
+                                                <InputCinzaMenor
+                                                    placeholder="129"
+                                                />
+                                            </ContainerLocalNumeroP>
+
+                                        </ContainerRow>
 
 
-                                </>
-                                :
-                                <>
-                                    <ContainerLeft>
-                                        <TitleComponent>Nome</TitleComponent>
-                                        <InputCinza placeholder={buscarId.idNavigation.nome} />
-                                    </ContainerLeft>
+                                        <ContainerLeft>
+                                            <TitleComponent>Especialidade</TitleComponent>
+                                            <InputCinza placeholder={buscarId.especialidade.especialidade1} />
+                                        </ContainerLeft>
 
-                                    <ContainerLeft>
-                                        <TitleComponent>RG</TitleComponent>
-                                        <InputCinza placeholder={buscarId.rg} />
-                                    </ContainerLeft>
+                                        <ContainerLeft>
+                                            <TitleComponent>CRM</TitleComponent>
+                                            <InputCinza placeholder={buscarId.crm} />
+                                        </ContainerLeft>
 
-                                    <ContainerLeft>
-                                        <TitleComponent>Data de nascimento</TitleComponent>
-                                        <InputCinza placeholder={buscarId.dataNascimento} />
-                                    </ContainerLeft>
 
-                                    <ContainerLeft>
-                                        <TitleComponent>CPF</TitleComponent>
-                                        <InputCinza placeholder={buscarId.cpf} />
-                                    </ContainerLeft>
-                                </>
+                                    </>
+                                    :
+                                    <>
+                                        <ContainerLeft>
+                                            <TitleComponent>Nome</TitleComponent>
+                                            <InputCinza placeholder={buscarId.idNavigation.nome} />
+                                        </ContainerLeft>
+
+                                        <ContainerLeft>
+                                            <TitleComponent>RG</TitleComponent>
+                                            <InputCinza placeholder={buscarId.rg} />
+                                        </ContainerLeft>
+
+                                        <ContainerLeft>
+                                            <TitleComponent>Data de nascimento</TitleComponent>
+                                            <InputCinza placeholder={buscarId.dataNascimento} />
+                                        </ContainerLeft>
+
+                                        <ContainerLeft>
+                                            <TitleComponent>CPF</TitleComponent>
+                                            <InputCinza placeholder={buscarId.cpf} />
+                                        </ContainerLeft>
+                                    </>
 
                             }
                             <ContainerRow>
@@ -180,11 +196,12 @@ export const Perfil = ({ navigation, route }) => {
                                     <InputCinzaMenor placeholder={buscarId.endereco.logradouro} />
                                 </ContainerLocal>
 
+
                                 <ContainerLocal>
                                     <TitleComponent>Número</TitleComponent>
                                     <InputCinzaMenor placeholder={`${buscarId.endereco.numero}`} />
                                 </ContainerLocal>
-                            </ContainerRow>
+                            </ContainerRow >
 
                             <ContainerRow>
                                 <ContainerLocal>
@@ -198,24 +215,25 @@ export const Perfil = ({ navigation, route }) => {
                                 </ContainerLocal>
                             </ContainerRow>
 
-                            <Button>
+                            <Button onPress={() => SalvarFunction} disbled={!oqueFazer}>
                                 <ButtonTitle>Salvar</ButtonTitle>
                             </Button>
 
-                            <Button>
+                            <Button onPress={() => EditarFunction} disbled={oqueFazer}>
                                 <ButtonTitle>Editar</ButtonTitle>
                             </Button>
 
-                            <ButtonCinzaPequeno onPress={() => Logout()}>
+                            <ButtonCinzaPequeno onPress={() => Logout()} disabled={desativarNavigation}>
                                 <ButtonTitle>Sair do APP</ButtonTitle>
                             </ButtonCinzaPequeno>
-                        </>
 
+
+                        </>
                         :
                         <></>
 
                     }
-                </Container>
+                </Container >
                 :
                 <></>
             }
@@ -223,6 +241,6 @@ export const Perfil = ({ navigation, route }) => {
             <ButtonCinzaPequeno onPress={() => Logout()} disabled={false}>
                 <ButtonTitle>Sair do APP</ButtonTitle>
             </ButtonCinzaPequeno>
-        </ScrollView>
+        </ScrollView >
     )
 }
