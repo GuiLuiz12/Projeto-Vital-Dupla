@@ -14,7 +14,36 @@ import api from "../../Service/Service";
 
 export const Perfil = ({ navigation, route }) => {
     const [token, setToken] = useState({})
-    const [buscarId, setBuscarId] = useState({})
+    const [buscarId, setBuscarId] = useState(null)
+
+    // async function BuscarUsuario(token) {
+    //     await api.get(`/${url}/BuscarPorId?id=${tokenUsuario.jti}`)
+    //     .then(response => {
+    //         const responseData = response.data;
+
+    //         let resultados = null;
+    //         if (token.role === "Medico") {
+    //             resultados = {
+    //                 ...token,
+    //                 ...responseData.endereco,
+    //                 ...responseData.especialidade,
+    //                 crm : responseData.crm
+    //             };
+    //             console.log(resultados);
+    //         } else{
+    //             resultados = {
+    //                 ...token,
+    //                 ...responseData.endereco,
+    //                 cpf: responseData.cpf,
+    //                 dataNascimento: responseData.dataNascimento
+    //             };
+    //         }
+    //         setStatusEdicao({
+    //             ...paciente.idNavigation,
+    //             ...medicoClinicas.medico.IdNavigation
+    //         })
+    //     })
+    // }
 
     async function Logout() {
         await AsyncStorage.removeItem("token")
@@ -23,11 +52,10 @@ export const Perfil = ({ navigation, route }) => {
 
     async function ProfileLoad() {
         const tokenDecode = await userDecodeToken();
-
+        console.log(tokenDecode);
 
         if (tokenDecode) {
-            await BuscarUsuario(tokenDecode)
-            console.log(buscarId != null);
+            BuscarUsuario(tokenDecode)
 
             setToken(tokenDecode)
         }
@@ -35,6 +63,7 @@ export const Perfil = ({ navigation, route }) => {
 
     async function BuscarUsuario(tokenUsuario) {
         const url = (tokenUsuario.role == 'Medico' ? 'Medicos' : "Pacientes")
+        console.log(tokenUsuario.role);
 
         const response = await api.get(`/${url}/BuscarPorId?id=${tokenUsuario.jti}`)
         setBuscarId(response.data)
@@ -42,19 +71,17 @@ export const Perfil = ({ navigation, route }) => {
         console.log(response.data);
     }
 
-    
 
-    // useEffect(() => {
-    //     ProfileLoad()
-    //     if (buscarId == null) {
-    //         BuscarUsuario()
-    //     }
-    // }, [])
 
     useEffect(() => {
-
-        console.log(buscarId);
+        ProfileLoad()
+        console.log(token.role == "Medico");
     }, [])
+
+    // useEffect(() => {
+
+    //     console.log(buscarId);
+    // }, [])
 
     // useEffect(() => {
     //     BuscarUsuario();
@@ -64,93 +91,94 @@ export const Perfil = ({ navigation, route }) => {
 
         <ScrollView>
             {buscarId != null ?
-                <Container>
-
-                    <FotoPerfil
-                        source={require('../../Assets/Images/Richard.png')}
-                    />
-
-                    <Title>{buscarId.idNavigation.nome}</Title>
-
-                    <SubTitle>{token.email}</SubTitle>
-                    {token.role === "Medico" ? (
-                        <>
-
-                            <ContainerLeft>
-                                <TitleComponent>Especialidade</TitleComponent>
-                                <InputCinza placeholder={buscarId.especialidade.especialidade1} />
-                            </ContainerLeft>
-
-                            <ContainerLeft>
-                                <TitleComponent>CRM</TitleComponent>
-                                <InputCinza placeholder={buscarId.crm} />
-                            </ContainerLeft>
+                <>
+                    <Container>
 
 
-                        </>
-                    ) : (
-                        <>
-                            <ContainerLeft>
-                                <TitleComponent>Nome</TitleComponent>
-                                <InputCinza placeholder={buscarId.idNavigation.nome} />
-                            </ContainerLeft>
+                        <FotoPerfil
+                            source={require('../../Assets/Images/Richard.png')}
+                        />
 
-                            <ContainerLeft>
-                                <TitleComponent>RG</TitleComponent>
-                                <InputCinza placeholder={buscarId.rg} />
-                            </ContainerLeft>
+                        <SubTitle>{token.email}</SubTitle>
 
-                            <ContainerLeft>
-                                <TitleComponent>Data de nascimento</TitleComponent>
-                                <InputCinza placeholder={buscarId.dataNascimento} />
-                            </ContainerLeft>
+                        {token.role == "Medico" ?
 
-                            <ContainerLeft>
-                                <TitleComponent>CPF</TitleComponent>
-                                <InputCinza placeholder={buscarId.cpf} />
-                            </ContainerLeft>
-                        </>
-                    )}
-                    <ContainerRow>
-                        <ContainerLocal>
-                            <TitleComponent>Logradouro</TitleComponent>
-                            <InputCinzaMenor placeholder={buscarId.endereco.logradouro} />
-                        </ContainerLocal>
+                            <>
 
-                        <ContainerLocal>
-                            <TitleComponent>Número</TitleComponent>
-                            <InputCinzaMenor placeholder={buscarId.endereco.numero} />
-                        </ContainerLocal>
-                    </ContainerRow>
+                                <ContainerLeft>
+                                    <TitleComponent>Especialidade</TitleComponent>
+                                    <InputCinza placeholder={buscarId.especialidade.especialidade1} />
+                                </ContainerLeft>
 
-                    <ContainerRow>
-                        <ContainerLocal>
-                            <TitleComponent>CEP</TitleComponent>
-                            <InputCinzaMenor placeholder={buscarId.endereco.cep} />
-                        </ContainerLocal>
+                                <ContainerLeft>
+                                    <TitleComponent>CRM</TitleComponent>
+                                    <InputCinza placeholder={buscarId.crm} />
+                                </ContainerLeft>
 
-                        <ContainerLocal>
-                            <TitleComponent>Cidade</TitleComponent>
-                            <InputCinzaMenor placeholder={buscarId.endereco.cidade} />
-                        </ContainerLocal>
-                    </ContainerRow>
 
-                    <Button>
-                        <ButtonTitle>Salvar</ButtonTitle>
-                    </Button>
+                            </>
+                            :
+                            <>
+                                <ContainerLeft>
+                                    <TitleComponent>Nome</TitleComponent>
+                                    <InputCinza placeholder={buscarId.idNavigation.nome} />
+                                </ContainerLeft>
 
-                    <Button>
-                        <ButtonTitle>Editar</ButtonTitle>
-                    </Button>
+                                <ContainerLeft>
+                                    <TitleComponent>RG</TitleComponent>
+                                    <InputCinza placeholder={buscarId.rg} />
+                                </ContainerLeft>
 
-                    <ButtonCinzaPequeno onPress={() => Logout()}>
-                        <ButtonTitle>Sair do APP</ButtonTitle>
-                    </ButtonCinzaPequeno>
+                                <ContainerLeft>
+                                    <TitleComponent>Data de nascimento</TitleComponent>
+                                    <InputCinza placeholder={buscarId.dataNascimento} />
+                                </ContainerLeft>
 
-                </Container>
+                                <ContainerLeft>
+                                    <TitleComponent>CPF</TitleComponent>
+                                    <InputCinza placeholder={buscarId.cpf} />
+                                </ContainerLeft>
+                            </>
+                        }
+                        <ContainerRow>
+                            <ContainerLocal>
+                                <TitleComponent>Logradouro</TitleComponent>
+                                <InputCinzaMenor placeholder={buscarId.endereco.logradouro} />
+                            </ContainerLocal>
+
+                            <ContainerLocal>
+                                <TitleComponent>Número</TitleComponent>
+                                <InputCinzaMenor placeholder={`${buscarId.endereco.numero}`}/>
+                            </ContainerLocal>
+                        </ContainerRow>
+
+                        <ContainerRow>
+                            <ContainerLocal>
+                                <TitleComponent>CEP</TitleComponent>
+                                <InputCinzaMenor placeholder={buscarId.endereco.cep} />
+                            </ContainerLocal>
+
+                            <ContainerLocal>
+                                <TitleComponent>Cidade</TitleComponent>
+                                <InputCinzaMenor placeholder={buscarId.endereco.cidade} />
+                            </ContainerLocal>
+                        </ContainerRow>
+
+                        <Button>
+                            <ButtonTitle>Salvar</ButtonTitle>
+                        </Button>
+
+                        <Button>
+                            <ButtonTitle>Editar</ButtonTitle>
+                        </Button>
+
+                        <ButtonCinzaPequeno onPress={() => Logout()}>
+                            <ButtonTitle>Sair do APP</ButtonTitle>
+                        </ButtonCinzaPequeno>
+                    </Container>
+                </>
                 :
                 <></>
-
             }
 
         </ScrollView>
