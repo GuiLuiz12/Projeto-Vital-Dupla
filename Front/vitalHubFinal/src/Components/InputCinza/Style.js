@@ -1,8 +1,6 @@
 import styled from "styled-components";
 
-export const InputCinza = styled.TextInput.attrs({
-    placeholderTextColor: "#33303E"
-})`
+export const InputCinza = styled.TextInput`
     width: 100%;
     height: 53px;
     padding: 16px;
@@ -14,6 +12,7 @@ export const InputCinza = styled.TextInput.attrs({
     font-size: 14px;
     font-family: "MontserratAlternates_600SemiBold";
     background-color: #F5F3F3;
+    color: rgba(51, 48, 62, 0.4);
 `
 
 export const InputCinzaMenor = styled(InputCinza)`

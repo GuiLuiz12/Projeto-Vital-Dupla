@@ -21,8 +21,10 @@ export const ContainerLeftPaddingLeft = styled(ContainerLeft)`
 
 export const ContainerRow = styled.View`
     flex-direction: row;
-    gap: 10px;
+    justify-content: space-between;
     align-items: center;
+    margin-bottom: 10px;
+    width: 90%;
 `
 
 export const ContainerConsultas = styled.SafeAreaView`
@@ -54,9 +56,17 @@ export const ContainerLocal = styled.View`
     align-items: baseline;
     justify-content: center;
     flex-direction: column;
-    width: 180px;
+    width: 45%;
 `
 
 export const ContainerLocalEndereco = styled(ContainerLocal)`
     width: 370px;
+`
+
+export const ContainerLocalEderecoP = styled(ContainerLocal)`
+    width: 70%;
+`
+
+export const ContainerLocalNumeroP = styled(ContainerLocal)`
+    width: 25%;
 `

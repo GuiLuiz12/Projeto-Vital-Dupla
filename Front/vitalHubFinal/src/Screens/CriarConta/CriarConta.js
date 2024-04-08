@@ -30,25 +30,25 @@ export const CriarConta = ({navigation}) => {
     }
 
     async function CadatroApi() {
-        await api.post("/Pacientes", {
-            rg: null,
-            cpf: null,
-            dataNascimento: null,
-            cep: null,
-            logradouro: null,
-            numero: null,
-            cidade: null,
-            nome: null,
-            email: email,
-            senha: senha,
-            idTipoUsuario: "4fa85f64-5717-4562-b3fc-2c963f66afa6",
-          })
-        .then(response => {
-            console.log(response);
-        })
-        .catch(error => {
-            console.log(error);
-        })
+        // await api.post("/Pacientes", {
+        //     rg: null,
+        //     cpf: null,
+        //     dataNascimento: null,
+        //     cep: null,
+        //     logradouro: null,
+        //     numero: null,
+        //     cidade: null,
+        //     nome: null,
+        //     email: email,
+        //     senha: senha,
+        //     idTipoUsuario: "4fa85f64-5717-4562-b3fc-2c963f66afa6",
+        //   })
+        // .then(response => {
+        //     console.log(response);
+        // })
+        // .catch(error => {
+        //     console.log(error);
+        // })
     }
 
     return (
