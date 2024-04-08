@@ -94,6 +94,7 @@ export const Home = ({ navigation }) => {
 
         const response = await api.get(`/${url}/BuscarPorData?data=${dateConsulta}&id=${token.jti}`)
         setListaConsultas(response.data)
+        console.log(listaConsultas);
     }
 
     function MostrarModal( modal, consulta) {
@@ -250,6 +251,7 @@ export const Home = ({ navigation }) => {
             <ProntuarioModal
                 visible={showModalAppointment}
                 setShowModalAppointment={setShowModalAppointment}
+                navigation={navigation}
             />
 
             <LocalModal
