@@ -27,7 +27,7 @@ export const Home = ({ navigation }) => {
     const [showModalCancel, setShowModalCancel] = useState(false);
     const [showModalAppointment, setShowModalAppointment] = useState(false);
     const [statusLista, setStatusLista] = useState("pendente")
-    const [consultaSelecionada, setConsultaSelecionada] = useState({})
+    const [consultaSelecionada, setConsultaSelecionada] = useState(null)
 
     //define padrão pt-br para calendário
     moment.updateLocale("pt-br", {
@@ -257,7 +257,6 @@ export const Home = ({ navigation }) => {
                         <AgendarModal
                             visible={showModalAgendar}
                             setShowModalAgendar={setShowModalAgendar}
-                            onClose={handleCloseModal}
                         />
                     </IconModal>
                 </ViewIcon>

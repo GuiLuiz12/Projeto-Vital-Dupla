@@ -1,10 +1,10 @@
-import { Container, ContainerRow, ContainerLeft, ContainerLocal, ContainerLocalEderecoP, ContainerLocalNumeroP } from "../../Components/Container/Style";
+import { Container, ContainerLeft, ContainerLocal, ContainerLocalEderecoP, ContainerLocalNumeroP, ContainerRowInputs } from "../../Components/Container/Style";
 import { FotoPerfil } from "../../Components/FotoPerfil/Style";
 import { SubTitle } from "../../Components/SubTitle/Style";
 import { Title } from "../../Components/Title/Style";
 import { TitleComponent } from "../../Components/TitleComponent/TitleComponent";
 import { InputCinza, InputCinzaMenor } from "../../Components/InputCinza/Style";
-import { Button, ButtonCinzaPequeno } from "../../Components/Button/Style";
+import { Button, ButtonCinzaPequeno, ButtonPerfil } from "../../Components/Button/Style";
 import { ButtonTitle } from "../../Components/ButtonTitle/Style";
 import { ScrollView } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -17,9 +17,22 @@ export const Perfil = ({ navigation, route }) => {
     const [editing, setEditing] = useState(false)
     const [desativarNavigation, setDesativarNavigation] = useState(false)
     const [oqueFazer, setOqueFazer] = useState(false)
+    const [buscarId, setBuscarId] = useState(null)
+    const [attUser, setAttUser] = useState({
+        rg: null, 
+        cpf: null, 
+        dataNascimento: null, 
+        cep: null, 
+        logradouro: null,
+        numero: null,
+        cidade: null,
+        nome: null,
+        especialidade:null,
+        crm: null
+    })
 
     function EditarFunction() {
-        setEditing(false)
+        setEditing(true)
         setOqueFazer(true)
         setDesativarNavigation(true)
     }
@@ -31,6 +44,8 @@ export const Perfil = ({ navigation, route }) => {
 
     async function ProfileLoad() {
         const tokenDecode = await userDecodeToken();
+        console.log(tokenDecode.role);
+        console.log("1");
 
         if (tokenDecode) {
             BuscarUsuario(tokenDecode)
@@ -41,27 +56,33 @@ export const Perfil = ({ navigation, route }) => {
 
     async function BuscarUsuario(tokenUsuario) {
         const url = (tokenUsuario.role == 'Medico' ? 'Medicos' : "Pacientes")
-        console.log(tokenUsuario.role);
-
-        const response = await api.get(`/${url}/BuscarPorId?id=${tokenUsuario.jti}`)
+        console.log(url);
+        const response = await api.get(`/${url}/BuscarPorId?id=${tokenUsuario.jti}`).catch((error) => {console.log(error);})
+        console.log("ok");
         setBuscarId(response.data)
-        console.log("oi");
+    }
+
+    async function SalvarFunction(tokenUsuario) {
+        await api.put(`/Pacientes?idUsuario=${tokenUsuario.jti}`,{
+            rg: attUser.rg,
+            cpf: attUser.cpf,
+            dataNascimento: attUser.dataNascimento,
+            cep: attUser.cep,
+            logradouro: attUser.logradouro,
+            numero: attUser.numero,
+            cidade: attUser.cidade,
+            nome: attUser.nome,
+        })
         console.log(response.data);
+
+        setEditing(false)
+        setOqueFazer(false)
+        setDesativarNavigation(false)
     }
 
     useEffect(() => {
         ProfileLoad();
-        EditarFunction();
-    }, [])
-
-    // useEffect(() => {
-
-    //     console.log(buscarId);
-    // }, [])
-
-    // useEffect(() => {
-    //     BuscarUsuario();
-    // }, [])
+    }, [editing])
 
     return (
         <ScrollView>
@@ -82,165 +103,127 @@ export const Perfil = ({ navigation, route }) => {
                             <TitleComponent>Nome</TitleComponent>
 
                             <InputCinza
-                                placeholder="Miguel Moreira"
+                                value={buscarId.idNavigation.nome}
+                                onChangeText={(txt) => setAttUser({nome: txt})}
                             />
                         </ContainerLeft>
                     }
 
-                    <Title>{token.name}</Title>
-
-                    <SubTitle>{token.email}</SubTitle>
-
                     <ContainerLeft>
-                        <TitleComponent>Nome</TitleComponent>
+                        <TitleComponent>Data de nascimento</TitleComponent>
 
                         <InputCinza
-                            placeholder="04/05/1999"
+                            value={new Date(buscarId.dataNascimento).toLocaleDateString()}
+                            editable={editing}
+                            onChangeText={(txt) => setAttUser({dataNascimento: txt})}
                         />
                     </ContainerLeft>
 
-
-                    <TitleComponent>Data de nascimento</TitleComponent>
-
-                    <InputCinza
-                        placeholder="04/05/1999"
-                    />
-
-                    <Title>{buscarId.idNavigation.nome}</Title>
-
-                    <SubTitle>{token.email}</SubTitle>
-                    {token.role === "Medico" ?
+                    {token.role === "Médico" ?
                         <>
                             <ContainerLeft>
                                 <TitleComponent>Especialidade</TitleComponent>
-                                <InputCinza placeholder={buscarId.especialidade.especialidade1} />
+                                <InputCinza 
+                                    value={buscarId.especialidade.especialidade1}
+                                    editable={editing}
+                                    onChangeText={(txt) => setAttUser({especialidade: txt})}
+                                />
                             </ContainerLeft>
 
                             <ContainerLeft>
                                 <TitleComponent>CRM</TitleComponent>
-                                <InputCinza placeholder={buscarId.crm} />
+                                <InputCinza 
+                                value={buscarId.crm} 
+                                editable={editing} 
+                                onChangeText={(txt) => setAttUser({crm: txt})}
+                                />
                             </ContainerLeft>
-
-
-                            <FotoPerfil
-                                source={require('../../Assets/Images/Richard.png')}
-                            />
-
-
-                            {
-                                token.role == "Medico" ?
-
-                                    <>
-                                        <ContainerRow>
-
-                                            <ContainerLocalEderecoP>
-
-                                                <TitleComponent>Rua/Logadouro</TitleComponent>
-
-                                                <InputCinzaMenor
-                                                    placeholder="Rua Vicenso Silva"
-                                                />
-                                            </ContainerLocalEderecoP>
-
-                                            <ContainerLocalNumeroP>
-
-                                                <TitleComponent>Número</TitleComponent>
-
-                                                <InputCinzaMenor
-                                                    placeholder="129"
-                                                />
-                                            </ContainerLocalNumeroP>
-
-                                        </ContainerRow>
-
-
-                                        <ContainerLeft>
-                                            <TitleComponent>Especialidade</TitleComponent>
-                                            <InputCinza placeholder={buscarId.especialidade.especialidade1} />
-                                        </ContainerLeft>
-
-                                        <ContainerLeft>
-                                            <TitleComponent>CRM</TitleComponent>
-                                            <InputCinza placeholder={buscarId.crm} />
-                                        </ContainerLeft>
-
-
-                                    </>
-                                    :
-                                    <>
-                                        <ContainerLeft>
-                                            <TitleComponent>Nome</TitleComponent>
-                                            <InputCinza placeholder={buscarId.idNavigation.nome} />
-                                        </ContainerLeft>
-
-                                        <ContainerLeft>
-                                            <TitleComponent>RG</TitleComponent>
-                                            <InputCinza placeholder={buscarId.rg} />
-                                        </ContainerLeft>
-
-                                        <ContainerLeft>
-                                            <TitleComponent>Data de nascimento</TitleComponent>
-                                            <InputCinza placeholder={buscarId.dataNascimento} />
-                                        </ContainerLeft>
-
-                                        <ContainerLeft>
-                                            <TitleComponent>CPF</TitleComponent>
-                                            <InputCinza placeholder={buscarId.cpf} />
-                                        </ContainerLeft>
-                                    </>
-
-                            }
-                            <ContainerRow>
-                                <ContainerLocal>
-                                    <TitleComponent>Logradouro</TitleComponent>
-                                    <InputCinzaMenor placeholder={buscarId.endereco.logradouro} />
-                                </ContainerLocal>
-
-
-                                <ContainerLocal>
-                                    <TitleComponent>Número</TitleComponent>
-                                    <InputCinzaMenor placeholder={`${buscarId.endereco.numero}`} />
-                                </ContainerLocal>
-                            </ContainerRow >
-
-                            <ContainerRow>
-                                <ContainerLocal>
-                                    <TitleComponent>CEP</TitleComponent>
-                                    <InputCinzaMenor placeholder={buscarId.endereco.cep} />
-                                </ContainerLocal>
-
-                                <ContainerLocal>
-                                    <TitleComponent>Cidade</TitleComponent>
-                                    <InputCinzaMenor placeholder={buscarId.endereco.cidade} />
-                                </ContainerLocal>
-                            </ContainerRow>
-
-                            <Button onPress={() => SalvarFunction} disbled={!oqueFazer}>
-                                <ButtonTitle>Salvar</ButtonTitle>
-                            </Button>
-
-                            <Button onPress={() => EditarFunction} disbled={oqueFazer}>
-                                <ButtonTitle>Editar</ButtonTitle>
-                            </Button>
-
-                            <ButtonCinzaPequeno onPress={() => Logout()} disabled={desativarNavigation}>
-                                <ButtonTitle>Sair do APP</ButtonTitle>
-                            </ButtonCinzaPequeno>
-
-
                         </>
                         :
-                        <></>
+                        <>
+                            <ContainerLeft>
+                                <TitleComponent>RG</TitleComponent>
+                                <InputCinza 
+                                value={buscarId.rg} 
+                                editable={editing} 
+                                onChangeText={(txt) => setAttUser({rg: txt})}
+                                />
+                            </ContainerLeft>
 
+                            <ContainerLeft>
+                                <TitleComponent>CPF</TitleComponent>
+                                <InputCinza 
+                                value={buscarId.cpf} 
+                                editable={editing} 
+                                onChangeText={(txt) => setAttUser({cpf: txt})}
+                                />
+                            </ContainerLeft>
+                        </>
                     }
+                    <ContainerRowInputs>
+
+                        <ContainerLocalEderecoP>
+
+                            <TitleComponent>Rua/Logadouro</TitleComponent>
+
+                            <InputCinzaMenor
+                                value={buscarId.endereco.logradouro}
+                                editable={editing}
+                                onChangeText={(txt) => setAttUser({logradouro: txt})}
+                            />
+                        </ContainerLocalEderecoP>
+
+                        <ContainerLocalNumeroP>
+
+                            <TitleComponent>Número</TitleComponent>
+
+                            <InputCinzaMenor
+                                value={`${buscarId.endereco.numero}`}
+                                editable={editing}
+                                onChangeText={(txt) => setAttUser({numero: txt})}
+                            />
+                        </ContainerLocalNumeroP>
+
+                    </ContainerRowInputs>
+
+                    <ContainerRowInputs>
+                        <ContainerLocal>
+                            <TitleComponent>CEP</TitleComponent>
+                            <InputCinzaMenor 
+                            value={buscarId.endereco.cep} 
+                            editable={editing} 
+                            onChangeText={(txt) => setAttUser({cep: txt})}
+                            />
+                        </ContainerLocal>
+
+                        <ContainerLocal>
+                            <TitleComponent>Cidade</TitleComponent>
+                            <InputCinzaMenor 
+                            value={buscarId.endereco.cidade} 
+                            editable={editing} 
+                            onChangeText={(txt) => setAttUser({cidade: txt})}
+                            />
+                        </ContainerLocal>
+                    </ContainerRowInputs>
+
+                    <ButtonPerfil onPress={() => SalvarFunction(token)} disabled={!editing} color={!editing}>
+                        <ButtonTitle>Salvar</ButtonTitle>
+                    </ButtonPerfil>
+
+                    <ButtonPerfil onPress={() => EditarFunction()} disabled={editing} color={editing}>
+                        <ButtonTitle>Editar</ButtonTitle>
+                    </ButtonPerfil>
+
+                    <ButtonCinzaPequeno onPress={() => Logout()} disabled={false}>
+                        <ButtonTitle>Sair do APP</ButtonTitle>
+                    </ButtonCinzaPequeno>
+
                 </Container >
                 :
                 <></>
             }
 
-            <ButtonCinzaPequeno onPress={() => Logout()} disabled={false}>
-                <ButtonTitle>Sair do APP</ButtonTitle>
-            </ButtonCinzaPequeno>
+
         </ScrollView >
     )
 }

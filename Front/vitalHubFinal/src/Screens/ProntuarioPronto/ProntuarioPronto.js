@@ -1,6 +1,6 @@
 import { ScrollView } from "react-native"
 import { ButtonCard, ButtonText, TextAge } from "../../Components/AppointmentCard/Style"
-import { Container, ContainerLeft, ContainerRow, ContainerSpace } from "../../Components/Container/Style"
+import { Container, ContainerLeft, ContainerRow, ContainerRowButtons, ContainerSpace } from "../../Components/Container/Style"
 import { FotoPerfil } from "../../Components/FotoPerfil/Style"
 import { SubTitle } from "../../Components/SubTitle/Style"
 import { Title, TitleProntuario } from "../../Components/Title/Style"
@@ -98,7 +98,7 @@ export const ProntuarioPronto = ({ navigation, route }) => {
                         </CaixaProntuarioRow>
                     </ContainerLeft>
 
-                    <ContainerRow>
+                    <ContainerRowButtons>
                         <CameraButton onPress={handleOpenCamera}>
                             <MaterialCommunityIcons name="camera-plus-outline" size={24} color="white" />
                             <CameraButtonTitle>Enviar</CameraButtonTitle>
@@ -106,7 +106,7 @@ export const ProntuarioPronto = ({ navigation, route }) => {
                         <CancelarButton onPress={() => setSavePhoto(null)}>
                             <CancelarText>Cancelar</CancelarText>
                         </CancelarButton>
-                    </ContainerRow>
+                    </ContainerRowButtons>
 
                     <Divider></Divider>
                     <ContainerLeft>

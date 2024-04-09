@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
 export const Button = styled.TouchableOpacity`
     width: 90%;
@@ -95,4 +95,16 @@ export const CancelarText = styled.Text`
 
 export const ButtonCinzaPequeno = styled(ButtonCinza)`
     width: 189px;
+`
+
+export const ButtonPerfil = styled(Button)`
+     ${props => props.color ? 
+    css`
+        background-color: #ACABB7;
+    `
+    : 
+    css`
+        background-color: #496bba;
+    `}
+    border: 1px solid transparent;
 `

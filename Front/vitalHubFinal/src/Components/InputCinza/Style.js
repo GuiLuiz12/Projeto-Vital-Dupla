@@ -12,7 +12,7 @@ export const InputCinza = styled.TextInput`
     font-size: 14px;
     font-family: "MontserratAlternates_600SemiBold";
     background-color: #F5F3F3;
-    color: rgba(51, 48, 62, 0.4);
+    text-decoration-color: rgba(51, 48, 62);
 `
 
 export const InputCinzaMenor = styled(InputCinza)`
