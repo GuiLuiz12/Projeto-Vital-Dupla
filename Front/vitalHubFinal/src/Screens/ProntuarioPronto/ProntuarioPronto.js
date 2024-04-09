@@ -1,6 +1,6 @@
 import { ScrollView } from "react-native"
 import { ButtonCard, ButtonText, TextAge } from "../../Components/AppointmentCard/Style"
-import { Container, ContainerLeft, ContainerRow, ContainerSpace } from "../../Components/Container/Style"
+import { Container, ContainerLeft, ContainerRow, ContainerRowButtons, ContainerSpace } from "../../Components/Container/Style"
 import { FotoPerfil } from "../../Components/FotoPerfil/Style"
 import { SubTitle } from "../../Components/SubTitle/Style"
 import { Title, TitleProntuario } from "../../Components/Title/Style"
@@ -13,9 +13,15 @@ import { ContentAccount, TextAccountLink } from "../../Components/ContentAccount
 import { useEffect, useState } from "react"
 
 import { Image } from "react-native"
+import { userDecodeToken } from "../../Utils/Auth"
 
 
 export const ProntuarioPronto = ({ navigation, route }) => {
+
+    const [token, setToken] = useState({})
+    const [buscarId, setBuscarId] = useState(null)
+    const [especialidade, setEspecialidade] = useState(null)
+
     const [savePhoto, setSavePhoto] = useState(null)
 
     const [showCamera, setShowCamera] = useState(false);
@@ -28,6 +34,32 @@ export const ProntuarioPronto = ({ navigation, route }) => {
         navigation.navigate('CameraProntuario');
     };
 
+    async function ProfileLoad() {
+        const tokenDecode = await userDecodeToken();
+        console.log(tokenDecode);
+
+        if (tokenDecode) {
+            BuscarProntuario(tokenDecode)
+
+            setToken(tokenDecode)
+        }
+    }
+
+    // async function BuscarProntuario(tokenConsulta) {
+    //     // const url = (tokenUsuario.role == 'Medico' ? 'Medicos' : "Pacientes")
+    //     const response = await api.get(`http://172.16.39.103:4466/api/Consultas?idPaciente=F1EC6D56-4F7C-4EEA-AAB4-763AF058000F`)
+    //     setBuscarId(response.data)
+    //     console.log("oi");
+    //     console.log(response.data);
+    // }
+    // async function BuscarEspecialidade(tokenEspecialidade) {
+    //     const url = (tokenUsuario.role == 'Medico' ? 'Medicos' : "Pacientes")
+    //     const response2 = await api.get(`/${url}/Medicos/BuscarPorId?id=${tokenEspecialidade.jti}`)
+    //     setEspecialidade(response2.data)
+    //     // console.log("oi");
+    //     console.log(response2.data);
+    // }
+
     useEffect(() => {
         // async function xpto  ()  {
         if (route.params != undefined) {
@@ -37,6 +69,14 @@ export const ProntuarioPronto = ({ navigation, route }) => {
 
         // xpto()
     }, [route])
+
+    useEffect(() => {
+        ProfileLoad()
+        // BuscarEspecialidade()
+        // BuscarProntuario()
+        // console.log(token.role == "Medico");
+        // console.log(buscarId);
+    }, [])
 
 
     return (
@@ -49,17 +89,17 @@ export const ProntuarioPronto = ({ navigation, route }) => {
                         source={require('../../Assets/Images/MaskGroup.png')}
                     />
 
-                    <Title>Dr Claudio</Title>
+                    <Title>{token.name}</Title>
                     <ContainerRow>
-                        <TextAge>Clínico Geral</TextAge>
-                        <SubTitle>CRM-15286</SubTitle>
+                        {/* <TextAge>{especialidade.medicoClinica.medico.especialidade1}</TextAge> */}
+                        {/* <SubTitle>{buscarId.medicoClinica.medico.crm}</SubTitle> */}
                     </ContainerRow>
 
                     <ContainerLeft>
                         <TitleProntuario>Descrição da consulta</TitleProntuario>
                         <CaixaProntuario>
                             <TextCaixaProntuario>O paciente possui uma infecção no
-                                ouvido. Necessário repouse de 2 dias
+                                ouvido. Necessário repouso de 2 dias
                                 e acompanhamento médico constante</TextCaixaProntuario>
                         </CaixaProntuario>
                     </ContainerLeft>
@@ -98,7 +138,7 @@ export const ProntuarioPronto = ({ navigation, route }) => {
                         </CaixaProntuarioRow>
                     </ContainerLeft>
 
-                    <ContainerRow>
+                    <ContainerRowButtons>
                         <CameraButton onPress={handleOpenCamera}>
                             <MaterialCommunityIcons name="camera-plus-outline" size={24} color="white" />
                             <CameraButtonTitle>Enviar</CameraButtonTitle>
@@ -106,7 +146,7 @@ export const ProntuarioPronto = ({ navigation, route }) => {
                         <CancelarButton onPress={() => setSavePhoto(null)}>
                             <CancelarText>Cancelar</CancelarText>
                         </CancelarButton>
-                    </ContainerRow>
+                    </ContainerRowButtons>
 
                     <Divider></Divider>
                     <ContainerLeft>

@@ -1,4 +1,4 @@
-import {Modal, TouchableOpacity} from "react-native"
+import { Modal, TouchableOpacity } from "react-native"
 import { Title } from "../Title/Style"
 import { ButtonSecondaryTitle, ButtonTitle } from "../ButtonTitle/Style"
 import { IdadeEmail, ImagemProntuario, TextoProntuario } from "./Style"
@@ -11,6 +11,7 @@ export const ProntuarioModal = ({
     navigation,
     consulta,
     roleUsuario,
+    clinicaId,
     ...rest
 }) => {
 
@@ -41,7 +42,7 @@ export const ProntuarioModal = ({
                     </IdadeEmail>
 
                     {/* button */}
-                    <ButtonModal onPress={() => HandlePress('Local')}>
+                    <ButtonModal onPress={() => HandlePress('ProntuarioPronto')}>
                        
                         <ButtonTitle>Inserir prontuário</ButtonTitle>
                        

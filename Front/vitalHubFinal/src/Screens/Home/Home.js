@@ -44,7 +44,7 @@ export const Home = ({ navigation }) => {
     const handleCloseModalLocal = () => {
         setShowModalLocal(false);
     };
-    
+
 
     //define padrão pt-br para calendário
     moment.updateLocale("pt-br", {
@@ -97,16 +97,16 @@ export const Home = ({ navigation }) => {
         console.log(listaConsultas);
     }
 
-    function MostrarModal( modal, consulta) {
+    function MostrarModal(modal, consulta) {
         setConsultaSelecionada(consulta)
 
-        if(modal == 'cancelar'){
+        if (modal == 'cancelar') {
             setShowModalCancel(true)
-        }else if (modal == 'prontuario') {
+        } else if (modal == 'prontuario') {
             setShowModalAppointment(true)
-        }else if (modal == 'local'){
+        } else if (modal == 'local') {
             setShowModalLocal(true)
-        }else{
+        } else {
             setShowModalAgendar(true)
         }
 
@@ -252,16 +252,17 @@ export const Home = ({ navigation }) => {
                 visible={showModalAppointment}
                 setShowModalAppointment={setShowModalAppointment}
                 navigation={navigation}
+                consulta={consultaSelecionada}
             />
 
             <LocalModal
                 visible={showModalLocal}
                 setShowModalLocal={setShowModalLocal}
-                consulta={ consultaSelecionada }
+                consulta={consultaSelecionada}
                 roleUsuario={token.role}
                 navigation={navigation}
             />
-            
+
             {token.role === "Medico" ?
                 <></>
                 :

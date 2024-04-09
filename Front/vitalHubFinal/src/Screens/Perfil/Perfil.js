@@ -67,7 +67,6 @@ export const Perfil = ({ navigation, route }) => {
 
         const response = await api.get(`/${url}/BuscarPorId?id=${tokenUsuario.jti}`)
         setBuscarId(response.data)
-        console.log("oi");
         console.log(response.data);
     }
 
