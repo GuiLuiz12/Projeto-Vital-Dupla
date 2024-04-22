@@ -6,11 +6,12 @@ import { TitleComponent } from "../../Components/TitleComponent/TitleComponent";
 import { InputCinza, InputCinzaMenor } from "../../Components/InputCinza/Style";
 import { Button, ButtonCinzaPequeno, ButtonPerfil } from "../../Components/Button/Style";
 import { ButtonTitle } from "../../Components/ButtonTitle/Style";
-import { ScrollView } from "react-native";
+import { Alert, ScrollView } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useEffect, useState } from "react";
 import { userDecodeToken } from "../../Utils/Auth";
 import api from "../../Service/Service";
+import { invalid } from "moment";
 
 export const Perfil = ({ navigation, route }) => {
     const [token, setToken] = useState({})
@@ -18,18 +19,19 @@ export const Perfil = ({ navigation, route }) => {
     const [desativarNavigation, setDesativarNavigation] = useState(false)
     const [oqueFazer, setOqueFazer] = useState(false)
     const [buscarId, setBuscarId] = useState(null)
-    const [attUser, setAttUser] = useState({
-        rg: null, 
-        cpf: null, 
-        dataNascimento: null, 
-        cep: null, 
+    const [baseUser, setBaseUser] = useState({
+        rg: null,
+        cpf: null,
+        dataNascimento: null,
+        cep: null,
         logradouro: null,
         numero: null,
         cidade: null,
         nome: null,
-        especialidade:null,
+        especialidade: null,
         crm: null
     })
+    const [attUser, setAttUser] = useState({})
 
     function EditarFunction() {
         setEditing(true)
@@ -44,26 +46,35 @@ export const Perfil = ({ navigation, route }) => {
 
     async function ProfileLoad() {
         const tokenDecode = await userDecodeToken();
-        console.log(tokenDecode.role);
-        console.log("1");
-
-        if (tokenDecode) {
-            BuscarUsuario(tokenDecode)
-
+        if (tokenDecode != null) {
+            BuscarUsuario()
             setToken(tokenDecode)
         }
     }
 
-    async function BuscarUsuario(tokenUsuario) {
-        const url = (tokenUsuario.role == 'Medico' ? 'Medicos' : "Pacientes")
-        console.log(url);
-        const response = await api.get(`/${url}/BuscarPorId?id=${tokenUsuario.jti}`).catch((error) => {console.log(error);})
-        console.log("ok");
+    async function BuscarUsuario() {
+        const url = (token.role == 'Medico' ? 'Medicos' : "Pacientes")
+
+        const response = await api.get(`/${url}/BuscarPorId?id=${token.jti}`).catch((error) => { console.log(error); })
+
         setBuscarId(response.data)
+
+        setBaseUser({
+            rg: buscarId.rg,
+            cpf: buscarId.cpf,
+            dataNascimento: buscarId.dataNascimento,
+            cep: buscarId.endereco.cep,
+            logradouro: buscarId.endereco.logradouro,
+            numero: buscarId.endereco.numero,
+            cidade: buscarId.endereco.cidade,
+            especialidade: buscarId.especialidade.especialidade1,
+            crm: buscarId.crm
+        })
     }
 
     async function SalvarFunction(tokenUsuario) {
-        await api.put(`/Pacientes?idUsuario=${tokenUsuario.jti}`,{
+        setAttUser(baseUser)
+        const response = await api.put(`/Pacientes?idUsuario=${token.jti}`, {
             rg: attUser.rg,
             cpf: attUser.cpf,
             dataNascimento: attUser.dataNascimento,
@@ -71,13 +82,13 @@ export const Perfil = ({ navigation, route }) => {
             logradouro: attUser.logradouro,
             numero: attUser.numero,
             cidade: attUser.cidade,
-            nome: attUser.nome,
         })
         console.log(response.data);
 
         setEditing(false)
         setOqueFazer(false)
         setDesativarNavigation(false)
+        navigation.navigate("main")
     }
 
     useEffect(() => {
@@ -86,36 +97,25 @@ export const Perfil = ({ navigation, route }) => {
 
     return (
         <ScrollView>
-            {buscarId != null ?
+            {baseUser != null ?
                 <Container>
 
                     <FotoPerfil
                         source={require('../../Assets/Images/Richard.png')}
                     />
 
-                    {!editing ?
-                        <>
-                            <Title>{token.name}</Title>
-                            <SubTitle>{token.email}</SubTitle>
-                        </>
-                        :
-                        <ContainerLeft>
-                            <TitleComponent>Nome</TitleComponent>
-
-                            <InputCinza
-                                value={buscarId.idNavigation.nome}
-                                onChangeText={(txt) => setAttUser({nome: txt})}
-                            />
-                        </ContainerLeft>
-                    }
+                    <Title>{token.name}</Title>
+                    <SubTitle>{token.email}</SubTitle>
 
                     <ContainerLeft>
                         <TitleComponent>Data de nascimento</TitleComponent>
 
                         <InputCinza
-                            value={new Date(buscarId.dataNascimento).toLocaleDateString()}
+                            value={baseUser.dataNascimento === invalid ? new Date(baseUser.dataNascimento).toLocaleDateString() : null}
                             editable={editing}
-                            onChangeText={(txt) => setAttUser({dataNascimento: txt})}
+                            onChangeText={(txt) => setBaseUser({dataNascimento: txt, ...baseUser})}
+                            autoComplete={"Birthday"}
+                            keyboardType={"numeric"}
                         />
                     </ContainerLeft>
 
@@ -123,19 +123,26 @@ export const Perfil = ({ navigation, route }) => {
                         <>
                             <ContainerLeft>
                                 <TitleComponent>Especialidade</TitleComponent>
-                                <InputCinza 
-                                    value={buscarId.especialidade.especialidade1}
+                                <InputCinza
+                                    value={baseUser.especialidade}
                                     editable={editing}
-                                    onChangeText={(txt) => setAttUser({especialidade: txt})}
+                                    onChangeText={(txt) => {
+                                        setBaseUser({ especialidade: txt, ...baseUser})
+                                    }}
+                                    autoComplete={"off"}
                                 />
                             </ContainerLeft>
 
                             <ContainerLeft>
                                 <TitleComponent>CRM</TitleComponent>
-                                <InputCinza 
-                                value={buscarId.crm} 
-                                editable={editing} 
-                                onChangeText={(txt) => setAttUser({crm: txt})}
+                                <InputCinza
+                                    value={baseUser.crm}
+                                    editable={editing}
+                                    onChangeText={(txt) => {
+                                        setBaseUser({ crm: txt, ...baseUser})
+                                    }}
+                                    keyboardType={"numeric"}
+                                    autoComplete={"off"}
                                 />
                             </ContainerLeft>
                         </>
@@ -143,19 +150,25 @@ export const Perfil = ({ navigation, route }) => {
                         <>
                             <ContainerLeft>
                                 <TitleComponent>RG</TitleComponent>
-                                <InputCinza 
-                                value={buscarId.rg} 
-                                editable={editing} 
-                                onChangeText={(txt) => setAttUser({rg: txt})}
+                                <InputCinza
+                                    value={baseUser.rg}
+                                    editable={editing}
+                                    onChangeText={(txt) => {
+                                        setBaseUser({ rg: txt, ...baseUser})
+                                    }}
+                                    keyboardType={"numeric"}
+                                    autoComplete={"off"}
                                 />
                             </ContainerLeft>
 
                             <ContainerLeft>
                                 <TitleComponent>CPF</TitleComponent>
-                                <InputCinza 
-                                value={buscarId.cpf} 
-                                editable={editing} 
-                                onChangeText={(txt) => setAttUser({cpf: txt})}
+                                <InputCinza
+                                    value={baseUser.cpf}
+                                    editable={editing}
+                                    onChangeText={(txt) => setBaseUser({ cpf: txt, ...baseUser })}
+                                    keyboardType={"numeric"}
+                                    autoComplete={"off"}
                                 />
                             </ContainerLeft>
                         </>
@@ -167,9 +180,12 @@ export const Perfil = ({ navigation, route }) => {
                             <TitleComponent>Rua/Logadouro</TitleComponent>
 
                             <InputCinzaMenor
-                                value={buscarId.endereco.logradouro}
+                                value={baseUser.logradouro}
                                 editable={editing}
-                                onChangeText={(txt) => setAttUser({logradouro: txt})}
+                                onChangeText={(txt) => {
+                                    setBaseUser({ logradouro: txt, ...baseUser })
+                                }}
+                                autoComplete={"off"}
                             />
                         </ContainerLocalEderecoP>
 
@@ -178,9 +194,12 @@ export const Perfil = ({ navigation, route }) => {
                             <TitleComponent>Número</TitleComponent>
 
                             <InputCinzaMenor
-                                value={`${buscarId.endereco.numero}`}
+                                value={baseUser.numero != undefined ? `${baseUser.numero}` : ""}
                                 editable={editing}
-                                onChangeText={(txt) => setAttUser({numero: txt})}
+                                onChangeText={(txt) =>setBaseUser({ numero: txt, ...baseUser })
+                                }
+                                keyboardType={"numeric"}
+                                autoComplete={"off"}
                             />
                         </ContainerLocalNumeroP>
 
@@ -189,19 +208,26 @@ export const Perfil = ({ navigation, route }) => {
                     <ContainerRowInputs>
                         <ContainerLocal>
                             <TitleComponent>CEP</TitleComponent>
-                            <InputCinzaMenor 
-                            value={buscarId.endereco.cep} 
-                            editable={editing} 
-                            onChangeText={(txt) => setAttUser({cep: txt})}
+                            <InputCinzaMenor
+                                value={baseUser.cep}
+                                editable={editing}
+                                onChangeText={(txt) => {
+                                    setBaseUser({ cep: txt, ...baseUser })
+                                }}
+                                keyboardType={"numeric"}
+                                autoComplete={"off"}
                             />
                         </ContainerLocal>
 
                         <ContainerLocal>
                             <TitleComponent>Cidade</TitleComponent>
-                            <InputCinzaMenor 
-                            value={buscarId.endereco.cidade} 
-                            editable={editing} 
-                            onChangeText={(txt) => setAttUser({cidade: txt})}
+                            <InputCinzaMenor
+                                value={baseUser.cidade}
+                                editable={editing}
+                                onChangeText={(txt) => {
+                                    setBaseUser({ cidade: txt, ...baseUser })
+                                }}
+                                autoComplete={"off"}
                             />
                         </ContainerLocal>
                     </ContainerRowInputs>

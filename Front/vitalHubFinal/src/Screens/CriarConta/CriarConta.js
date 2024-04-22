@@ -10,12 +10,12 @@ import { useState } from "react"
 import api from "../../Service/Service"
 
 import AsyncStorage from '@react-native-async-storage/async-storage'
-
 export const CriarConta = ({navigation}) => {
 
-    const [email, setEmail] = useState("")
-    const [senha, setSenha] = useState("")
-    const [confirmSenha, setConfirmSenha] = useState("")
+    const [email, setEmail] = useState("cleitin@email.com")
+    const [senha, setSenha] = useState("12345")
+    const [confirmSenha, setConfirmSenha] = useState("12345")
+    const [nome, setNome] = useState("cleitin")
 
     const Cancelar = () => {
         navigation.navigate("Login")
@@ -24,7 +24,6 @@ export const CriarConta = ({navigation}) => {
     async function Cadastrar() {
         if (senha == confirmSenha) {
             CadatroApi()
-            
             navigation.navigate("Perfil")
         }else{
             alert("Senhas não iguais")
@@ -32,6 +31,7 @@ export const CriarConta = ({navigation}) => {
     }
 
     async function CadatroApi() {
+        await AsyncStorage.removeItem("token")
         await api.post("/Pacientes", {
             rg: null,
             cpf: null,
@@ -40,18 +40,14 @@ export const CriarConta = ({navigation}) => {
             logradouro: null,
             numero: null,
             cidade: null,
-            nome: null,
+            nome: nome,
             email: email,
             senha: senha,
             idTipoUsuario: "4fa85f64-5717-4562-b3fc-2c963f66afa6",
-          })
-        .then(response => {
-            console.log(response);
         })
         .catch(error => {
             console.log(error);
         })
-
         LoginFunct(email, senha)
     }
 
@@ -81,16 +77,25 @@ export const CriarConta = ({navigation}) => {
                 <Input
                     placeholder="Usuário ou email"
                     onChangeText={(event) => setEmail(event)}
+                    value={email}
                 />
 
                 <Input
                     placeholder="Senha"
                     onChangeText={(event) => setSenha(event)}
+                    value={senha}
                 />
 
                 <Input
                     placeholder="Confirmar senha"
                     onChangeText={(event) => setConfirmSenha(event)}
+                    value={confirmSenha}
+                />
+
+                <Input
+                    placeholder="Nome"
+                    onChangeText={(event) => setNome(event)}
+                    value={nome}
                 />
 
                 <Button onPress={() => Cadastrar()}>
