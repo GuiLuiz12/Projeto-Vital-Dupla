@@ -8,7 +8,7 @@ const ip = '172.16.39.103'
 
 const apiUrlLocal = `http://${ip}:${portaApi}/api`
 
-const api = axios.create({
+export const api = axios.create({
     baseURL : apiUrlLocal
 })
 

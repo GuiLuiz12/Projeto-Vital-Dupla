@@ -42,7 +42,7 @@ export const ProntuarioModal = ({
                     </IdadeEmail>
 
                     {/* button */}
-                    <ButtonModal onPress={() => HandlePress('ProntuarioPronto')}>
+                    <ButtonModal onPress={() => {HandlePress('Prontuario'); setShowModalAppointment(false)}}>
                        
                         <ButtonTitle>Inserir prontuário</ButtonTitle>
                        

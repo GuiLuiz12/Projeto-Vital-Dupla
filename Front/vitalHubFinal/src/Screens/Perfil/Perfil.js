@@ -63,18 +63,18 @@ export const Perfil = ({ navigation, route }) => {
 
     async function BuscarUsuario(tokenUsuario) {
         const url = (tokenUsuario.role == 'Medico' ? 'Medicos' : "Pacientes")
-        console.log(tokenUsuario.role);
+        //console.log(tokenUsuario.role);
 
         const response = await api.get(`/${url}/BuscarPorId?id=${tokenUsuario.jti}`)
         setBuscarId(response.data)
-        console.log(response.data);
+        //console.log(response.data);
     }
 
 
 
     useEffect(() => {
         ProfileLoad()
-        console.log(token.role == "Medico");
+        //console.log(token.role == "Medico");
     }, [])
 
     // useEffect(() => {

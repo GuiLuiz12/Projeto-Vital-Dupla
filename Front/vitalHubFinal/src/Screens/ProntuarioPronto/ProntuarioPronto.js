@@ -11,7 +11,6 @@ import { CameraButtonTitle } from "../../Components/ButtonTitle/Style"
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { ContentAccount, TextAccountLink } from "../../Components/ContentAccount/Style"
 import { useEffect, useState } from "react"
-
 import { Image } from "react-native"
 import { userDecodeToken } from "../../Utils/Auth"
 
@@ -45,35 +44,45 @@ export const ProntuarioPronto = ({ navigation, route }) => {
         }
     }
 
-    // async function BuscarProntuario(tokenConsulta) {
-    //     // const url = (tokenUsuario.role == 'Medico' ? 'Medicos' : "Pacientes")
-    //     const response = await api.get(`http://172.16.39.103:4466/api/Consultas?idPaciente=F1EC6D56-4F7C-4EEA-AAB4-763AF058000F`)
+    async function BuscarProntuario() {
+        // const url = (tokenUsuario.role == 'Medico' ? 'Medicos' : "Pacientes")
+        const response = await api.get(`http://172.16.39.103:4466/api/Consultas?idPaciente=F1EC6D56-4F7C-4EEA-AAB4-763AF058000F`)
+        setBuscarId(response.data)
+        console.log("oi");
+        console.log(response.data);
+    }
+    async function BuscarEspecialidade(tokenEspecialidade) {
+        const url = (tokenUsuario.role == 'Medico' ? 'Medicos' : "Pacientes")
+        const response2 = await api.get(`/${url}/Medicos/BuscarPorId?id=${tokenEspecialidade.jti}`)
+        setEspecialidade(response2.data)
+        // console.log("oi");
+        console.log(response2.data);
+    }
+
+    // async function BuscarUsuario(tokenUsuario) {
+    //     const url = (tokenUsuario.role == 'Medico' ? 'Medicos' : "Pacientes")
+    //     //console.log(tokenUsuario.role);
+
+    //     const response = await api.get(`/Pacientes/BuscarPorId?id=${tokenUsuario.jti}`)
     //     setBuscarId(response.data)
-    //     console.log("oi");
     //     console.log(response.data);
     // }
-    // async function BuscarEspecialidade(tokenEspecialidade) {
-    //     const url = (tokenUsuario.role == 'Medico' ? 'Medicos' : "Pacientes")
-    //     const response2 = await api.get(`/${url}/Medicos/BuscarPorId?id=${tokenEspecialidade.jti}`)
-    //     setEspecialidade(response2.data)
-    //     // console.log("oi");
-    //     console.log(response2.data);
-    // }
 
-    useEffect(() => {
-        // async function xpto  ()  {
-        if (route.params != undefined) {
-            setSavePhoto(route.params.photo)
-        }
-        // };
+    // useEffect(() => {
+    //     // async function xpto  ()  {
+    //     if (route.params != undefined) {
+    //         setSavePhoto(route.params.photo)
+    //     }
+    //     // };
 
-        // xpto()
-    }, [route])
+    //     // xpto()
+    // }, [route])
 
     useEffect(() => {
         ProfileLoad()
         // BuscarEspecialidade()
         // BuscarProntuario()
+        // BuscarUsuario()
         // console.log(token.role == "Medico");
         // console.log(buscarId);
     }, [])
@@ -91,8 +100,8 @@ export const ProntuarioPronto = ({ navigation, route }) => {
 
                     <Title>{token.name}</Title>
                     <ContainerRow>
-                        {/* <TextAge>{especialidade.medicoClinica.medico.especialidade1}</TextAge> */}
-                        {/* <SubTitle>{buscarId.medicoClinica.medico.crm}</SubTitle> */}
+                        {/* <TextAge>{buscarId.especialidade.especialidade1}</TextAge>
+                        <SubTitle>{buscarId.crm}</SubTitle> */}
                     </ContainerRow>
 
                     <ContainerLeft>
