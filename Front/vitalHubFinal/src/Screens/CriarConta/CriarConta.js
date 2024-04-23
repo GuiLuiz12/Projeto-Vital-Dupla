@@ -3,61 +3,63 @@ import { Logo } from "../../Components/Logo/Style"
 import { Title } from "../../Components/Title/Style"
 import { Input } from "../../Components/Input/Style"
 import { Button } from "../../Components/Button/Style"
-import { ButtonTitle} from "../../Components/ButtonTitle/Style"
+import { ButtonTitle } from "../../Components/ButtonTitle/Style"
 import { ContentAccount, TextAccountLink } from "../../Components/ContentAccount/Style"
 import { SubTitle } from "../../Components/SubTitle/Style"
 import { useState } from "react"
 import api from "../../Service/Service"
-
 import AsyncStorage from '@react-native-async-storage/async-storage'
-export const CriarConta = ({navigation}) => {
 
-    const [email, setEmail] = useState("cleitin@email.com")
+export const CriarConta = ({ navigation }) => {
+
+    const [email, setEmail] = useState("edu@email.com")
     const [senha, setSenha] = useState("12345")
     const [confirmSenha, setConfirmSenha] = useState("12345")
-    const [nome, setNome] = useState("cleitin")
+    const [nome, setNome] = useState("Eduardo")
 
     const Cancelar = () => {
         navigation.navigate("Login")
     }
 
-    async function Cadastrar() {
+    function Cadastrar() {
         if (senha == confirmSenha) {
             CadatroApi()
+            LoginFunct()
             navigation.navigate("Perfil")
-        }else{
+        } else {
             alert("Senhas não iguais")
         }
     }
 
     async function CadatroApi() {
         await AsyncStorage.removeItem("token")
-        await api.post("/Pacientes", {
-            rg: null,
-            cpf: null,
-            dataNascimento: null,
-            cep: null,
-            logradouro: null,
-            numero: null,
-            cidade: null,
-            nome: nome,
-            email: email,
-            senha: senha,
-            idTipoUsuario: "4fa85f64-5717-4562-b3fc-2c963f66afa6",
+
+        const form = new FormData()
+        form.append("Nome", nome)
+        form.append("Email", email)
+        form.append("Senha", senha)
+        form.append("IdTipoUsuario", "4fa85f64-5717-4562-b3fc-2c963f66afa6")
+
+        
+
+        await api.post("/Pacientes", form, {
+            headers: {
+                "Content-Type": "multipart/form-data"
+            }
+        }).then(() => {
+
         })
-        .catch(error => {
-            console.log(error);
-        })
-        LoginFunct(email, senha)
+            .catch(error => {
+                console.log(error);
+            })
     }
 
-    async function LoginFunct(email, senha) {
+    async function LoginFunct() {
         try {
             const response = await api.post('/Login', { email, senha });
             await AsyncStorage.setItem("token", JSON.stringify(response.data));
         } catch (error) {
             console.log(error);
-            Alert.alert("Erro", "Erro ao fazer login. Por favor, verifique suas credenciais."); // Exibe uma mensagem de erro em caso de falha no login
         }
     }
 
@@ -73,39 +75,39 @@ export const CriarConta = ({navigation}) => {
 
                 <SubTitle>Insira seu endereço de e-mail e senha para realizar seu cadastro.</SubTitle>
 
-                </ContainerSpace>
-                <Input
-                    placeholder="Usuário ou email"
-                    onChangeText={(event) => setEmail(event)}
-                    value={email}
-                />
+            </ContainerSpace>
+            <Input
+                placeholder="Usuário ou email"
+                onChangeText={(event) => setEmail(event)}
+                value={email}
+            />
 
-                <Input
-                    placeholder="Senha"
-                    onChangeText={(event) => setSenha(event)}
-                    value={senha}
-                />
+            <Input
+                placeholder="Senha"
+                onChangeText={(event) => setSenha(event)}
+                value={senha}
+            />
 
-                <Input
-                    placeholder="Confirmar senha"
-                    onChangeText={(event) => setConfirmSenha(event)}
-                    value={confirmSenha}
-                />
+            <Input
+                placeholder="Confirmar senha"
+                onChangeText={(event) => setConfirmSenha(event)}
+                value={confirmSenha}
+            />
 
-                <Input
-                    placeholder="Nome"
-                    onChangeText={(event) => setNome(event)}
-                    value={nome}
-                />
+            <Input
+                placeholder="Nome"
+                onChangeText={(event) => setNome(event)}
+                value={nome}
+            />
 
-                <Button onPress={() => Cadastrar()}>
-                    <ButtonTitle>Cadastrar</ButtonTitle>
-                </Button>
+            <Button onPress={() => Cadastrar()}>
+                <ButtonTitle>Cadastrar</ButtonTitle>
+            </Button>
 
 
-                <ContentAccount onPress={() => Cancelar()}>
-                    <TextAccountLink>Cancelar</TextAccountLink>
-                </ContentAccount>
+            <ContentAccount onPress={() => Cancelar()}>
+                <TextAccountLink>Cancelar</TextAccountLink>
+            </ContentAccount>
 
         </Container>
     )

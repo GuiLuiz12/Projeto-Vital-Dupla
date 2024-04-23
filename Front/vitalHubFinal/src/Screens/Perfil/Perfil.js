@@ -18,19 +18,7 @@ export const Perfil = ({ navigation, route }) => {
     const [editing, setEditing] = useState(false)
     const [desativarNavigation, setDesativarNavigation] = useState(false)
     const [oqueFazer, setOqueFazer] = useState(false)
-    const [buscarId, setBuscarId] = useState(null)
-    const [baseUser, setBaseUser] = useState({
-        rg: null,
-        cpf: null,
-        dataNascimento: null,
-        cep: null,
-        logradouro: null,
-        numero: null,
-        cidade: null,
-        nome: null,
-        especialidade: null,
-        crm: null
-    })
+    const [baseUser, setBaseUser] = useState(null)
     const [attUser, setAttUser] = useState({})
 
     function EditarFunction() {
@@ -47,34 +35,23 @@ export const Perfil = ({ navigation, route }) => {
     async function ProfileLoad() {
         const tokenDecode = await userDecodeToken();
         if (tokenDecode != null) {
-            BuscarUsuario()
-            setToken(tokenDecode)
+            await setToken(tokenDecode)
+            await BuscarUsuario()
         }
     }
 
     async function BuscarUsuario() {
-        const url = (token.role == 'Medico' ? 'Medicos' : "Pacientes")
+        const url = (token.role == 'Médico' ? 'Medicos' : "Pacientes")
 
-        const response = await api.get(`/${url}/BuscarPorId?id=${token.jti}`).catch((error) => { console.log(error); })
+        const response = await api.get(`/${url}/BuscarPorId?id=${token.jti}`)
+            .catch((error) => { console.log(error); console.log("error"); })
 
-        setBuscarId(response.data)
-
-        setBaseUser({
-            rg: buscarId.rg,
-            cpf: buscarId.cpf,
-            dataNascimento: buscarId.dataNascimento,
-            cep: buscarId.endereco.cep,
-            logradouro: buscarId.endereco.logradouro,
-            numero: buscarId.endereco.numero,
-            cidade: buscarId.endereco.cidade,
-            especialidade: buscarId.especialidade.especialidade1,
-            crm: buscarId.crm
-        })
+        setBaseUser(response.data)
     }
 
-    async function SalvarFunction(tokenUsuario) {
+    async function SalvarFunction() {
         setAttUser(baseUser)
-        const response = await api.put(`/Pacientes?idUsuario=${token.jti}`, {
+        await api.put(`/Pacientes?idUsuario=${token.jti}`, {
             rg: attUser.rg,
             cpf: attUser.cpf,
             dataNascimento: attUser.dataNascimento,
@@ -82,13 +59,20 @@ export const Perfil = ({ navigation, route }) => {
             logradouro: attUser.logradouro,
             numero: attUser.numero,
             cidade: attUser.cidade,
+        }).catch((error) => {
+            console.log(error);
         })
-        console.log(response.data);
 
         setEditing(false)
         setOqueFazer(false)
         setDesativarNavigation(false)
-        navigation.navigate("main")
+        navigation.navigate("Main")
+    }
+
+    function CancelFunction() {
+        setEditing(false)
+        setOqueFazer(false)
+        setDesativarNavigation(false)
     }
 
     useEffect(() => {
@@ -107,27 +91,17 @@ export const Perfil = ({ navigation, route }) => {
                     <Title>{token.name}</Title>
                     <SubTitle>{token.email}</SubTitle>
 
-                    <ContainerLeft>
-                        <TitleComponent>Data de nascimento</TitleComponent>
 
-                        <InputCinza
-                            value={baseUser.dataNascimento === invalid ? new Date(baseUser.dataNascimento).toLocaleDateString() : null}
-                            editable={editing}
-                            onChangeText={(txt) => setBaseUser({dataNascimento: txt, ...baseUser})}
-                            autoComplete={"Birthday"}
-                            keyboardType={"numeric"}
-                        />
-                    </ContainerLeft>
 
                     {token.role === "Médico" ?
                         <>
                             <ContainerLeft>
                                 <TitleComponent>Especialidade</TitleComponent>
                                 <InputCinza
-                                    value={baseUser.especialidade}
+                                    value={baseUser.especialidade.especialidade1}
                                     editable={editing}
                                     onChangeText={(txt) => {
-                                        setBaseUser({ especialidade: txt, ...baseUser})
+                                        setBaseUser({ ...baseUser, especialidade: txt })
                                     }}
                                     autoComplete={"off"}
                                 />
@@ -139,7 +113,7 @@ export const Perfil = ({ navigation, route }) => {
                                     value={baseUser.crm}
                                     editable={editing}
                                     onChangeText={(txt) => {
-                                        setBaseUser({ crm: txt, ...baseUser})
+                                        setBaseUser({ ...baseUser, crm: txt })
                                     }}
                                     keyboardType={"numeric"}
                                     autoComplete={"off"}
@@ -149,12 +123,24 @@ export const Perfil = ({ navigation, route }) => {
                         :
                         <>
                             <ContainerLeft>
+                                <TitleComponent>Data de nascimento</TitleComponent>
+
+                                <InputCinza
+                                    value={baseUser.dataNascimento === invalid ? new Date(baseUser.dataNascimento).toLocaleDateString() : null}
+                                    editable={editing}
+                                    onChangeText={(txt) => setBaseUser({ ...baseUser, dataNascimento: txt })}
+                                    keyboardType={"numeric"}
+                                    placeholder={"Formato de escrita: (DD-MM-YYYY)"}
+                                />
+                            </ContainerLeft>
+
+                            <ContainerLeft>
                                 <TitleComponent>RG</TitleComponent>
                                 <InputCinza
                                     value={baseUser.rg}
                                     editable={editing}
                                     onChangeText={(txt) => {
-                                        setBaseUser({ rg: txt, ...baseUser})
+                                        setBaseUser({ ...baseUser, rg: txt })
                                     }}
                                     keyboardType={"numeric"}
                                     autoComplete={"off"}
@@ -166,7 +152,7 @@ export const Perfil = ({ navigation, route }) => {
                                 <InputCinza
                                     value={baseUser.cpf}
                                     editable={editing}
-                                    onChangeText={(txt) => setBaseUser({ cpf: txt, ...baseUser })}
+                                    onChangeText={(txt) => setBaseUser({ ...baseUser, cpf: txt })}
                                     keyboardType={"numeric"}
                                     autoComplete={"off"}
                                 />
@@ -180,10 +166,10 @@ export const Perfil = ({ navigation, route }) => {
                             <TitleComponent>Rua/Logadouro</TitleComponent>
 
                             <InputCinzaMenor
-                                value={baseUser.logradouro}
+                                value={baseUser.endereco.logradouro}
                                 editable={editing}
                                 onChangeText={(txt) => {
-                                    setBaseUser({ logradouro: txt, ...baseUser })
+                                    setBaseUser({ ...baseUser, logradouro: txt, })
                                 }}
                                 autoComplete={"off"}
                             />
@@ -194,9 +180,9 @@ export const Perfil = ({ navigation, route }) => {
                             <TitleComponent>Número</TitleComponent>
 
                             <InputCinzaMenor
-                                value={baseUser.numero != undefined ? `${baseUser.numero}` : ""}
+                                value={baseUser.endereco.numero != undefined ? `${baseUser.endereco.numero}` : ""}
                                 editable={editing}
-                                onChangeText={(txt) =>setBaseUser({ numero: txt, ...baseUser })
+                                onChangeText={(txt) => setBaseUser({ ...baseUser, numero: txt })
                                 }
                                 keyboardType={"numeric"}
                                 autoComplete={"off"}
@@ -209,10 +195,10 @@ export const Perfil = ({ navigation, route }) => {
                         <ContainerLocal>
                             <TitleComponent>CEP</TitleComponent>
                             <InputCinzaMenor
-                                value={baseUser.cep}
+                                value={baseUser.endereco.cep}
                                 editable={editing}
                                 onChangeText={(txt) => {
-                                    setBaseUser({ cep: txt, ...baseUser })
+                                    setBaseUser({ ...baseUser, cep: txt })
                                 }}
                                 keyboardType={"numeric"}
                                 autoComplete={"off"}
@@ -222,10 +208,10 @@ export const Perfil = ({ navigation, route }) => {
                         <ContainerLocal>
                             <TitleComponent>Cidade</TitleComponent>
                             <InputCinzaMenor
-                                value={baseUser.cidade}
+                                value={baseUser.endereco.cidade}
                                 editable={editing}
                                 onChangeText={(txt) => {
-                                    setBaseUser({ cidade: txt, ...baseUser })
+                                    setBaseUser({ ...baseUser, cidade: txt })
                                 }}
                                 autoComplete={"off"}
                             />
@@ -236,9 +222,21 @@ export const Perfil = ({ navigation, route }) => {
                         <ButtonTitle>Salvar</ButtonTitle>
                     </ButtonPerfil>
 
-                    <ButtonPerfil onPress={() => EditarFunction()} disabled={editing} color={editing}>
-                        <ButtonTitle>Editar</ButtonTitle>
-                    </ButtonPerfil>
+                    {editing ?
+                        <>
+                            <ButtonPerfil onPress={() => CancelFunction()}>
+                                <ButtonTitle>Cancelar</ButtonTitle>
+                            </ButtonPerfil>
+                        </>
+
+                        :
+                        <>
+                            <ButtonPerfil onPress={() => EditarFunction()}>
+                                <ButtonTitle>Editar</ButtonTitle>
+                            </ButtonPerfil>
+                        </>
+
+                    }
 
                     <ButtonCinzaPequeno onPress={() => Logout()} disabled={false}>
                         <ButtonTitle>Sair do APP</ButtonTitle>
