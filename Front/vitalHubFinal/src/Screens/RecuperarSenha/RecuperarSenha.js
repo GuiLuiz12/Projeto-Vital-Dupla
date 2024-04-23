@@ -9,7 +9,7 @@ import { useState } from "react"
 import { api } from "../../Service/Service"
 import { useNavigation } from "@react-navigation/native"
 
-export const RecuperarSenha = () => {
+export const RecuperarSenha = ({navigation}) => {
 
     const [email, setEmail] = useState('');
 
@@ -17,7 +17,7 @@ export const RecuperarSenha = () => {
         await api.post(`/RecuperarSenha?email=${email}`)
         .then(() =>{
 
-            navigation.replace("Verifique seu email", { "emailRecuperacao" : email })
+            navigation.replace("CodigoEmail", { "emailRecuperacao" : email })
 
         }).catch(error => {
             console.log(error);

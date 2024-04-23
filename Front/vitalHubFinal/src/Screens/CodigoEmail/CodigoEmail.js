@@ -14,13 +14,16 @@ import { RecuperarSenha } from "../RecuperarSenha/RecuperarSenha"
 import { SubTitle } from "../../Components/SubTitle/Style"
 import { InputCodigo } from "../../Components/InputCodigo/Style"
 import { ContainerRow } from "../../Components/ContainerRow/Style"
+import { EmailText } from "../../Components/EmailText/Style"
 import { useRef, useState } from "react"
+
+import api from "../../Service/Service"
 
 export const CodigoEmail = ({navigation, route}) => {
 
     const [load, setLoad] = useState(false);
     const [codigo, setCodigo] = useState("")
-    const inputs = (useRef(null), useRef(null), useRef(null), useRef(null)) 
+    const inputs = [useRef(null), useRef(null), useRef(null), useRef(null)]
 
     function focusNextInput(index){
         //verificar se o index e menor do que a quantidade de campos
@@ -36,7 +39,7 @@ export const CodigoEmail = ({navigation, route}) => {
     }
 
     async function ValidarCodigo(){
-        await api.post(`/RecuperarSenha/ValidarCodigoRecuperacaoSenha?email=${route.params.emailRecuperacao}&codigo=${codigo}`)
+        await api.post(`/RecuperarSenha/VerificationCode?email=${route.params.emailRecuperacao}&codigo=${codigo}`)
         .then(() => {
             navigation.replace("RedefinirSenha", {emailRecuperacao : route.params.emailRecuperacao})
         })
@@ -52,13 +55,13 @@ export const CodigoEmail = ({navigation, route}) => {
 
             <Title>Verifique seu e-mail</Title>
 
-            <SubTitle>Digite o código de 4 dígitos enviado para username@email.com <EmailText>{route.params.emailRecuperacao}</EmailText></SubTitle>
+            <SubTitle>Digite o código de 4 dígitos enviado para <EmailText>{route.params.emailRecuperacao}</EmailText></SubTitle>
 
             <ContainerRow>
+            {/* <InputCodigo>0</InputCodigo>
             <InputCodigo>0</InputCodigo>
             <InputCodigo>0</InputCodigo>
-            <InputCodigo>0</InputCodigo>
-            <InputCodigo>0</InputCodigo>
+            <InputCodigo>0</InputCodigo> */}
             {
                 [0,1,2,3].map((index) =>(
                     <InputCodigo
@@ -89,7 +92,7 @@ export const CodigoEmail = ({navigation, route}) => {
             }
             </ContainerRow>
 
-            <Button onPress={() => ValidarCodigo}>
+            <Button onPress={() => ValidarCodigo()}>
                 <ButtonTitle>Entrar</ButtonTitle>
             </Button>
 

@@ -20,6 +20,14 @@ import CameraProntuario from './src/Components/Camera/Camera';
 import { Main } from './src/Screens/Main/Main';
 import { Home } from './src/Screens/Home/Home';
 
+//Solicitar acessos a galeria
+import * as MediaLibrary from "expo-media-library"
+import * as ImagePicker from "expo-image-picker"
+import { useEffect } from 'react';
+import { Camera } from 'expo-camera';
+import { requestForegroundPermissionsAsync } from 'expo-location';
+
+
 const Stack = createNativeStackNavigator();
 
 export default function App() {

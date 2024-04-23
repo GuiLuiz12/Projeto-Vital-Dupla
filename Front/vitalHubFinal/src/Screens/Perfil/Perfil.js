@@ -6,11 +6,18 @@ import { TitleComponent } from "../../Components/TitleComponent/TitleComponent";
 import { InputCinza, InputCinzaMenor } from "../../Components/InputCinza/Style";
 import { Button, ButtonCinzaPequeno } from "../../Components/Button/Style";
 import { ButtonTitle } from "../../Components/ButtonTitle/Style";
-import { ScrollView } from "react-native";
+import { ScrollView, View } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useEffect, useState } from "react";
 import { userDecodeToken } from "../../Utils/Auth";
 import api from "../../Service/Service";
+import { MaterialCommunityIcons } from "@expo/vector-icons"
+import { ButtonCamera } from "./Style";
+import CameraProntuario from "../../Components/Camera/Camera";
+import * as MediaLibrary from "expo-media-library"
+import * as ImagePicker from "expo-image-picker"
+import { Camera } from 'expo-camera';
+import { requestForegroundPermissionsAsync } from 'expo-location';
 
 export const Perfil = ({ navigation, route }) => {
     const [token, setToken] = useState({})
@@ -70,9 +77,38 @@ export const Perfil = ({ navigation, route }) => {
         //console.log(response.data);
     }
 
+    async function requestGaleria(){
+        await MediaLibrary.requestPermissionsAsync();
+      
+        await ImagePicker.requestMediaLibraryPermissionsAsync();
+      }
+      
+      async function requestCamera(){
+        await Camera.requestCameraPermissionsAsync();
+      }
+      
+      async function requestLocation(){
+        await requestForegroundPermissionsAsync();
+      }
+      
+    //   useEffect(() => {
+    //     requestLocation();
+      
+    //     requestCamera();
+      
+    //     requestGaleria();
+    //   })
+      
+
 
 
     useEffect(() => {
+        requestLocation();
+      
+        requestCamera();
+      
+        requestGaleria();
+
         ProfileLoad()
         //console.log(token.role == "Medico");
     }, [])
@@ -94,9 +130,16 @@ export const Perfil = ({ navigation, route }) => {
                     <Container>
 
 
-                        <FotoPerfil
-                            source={require('../../Assets/Images/Richard.png')}
-                        />
+                        <ContainerLocal>
+
+                            <FotoPerfil
+                                source={require('../../Assets/Images/Richard.png')}
+                            />
+                            <ButtonCamera onPress={() => CameraProntuario()}>
+                                <MaterialCommunityIcons name="camera-plus" size={20} color="#fbfbfb"/>
+                            </ButtonCamera>
+                        </ContainerLocal>
+
 
                         <SubTitle>{token.email}</SubTitle>
 
@@ -147,7 +190,7 @@ export const Perfil = ({ navigation, route }) => {
 
                             <ContainerLocal>
                                 <TitleComponent>Número</TitleComponent>
-                                <InputCinzaMenor placeholder={`${buscarId.endereco.numero}`}/>
+                                <InputCinzaMenor placeholder={`${buscarId.endereco.numero}`} />
                             </ContainerLocal>
                         </ContainerRow>
 
