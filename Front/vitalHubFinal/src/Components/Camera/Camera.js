@@ -11,6 +11,7 @@ export default function CameraProntuario({navigation}) {
     const [photo, setPhoto] = useState(null)
     const [openModal, setOpenModal] = useState(false)
     const [tipoCamera, setTipoCamera] = useState(CameraType.back)
+    const [lastPhoto, setLastPhoto] = useState(null)
 
     useEffect(() => {
         (async () => {
