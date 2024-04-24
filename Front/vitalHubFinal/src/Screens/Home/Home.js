@@ -18,7 +18,10 @@ import { IconModal, ImagemBotao, ViewIcon } from '../../Components/Button/Style'
 import { AgendarModal } from "../../Components/AgendarModal/AgendarModal";
 import api from '../../Service/Service';
 
-export const Home = ({ navigation }) => {
+export const Home = ({ navigation, route }) => {
+
+    const routeParams = route.params
+
     const [token, setToken] = useState({})
     const [showModalAgendar, setShowModalAgendar] = useState(false);
     const [showModalLocal, setShowModalLocal] = useState(false);

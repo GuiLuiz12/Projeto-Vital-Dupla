@@ -27,7 +27,7 @@ export const RedefinirSenha = ({navigation, route}) => {
     async function AlterarSenha(){
         if (senha === confirmar) {
             
-            await api.post(`/Usuario/AlterarSenha?email=${route.params.emailRecuperacao}`, {
+            await api.put(`/Usuario/AlterarSenha?email=${route.params.emailRecuperacao}`, {
                 senhaNova : senha
             }).then(() => {
                 navigation.replace("Login")

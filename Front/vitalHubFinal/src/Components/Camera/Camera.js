@@ -4,8 +4,9 @@ import { Camera, CameraType } from 'expo-camera';
 import { useEffect, useState, useRef } from 'react';
 import { FontAwesome } from '@expo/vector-icons'
 import * as MediaLibrary from 'expo-media-library'
+import * as ImagePicker from 'expo-image-picker'
 
-export default function CameraProntuario({navigation}) {
+export default function CameraProntuario({route, navigation}) {
 
     const cameraRef = useRef(null)
     const [photo, setPhoto] = useState(null)
@@ -30,6 +31,8 @@ export default function CameraProntuario({navigation}) {
             setOpenModal(true)
         }
     }
+
+    //navigation.replace("Home", {uriPhoto : uri, screen : "Perfil"})
     
     async function UploadPhoto() {
         setOpenModal(false)

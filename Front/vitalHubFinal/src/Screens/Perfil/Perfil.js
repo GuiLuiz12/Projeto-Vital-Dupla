@@ -59,7 +59,7 @@ export const Perfil = ({ navigation, route }) => {
 
     async function ProfileLoad() {
         const tokenDecode = await userDecodeToken();
-        console.log(tokenDecode);
+        //console.log(tokenDecode);
 
         if (tokenDecode) {
             BuscarUsuario(tokenDecode)
@@ -90,6 +90,27 @@ export const Perfil = ({ navigation, route }) => {
       async function requestLocation(){
         await requestForegroundPermissionsAsync();
       }
+
+
+    async function AlterarFotoPerfil(){
+
+        const formData = new FormData();
+        formData.append("Arquivo", {
+            uri : uriCameraCapture,
+            name : `image.${ uriCameraCapture.split(".")[1] }`,
+            type : `image/${ uriCameraCapture.split(".")[1] }`
+        })
+
+        await api.put(`/Usuario/AlterarFotoPerfil?id=${profile.user}`, formData, {
+            headers: {
+                "Content-Type" : ""
+            }
+        }).then(response => {
+            console.log(response);
+        }).catch(error => {
+            console.log(error);
+        })
+    }
       
     //   useEffect(() => {
     //     requestLocation();
@@ -110,8 +131,16 @@ export const Perfil = ({ navigation, route }) => {
         requestGaleria();
 
         ProfileLoad()
+
+        console.log(route);
         //console.log(token.role == "Medico");
-    }, [])
+    }, [route.params])
+
+    useEffect(() => {
+        if (uriCameraCapture != null) {
+            AlterarFotoPerfil()
+        }
+    }, [uriCameraCapture])
 
     // useEffect(() => {
 
