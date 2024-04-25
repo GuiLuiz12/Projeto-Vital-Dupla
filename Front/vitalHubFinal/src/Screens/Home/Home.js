@@ -28,6 +28,7 @@ export const Home = ({ navigation }) => {
     const [showModalAppointment, setShowModalAppointment] = useState(false);
     const [statusLista, setStatusLista] = useState("pendente")
     const [consultaSelecionada, setConsultaSelecionada] = useState(null)
+    const [situacaoConsultaAlterada, setSituacaoConsultaAlterada] = useState("")
 
     //define padrão pt-br para calendário
     moment.updateLocale("pt-br", {
@@ -79,16 +80,17 @@ export const Home = ({ navigation }) => {
         setListaConsultas(response.data)
     }
 
-    function MostrarModal( modal, consulta) {
+    function MostrarModal(modal, consulta) {
         setConsultaSelecionada(consulta)
 
-        if(modal == 'cancelar'){
+        if (modal == 'cancelar') {
             setShowModalCancel(true)
-        }else if (modal == 'prontuario') {
+            setSituacaoConsultaAlterada(consulta.situacaoId)
+        } else if (modal == 'prontuario') {
             setShowModalAppointment(true)
-        }else if (modal == 'local'){
+        } else if (modal == 'local') {
             setShowModalLocal(true)
-        }else{
+        } else {
             setShowModalAgendar(true)
         }
     }
@@ -97,7 +99,8 @@ export const Home = ({ navigation }) => {
         ProfileLoad();
 
         ListarPacientes();
-    }, [dateConsulta])
+        console.log();
+    }, [dateConsulta, situacaoConsultaAlterada])
 
     return (
         <Container>
@@ -190,7 +193,7 @@ export const Home = ({ navigation }) => {
                                 onPressAppointment={() => MostrarModal('prontuario', item)}
                                 prioridade={item.prioridade.prioridade}
                                 nome={item.paciente.idNavigation.nome}
-                                idade={"22 anos"}
+                                idade={"22"}
                             />
                         )
                     }
@@ -225,25 +228,33 @@ export const Home = ({ navigation }) => {
             <CancelationModal
                 visible={showModalCancel}
                 setShowModalCancel={setShowModalCancel}
+                consultaCancelar={consultaSelecionada}
+                setSituacaoConsultaAlterada={setSituacaoConsultaAlterada}
             />
 
             {/* modal prontuario */}
             <ProntuarioModal
                 visible={showModalAppointment}
                 setShowModalAppointment={setShowModalAppointment}
-                consulta={ consultaSelecionada }
+                consulta={consultaSelecionada}
                 roleUsuario={token.role}
                 navigation={navigation}
             />
 
-            <LocalModal
-                visible={showModalLocal}
-                setShowModalLocal={setShowModalLocal}
-                roleUsuario={token.role}
-                navigation={navigation}
-                consulta={consultaSelecionada}
-            />
-            
+            {token.role === 'Médico' ?
+                <>
+                </>
+                :
+                <LocalModal
+                    visible={showModalLocal}
+                    setShowModalLocal={setShowModalLocal}
+                    roleUsuario={token.role}
+                    navigation={navigation}
+                    consulta={consultaSelecionada}
+                />
+            }
+
+
             {token.role === "Medico" ?
                 <></>
                 :
