@@ -12,6 +12,7 @@ import { useEffect, useState } from "react";
 import { userDecodeToken } from "../../Utils/Auth";
 import api from "../../Service/Service";
 import { invalid } from "moment";
+import { faPersonWalkingDashedLineArrowRight } from "@fortawesome/free-solid-svg-icons";
 
 export const Perfil = ({ navigation, route }) => {
     const [token, setToken] = useState({})
@@ -51,22 +52,40 @@ export const Perfil = ({ navigation, route }) => {
 
     async function SalvarFunction() {
         setAttUser(baseUser)
-        await api.put(`/Pacientes?idUsuario=${token.jti}`, {
-            rg: attUser.rg,
-            cpf: attUser.cpf,
-            dataNascimento: attUser.dataNascimento,
-            cep: attUser.cep,
-            logradouro: attUser.logradouro,
-            numero: attUser.numero,
-            cidade: attUser.cidade,
-        }).catch((error) => {
-            console.log(error);
-        })
-
+        const response = await api.get(`/Especialidade/BuscarPorNome?esp=${attUser.especialidade.especialidade1}`)
+        await setAttUser({...attUser, especialidade: {id:response.data.id ,especialidade1: attUser.especialidade.especialidade1 }})
+        
+        if (token.role == "Médico") {
+            await api.put("/Medicos", {
+                id: token.jti,
+                dataNascimento: attUser.dataNascimento,
+                cep: attUser.cep,
+                logradouro: attUser.logradouro,
+                numero: attUser.numero,
+                cidade: attUser.cidade,
+                crm: attUser.crm,
+                especialidade: attUser.especialidade.id
+            }).catch((error)=> {
+                console.log(error);
+            })
+        }
+        else{
+            await api.put(`/Pacientes?idUsuario=${token.jti}`, {
+            
+                rg: attUser.rg,
+                cpf: attUser.cpf,
+                dataNascimento: attUser.dataNascimento,
+                cep: attUser.cep,
+                logradouro: attUser.logradouro,
+                numero: attUser.numero,
+                cidade: attUser.cidade,
+            }).catch((error) => {
+                console.log(error);
+            })    
+        }
         setEditing(false)
         setOqueFazer(false)
         setDesativarNavigation(false)
-        navigation.navigate("Main")
     }
 
     function CancelFunction() {
@@ -101,7 +120,7 @@ export const Perfil = ({ navigation, route }) => {
                                     value={baseUser.especialidade.especialidade1}
                                     editable={editing}
                                     onChangeText={(txt) => {
-                                        setBaseUser({ ...baseUser, especialidade: txt })
+                                        setBaseUser({ ...baseUser, especialidade: {id: baseUser.especialidade.id, especialidade1:txt} })
                                     }}
                                     autoComplete={"off"}
                                 />
