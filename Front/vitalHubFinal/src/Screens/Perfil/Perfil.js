@@ -21,7 +21,8 @@ import { requestForegroundPermissionsAsync } from 'expo-location';
 
 export const Perfil = ({ navigation, route }) => {
     const [token, setToken] = useState({})
-    const [buscarId, setBuscarId] = useState(null)
+    const [buscarId, setBuscarId] = useState(null);
+    const [uriCameraCapture, setUriCameraCapture] = useState(null)
 
     // async function BuscarUsuario(token) {
     //     await api.get(`/${url}/BuscarPorId?id=${tokenUsuario.jti}`)
@@ -93,20 +94,25 @@ export const Perfil = ({ navigation, route }) => {
 
 
     async function AlterarFotoPerfil(){
-
+        console.log(route.params.photo);1
         const formData = new FormData();
         formData.append("Arquivo", {
-            uri : uriCameraCapture,
-            name : `image.${ uriCameraCapture.split(".")[1] }`,
-            type : `image/${ uriCameraCapture.split(".")[1] }`
+            uri : route.params,
+            name : `image.${(route.params).split(".")[1] }`,
+            type : `image/${(route.params).split(".")[1] }`
         })
 
-        await api.put(`/Usuario/AlterarFotoPerfil?id=${profile.user}`, formData, {
+        await api.put(`/Usuario/AlterarFotoPerfil?id=${buscarId.id}`, formData, {
             headers: {
-                "Content-Type" : ""
+                "Content-Type" : "multipart/form-data"
             }
-        }).then(response => {
-            console.log(response);
+        }).then(async() => {
+
+            await setBuscarId({
+                ...buscarId,
+                foto: route.params.photo
+            })
+            
         }).catch(error => {
             console.log(error);
         })
@@ -131,25 +137,10 @@ export const Perfil = ({ navigation, route }) => {
         requestGaleria();
 
         ProfileLoad()
-
-        console.log(route);
-        //console.log(token.role == "Medico");
-    }, [route.params])
-
-    useEffect(() => {
-        if (uriCameraCapture != null) {
+        if (route.params != null) {
             AlterarFotoPerfil()
         }
-    }, [uriCameraCapture])
-
-    // useEffect(() => {
-
-    //     console.log(buscarId);
-    // }, [])
-
-    // useEffect(() => {
-    //     BuscarUsuario();
-    // }, [])
+    }, [route.params])
 
     return (
 
@@ -162,9 +153,9 @@ export const Perfil = ({ navigation, route }) => {
                         <ContainerLocal>
 
                             <FotoPerfil
-                                source={require('../../Assets/Images/Richard.png')}
+                                source={{uri : buscarId.idNavigation.foto}}
                             />
-                            <ButtonCamera onPress={() => CameraProntuario()}>
+                            <ButtonCamera onPress={() => navigation.navigate("CameraProntuario", { screen : "Perfil" })}>
                                 <MaterialCommunityIcons name="camera-plus" size={20} color="#fbfbfb"/>
                             </ButtonCamera>
                         </ContainerLocal>

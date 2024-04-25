@@ -23,6 +23,8 @@ export const ProntuarioPronto = ({ navigation, route }) => {
 
     const [savePhoto, setSavePhoto] = useState(null)
 
+    const [descricaoExame, setDescricaoExame] = useState(null)
+
     const [showCamera, setShowCamera] = useState(false);
 
     const Voltar = () => {
@@ -49,14 +51,34 @@ export const ProntuarioPronto = ({ navigation, route }) => {
         const response = await api.get(`http://172.16.39.103:4466/api/Consultas?idPaciente=F1EC6D56-4F7C-4EEA-AAB4-763AF058000F`)
         setBuscarId(response.data)
         console.log("oi");
-        console.log(response.data);
+        //console.log(response.data);
     }
     async function BuscarEspecialidade(tokenEspecialidade) {
         const url = (tokenUsuario.role == 'Medico' ? 'Medicos' : "Pacientes")
         const response2 = await api.get(`/${url}/Medicos/BuscarPorId?id=${tokenEspecialidade.jti}`)
         setEspecialidade(response2.data)
         // console.log("oi");
-        console.log(response2.data);
+        //console.log(response2.data);
+    }
+
+    async function InserirExame() {
+        const formData = new FormData();
+        formData.append("consultaId", prontuario.id)
+        formData.append("Imagem", {
+            uri: route.params,
+            name: `image.${route.params.split('.').pop()}`,
+            type: `image/${route.params.split('.').pop()}`
+        });
+
+        await api.post(`/Exame/Cadastrar`, formData, {
+            headers : {
+                "Content-Type" : "multipart/form-data"
+            }
+        }).then(response => {
+            setDescricaoExame(descricaoExame + "/n" + response.data.descricao)
+        }).catch(error => {
+            console.log(error);
+        })
     }
 
     // async function BuscarUsuario(tokenUsuario) {
@@ -79,13 +101,18 @@ export const ProntuarioPronto = ({ navigation, route }) => {
     // }, [route])
 
     useEffect(() => {
+
+        if (route.params) {
+            InserirExame();
+        }
+
         ProfileLoad()
         // BuscarEspecialidade()
         // BuscarProntuario()
         // BuscarUsuario()
         // console.log(token.role == "Medico");
         // console.log(buscarId);
-    }, [])
+    }, [route.params])
 
 
     return (
