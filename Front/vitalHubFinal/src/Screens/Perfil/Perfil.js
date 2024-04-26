@@ -22,40 +22,11 @@ import { requestForegroundPermissionsAsync } from 'expo-location';
 export const Perfil = ({ navigation, route }) => {
     const [token, setToken] = useState({})
     const [buscarId, setBuscarId] = useState(null);
-    const [uriCameraCapture, setUriCameraCapture] = useState(null)
-
-    // async function BuscarUsuario(token) {
-    //     await api.get(`/${url}/BuscarPorId?id=${tokenUsuario.jti}`)
-    //     .then(response => {
-    //         const responseData = response.data;
-
-    //         let resultados = null;
-    //         if (token.role === "Medico") {
-    //             resultados = {
-    //                 ...token,
-    //                 ...responseData.endereco,
-    //                 ...responseData.especialidade,
-    //                 crm : responseData.crm
-    //             };
-    //             console.log(resultados);
-    //         } else{
-    //             resultados = {
-    //                 ...token,
-    //                 ...responseData.endereco,
-    //                 cpf: responseData.cpf,
-    //                 dataNascimento: responseData.dataNascimento
-    //             };
-    //         }
-    //         setStatusEdicao({
-    //             ...paciente.idNavigation,
-    //             ...medicoClinicas.medico.IdNavigation
-    //         })
-    //     })
-    // }
-
+    const [photo, setPhoto] = useState(null)
+    
     async function Logout() {
-        await AsyncStorage.removeItem("token")
-        navigation.navigate("Login")
+        await AsyncStorage.removeItem("token");
+        navigation.navigate("Login");
     }
 
     async function ProfileLoad() {
@@ -63,84 +34,78 @@ export const Perfil = ({ navigation, route }) => {
         //console.log(tokenDecode);
 
         if (tokenDecode) {
-            BuscarUsuario(tokenDecode)
+            setToken(tokenDecode);
 
-            setToken(tokenDecode)
+            BuscarUsuario(tokenDecode);
         }
     }
 
-    async function BuscarUsuario(tokenUsuario) {
-        const url = (tokenUsuario.role == 'Medico' ? 'Medicos' : "Pacientes")
-        //console.log(tokenUsuario.role);
+    async function BuscarUsuario(token) {
+        console.log("bucou");
+        try{
+            const url = (token.role == 'Medico' ? 'Medicos' : "Pacientes");
 
-        const response = await api.get(`/${url}/BuscarPorId?id=${tokenUsuario.jti}`)
-        setBuscarId(response.data)
-        //console.log(response.data);
+            const response = await api.get(`/${url}/BuscarPorId?id=${token.jti}`);
+
+            setBuscarId(response.data);
+
+            setPhoto(response.data.idNavigation.foto);
+
+        }catch ( error ){
+            console.log(error.message);
+        }
     }
 
     async function requestGaleria(){
         await MediaLibrary.requestPermissionsAsync();
       
         await ImagePicker.requestMediaLibraryPermissionsAsync();
-      }
+    }
       
-      async function requestCamera(){
+    async function requestCamera(){
         await Camera.requestCameraPermissionsAsync();
-      }
+    }
       
-      async function requestLocation(){
+    async function requestLocation(){
         await requestForegroundPermissionsAsync();
-      }
-
+    }
 
     async function AlterarFotoPerfil(){
-        console.log(route.params.photo);1
         const formData = new FormData();
         formData.append("Arquivo", {
-            uri : route.params,
-            name : `image.${(route.params).split(".")[1] }`,
-            type : `image/${(route.params).split(".")[1] }`
-        })
+            uri : route.params.photoUri,
+            name : `image.${route.params.photoUri.split(".")[1] }`,
+            type : `image/${route.params.photoUri.split(".")[1] }`
+        });
 
         await api.put(`/Usuario/AlterarFotoPerfil?id=${buscarId.id}`, formData, {
             headers: {
                 "Content-Type" : "multipart/form-data"
             }
-        }).then(async() => {
 
-            await setBuscarId({
-                ...buscarId,
-                foto: route.params.photo
-            })
-            
+        }).then(() => {
+            setPhoto(route.params.photoUri)
+
         }).catch(error => {
             console.log(error);
         })
     }
-      
-    //   useEffect(() => {
-    //     requestLocation();
-      
-    //     requestCamera();
-      
-    //     requestGaleria();
-    //   })
-      
-
-
 
     useEffect(() => {
-        requestLocation();
+        // requestLocation();
       
-        requestCamera();
+        // requestCamera();
       
-        requestGaleria();
+        // requestGaleria();
 
-        ProfileLoad()
-        if (route.params != null) {
+        ProfileLoad();
+    }, [route]);
+      
+    useEffect(() => {
+        if (route.params != null && buscarId) {
             AlterarFotoPerfil()
         }
-    }, [route.params])
+    }, [route, buscarId])
 
     return (
 
@@ -153,7 +118,7 @@ export const Perfil = ({ navigation, route }) => {
                         <ContainerLocal>
 
                             <FotoPerfil
-                                source={{uri : buscarId.idNavigation.foto}}
+                                source={{uri : photo}}
                             />
                             <ButtonCamera onPress={() => navigation.navigate("CameraProntuario", { screen : "Perfil" })}>
                                 <MaterialCommunityIcons name="camera-plus" size={20} color="#fbfbfb"/>

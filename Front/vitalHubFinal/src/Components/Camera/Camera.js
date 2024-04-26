@@ -4,7 +4,6 @@ import { Camera, CameraType } from 'expo-camera';
 import { useEffect, useState, useRef } from 'react';
 import { FontAwesome } from '@expo/vector-icons'
 import * as MediaLibrary from 'expo-media-library'
-import * as ImagePicker from 'expo-image-picker'
 
 export default function CameraProntuario({ route, navigation }) {
 
@@ -12,11 +11,14 @@ export default function CameraProntuario({ route, navigation }) {
     const [photo, setPhoto] = useState(null)
     const [openModal, setOpenModal] = useState(false)
     const [tipoCamera, setTipoCamera] = useState(CameraType.back)
-    const [lastPhoto, setLastPhoto] = useState(null)
+    const [cameraAvaliable, setCameraAvaliable] = useState(null)
 
     useEffect(() => {
         (async () => {
             const { status: cameraStatus } = await Camera.requestCameraPermissionsAsync()
+            if (cameraStatus === 'granted') {
+                setCameraAvaliable(true)
+            }
 
             const { status: mediaStatus } = await MediaLibrary.requestPermissionsAsync()
         })();
@@ -38,15 +40,14 @@ export default function CameraProntuario({ route, navigation }) {
         setOpenModal(false)
 
         if (route.params.screen == "Perfil") {
-            await navigation.navigate('Perfil', { photo: photo });
+            await navigation.navigate('Perfil', { photoUri: photo });
 
         } else {
-            await navigation.navigate('ProntuarioPronto', { photo: photo });
+            console.log('prontootario')
+            await navigation.navigate('ProntuarioPronto', { photoUri: photo });
 
         }
     }
-
-
 
     function ClearPhoto() {
         setPhoto(null)

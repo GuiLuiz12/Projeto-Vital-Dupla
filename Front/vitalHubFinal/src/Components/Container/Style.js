@@ -22,7 +22,7 @@ export const ContainerLeftPaddingLeft = styled(ContainerLeft)`
 export const ContainerRow = styled.View`
     flex-direction: row;
     gap: 10px;
-    width: 172px;
+    width: 90%;
     align-items: center;
 `
 
