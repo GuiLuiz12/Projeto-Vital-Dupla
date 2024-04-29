@@ -15,10 +15,37 @@ import { ContentAccount, TextAccountLink } from "../../Components/ContentAccount
 import { ConfirmarModal } from "../../Components/ConfirmarModal/ConfirmarModal";
 import { useNavigation } from "@react-navigation/native";
 import { SelecionarMedico } from "../SelecionarMedico/SelecionarMedico";
+import moment from "moment";
 
-export const SelecionarData = ({navigation}) => {
-
+export const SelecionarData = ({ navigation, route }) => {
+    const [agendamento, setAgendamento] = useState(null)
+    const [dataSelecionada, setDataSelecionada] = useState("")
+    const [horaSelecionada, setHoraSelecionada] = useState("")
     const [showModalConfirm, setShowModalConfirm] = useState(false);
+
+    const dataAtual = moment().format('YYYY-MM-DD')
+    const [arrayOptions, setArrayOptions] = useState(null)
+
+    async function loadOptions() {
+        //captura qntd de horas restantes do meu dia
+        const horasRestantes = moment(dataAtual).add(24, 'hours').diff(moment(), 'hours')
+
+        //Criar laço que rode a qntd de horas
+        const options = Array.from({ length: horasRestantes }, (_, index) => {
+            let valor = new Date().getHours() + (index + 1)
+
+            return {
+                label: `${valor}:00`, value: valor
+            }
+        })
+
+        setArrayOptions(options)
+    }
+
+    useEffect(() => {
+        loadOptions()
+    }, [])
+
 
     const handleOpenModal = () => {
         setShowModalConfirm(true);
@@ -27,8 +54,6 @@ export const SelecionarData = ({navigation}) => {
     const handleCloseModal = () => {
         setShowModalConfirm(false);
     };
-
-    const [selected, setSelected] = useState("");
 
     const currentDate = new Date();
     const startingDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate());
@@ -56,98 +81,103 @@ export const SelecionarData = ({navigation}) => {
     };
     LocaleConfig.defaultLocale = "pt-br";
 
+    useEffect(() => {
+        console.log(dataSelecionada);
+    }, [dataSelecionada])
+
     return (
         <Container>
-            <ContainerSpace>
+            {arrayOptions ? (
+
+                <ContainerSpace>
 
 
-                <Title>Selecionar data</Title>
+                    <Title>Selecionar data</Title>
 
-                <Calendar
-                    style={{
-                        width: 360,
-                        alignSelf: 'center',
-                        backgroundColor: '#FAFAFA'
-                    }}
-
-                    onDayPress={(day) => {
-                        setSelected(day.dateString);
-                    }}
-                    markedDates={{
-                        [selected]: {
-                            selected: true,
-                            disableTouchEvent: true
-                        },
-                    }}
-
-                    minDate={startingDate}
-
-                    theme={{
-                        calendarBackground: '#FAFAFA',
-                        arrowColor: '#49B3BA',
-                        textDisabledColor: '#C6C5CE',
-                        todayTextColor: '#5F5C6B',
-                        selectedDayTextColor: '#FAFAFA',
-                        selectedDayBackgroundColor: '#60BFC5',
-
-                        textDayFontSize: 16,
-                        textMonthFontSize: 20,
-                        textDayHeaderFontSize: 12,
-
-                        textDayStyle: { "color": '#5F5C6B' },
-
-                        textDayFontFamily: "Quicksand_600SemiBold",
-                        textDayHeaderFontFamily: "Quicksand_600SemiBold",
-                        textMonthFontFamily: "MontserratAlternates_600SemiBold",
-                    }}
-                />
-
-                <SubTitleData>Selecione um horário disponível</SubTitleData>
-
-                <View style={{ width: 316 }}>
-                    <RNPickerSelect
-                        style={style}
-                        Icon={() => {
-                            return <FontAwesomeIcon icon={faCaretDown} color='#34898F' size={22} />
+                    <Calendar
+                        style={{
+                            width: 360,
+                            alignSelf: 'center',
+                            backgroundColor: '#FAFAFA'
                         }}
-                        placeholder={{
-                            label: 'Selecione um horário disponível',
-                            value: null,
-                            color: '#34898F'
+
+                        onDayPress={(day) => {
+                            setDataSelecionada(day.dateString);
                         }}
-                        onValueChange={(value) => console.log(value)}
-                        items={[
-                            { label: "10:00", value: "10:00" },
-                            { label: "11:00", value: "11:00" },
-                            { label: "12:00", value: "12:00" },
-                            { label: "13:00", value: "13:00" },
-                            { label: "14:00", value: "14:00" },
-                            { label: "15:00", value: "15:00" },
-                            { label: "16:00", value: "16:00" },
-                            { label: "17:00", value: "17:00" },
-                            { label: "18:00", value: "18:00" },
-                            { label: "19:00", value: "19:00" },
-                        ]}
+
+                        markedDates={{
+                            [dataSelecionada]: {
+                                selected: true,
+                                disableTouchEvent: true
+                            },
+                        }}
+
+                        minDate={startingDate}
+
+                        theme={{
+                            calendarBackground: '#FAFAFA',
+                            arrowColor: '#49B3BA',
+                            textDisabledColor: '#C6C5CE',
+                            todayTextColor: '#5F5C6B',
+                            selectedDayTextColor: '#FAFAFA',
+                            selectedDayBackgroundColor: '#60BFC5',
+
+                            textDayFontSize: 16,
+                            textMonthFontSize: 20,
+                            textDayHeaderFontSize: 12,
+
+                            textDayStyle: { "color": '#5F5C6B' },
+
+                            textDayFontFamily: "Quicksand_600SemiBold",
+                            textDayHeaderFontFamily: "Quicksand_600SemiBold",
+                            textMonthFontFamily: "MontserratAlternates_600SemiBold",
+                        }}
                     />
-                </View>
 
-                <Button>
-                    <TouchableOpacity onPress={handleOpenModal}>
-                        <ButtonTitle>Confirmar</ButtonTitle>
-                    </TouchableOpacity>
-                    <ConfirmarModal
-                        visible={showModalConfirm}
-                        setShowModalConfirm={setShowModalConfirm}
-                        onClose={handleCloseModal}
-                    />
-                </Button>
+                    <SubTitleData>Selecione um horário disponível</SubTitleData>
 
-                <ContentAccount onPress={Voltar}>
-                    <TextAccountLink>Cancelar</TextAccountLink>
-                </ContentAccount>
+                    <View style={{ width: '90%', border: 2, borderColor: '#34898F' }}>
+                        <RNPickerSelect
+                            style={style}
+                            Icon={() => {
+                                return <FontAwesomeIcon icon={faCaretDown} color='#34898F' size={22} />
+                            }}
+                            placeholder={{
+                                label: 'Selecione um horário disponível',
+                                value: null,
+                                color: '#34898F'
+                            }}
+                            onValueChange={(value) => {setHoraSelecionada(value)}}
+                            items={arrayOptions}
+                        />
+                    </View>
 
-            </ContainerSpace>
+                    <Button>
+                        <TouchableOpacity onPress={handleOpenModal}>
+                            <ButtonTitle>Confirmar</ButtonTitle>
+                        </TouchableOpacity>
+                        <ConfirmarModal
+                            visible={showModalConfirm}
+                            setShowModalConfirm={setShowModalConfirm}
+                            onClose={handleCloseModal}
+                        />
+                    </Button>
+
+                    <ContentAccount onPress={Voltar}>
+                        <TextAccountLink>Cancelar</TextAccountLink>
+                    </ContentAccount>
+
+                </ContainerSpace>
+
+            )
+                :
+                (
+                    <>
+                    </>
+                )
+            }
         </Container>
+
     )
 }
 

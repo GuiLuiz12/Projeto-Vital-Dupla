@@ -266,6 +266,7 @@ export const Home = ({ navigation }) => {
                         </TouchableOpacity>
 
                         <AgendarModal
+                            navigation={navigation}
                             visible={showModalAgendar}
                             setShowModalAgendar={setShowModalAgendar}
                         />

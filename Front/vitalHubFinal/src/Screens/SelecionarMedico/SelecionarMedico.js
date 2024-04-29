@@ -1,28 +1,32 @@
 import { useEffect, useState } from "react"
 import { Button } from "../../Components/Button/Style"
 import { ButtonTitle } from "../../Components/ButtonTitle/Style"
-import { CardMedico, CardMedicoContent, ImagemCardMedico, TextCardMedico } from "../../Components/CardMedico/Style"
 import { Container, ContainerClinicas, ContainerSpace } from "../../Components/Container/Style"
 import { ContentAccount, TextAccountLink } from "../../Components/ContentAccount/Style"
-import { Title, TitleClinica } from "../../Components/Title/Style"
+import { Title } from "../../Components/Title/Style"
 import api from "../../Service/Service"
 import { ListComponent } from "../../Components/List/List"
 import { MedicComponent } from "../../Components/MedicComponent/MedicComponent"
 
-export const SelecionarMedico = ({ navigation }) => {
+export const SelecionarMedico = ({ navigation, route }) => {
     const [medicoLista, setMedicoLista] = useState([])
     const [selected, setSelected] = useState("")
 
 
     const Continuar = () => {
-        navigation.navigate("SelecionarData")
+        navigation.replace("SelecionarData", {
+            agendamento:{
+                ...route.params.agendamento,
+                ...selected
+            }
+        })
     }
     const Voltar = () => {
         navigation.navigate("SelecionarClinica")
     }
 
     async function ListarMedicos() {
-        await api.get("/Medicos")
+        await api.get(`/Medicos/BuscarPorIdClinica?id=${route.params.agendamento.clinicaId}`)
             .then(response => {
                 setMedicoLista(response.data)
             }).catch(error => {
@@ -34,6 +38,10 @@ export const SelecionarMedico = ({ navigation }) => {
         ListarMedicos();
     }, [])
 
+    useEffect(() => {
+        console.log(route);
+    }, [route])
+
     return (
         <Container>
             <ContainerSpace>
@@ -44,11 +52,15 @@ export const SelecionarMedico = ({ navigation }) => {
                     <ListComponent
                         data={medicoLista}
                         renderItem={({ item }) => <MedicComponent
-                            selected={item.idNavigation.nome === selected}
+                            selected={item.idNavigation.nome === selected.medicoLabel}
                             name={item.idNavigation.nome}
                             specify={item.especialidade.especialidade1}
                             onPress={() => {
-                                setSelected(item.idNavigation.nome)
+                                setSelected({
+                                    medicoClinicaId: item.id,
+                                    medicoLabel: item.idNavigation.nome,
+                                    medicoEspecialidade: item.especialidade.especialidade1
+                                })
                             }}
                         />}
                         keyExtractor={(item) => {

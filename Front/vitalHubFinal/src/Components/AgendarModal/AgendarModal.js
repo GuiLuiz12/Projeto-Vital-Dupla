@@ -1,7 +1,7 @@
 import { Modal } from "react-native"
 import { AppointmentModal, AppointmentModalView, ButtonConsulta, ButtonTextConsulta, SubTitleModal } from "./Style"
 import { Title } from "../Title/Style"
-import { FilterAppointment } from "../FilterAppointment/FilterAppointment"
+import { FilterAppointment, FilterAppointment2 } from "../FilterAppointment/FilterAppointment"
 import { ProntuarioInputMenor } from "../Input/Style"
 import { Button, ButtonSecondary } from "../Button/Style"
 import { ButtonSecondaryTitle, ButtonTitle } from "../ButtonTitle/Style"
@@ -10,22 +10,22 @@ import { useNavigation } from "@react-navigation/native"
 import { SelecionarClinica } from "../../Screens/SelecionarClinica/SelecionarClinica"
 import { useState } from "react"
 
+
 export const AgendarModal = ({
     navigation,
     visible = true,
     setShowModalAgendar,
     ...rest
 }) => {
-
-    const [tipoConsulta, setTipoConsulta] = useState('')
-
     const Navigation = useNavigation();
 
-    async function handleClose(){
-        await setShowModalAgendar(false)
-        console.log( tipoConsulta )
+    const [agendamento, setAgendamento] = useState(null)
+    const [selecionado, setSelecionado] = useState("")
 
-        Navigation.replace("SelecionarClinica", { cidade : tipoConsulta})
+    async function handleContinue() {
+        await setShowModalAgendar(false)
+
+        navigation.replace("SelecionarClinica", { agendamento: agendamento })
     }
 
     return (
@@ -44,39 +44,70 @@ export const AgendarModal = ({
                     <SubTitleModal>Qual o nível da consulta</SubTitleModal>
 
 
-                    <FilterAppointment>
-                        <ButtonConsulta>
-                            <ButtonTextConsulta>Rotina</ButtonTextConsulta>
+                    <FilterAppointment2>
+                        <ButtonConsulta clickButton={selecionado === "7D4FA0A2-B61C-4EC1-87F7-BC95B6D94575"} onPress={() => {
+                            setAgendamento({
+                                ...agendamento, //manter aas infos já passadas
+                                prioridadeId: "7D4FA0A2-B61C-4EC1-87F7-BC95B6D94575",
+                                prioridadeLabel: "Rotina"
+                            })
+                            setSelecionado("7D4FA0A2-B61C-4EC1-87F7-BC95B6D94575")
+                        }}>
+                            <ButtonTextConsulta clickButton={selecionado === "7D4FA0A2-B61C-4EC1-87F7-BC95B6D94575"}>
+                                Rotina
+                            </ButtonTextConsulta>
                         </ButtonConsulta>
-                        <ButtonConsulta>
-                            <ButtonTextConsulta>Exame</ButtonTextConsulta>
+
+                        <ButtonConsulta clickButton={selecionado === "F08A52E6-D46B-45A3-82B1-EA267CDA3BB2"} onPress={() => {
+                            setAgendamento({
+                                ...agendamento, //manter aas infos já passadas
+                                prioridadeId: "F08A52E6-D46B-45A3-82B1-EA267CDA3BB2",
+                                prioridadeLabel: "Exame"
+                            })
+                            setSelecionado("F08A52E6-D46B-45A3-82B1-EA267CDA3BB2")
+                        }}>
+                            <ButtonTextConsulta clickButton={selecionado === "F08A52E6-D46B-45A3-82B1-EA267CDA3BB2"}>
+                                Exame
+                            </ButtonTextConsulta>
                         </ButtonConsulta>
-                        <ButtonConsulta>
-                            <ButtonTextConsulta>Urgência</ButtonTextConsulta>
+
+                        <ButtonConsulta clickButton={selecionado === "DD6E0928-A55A-425C-B233-E2249EEA7421"} onPress={() => {
+                            setAgendamento({
+                                ...agendamento, //manter aas infos já passadas
+                                prioridadeId: "DD6E0928-A55A-425C-B233-E2249EEA7421",
+                                prioridadeLabel: "Urgência"
+                            })
+                            setSelecionado("DD6E0928-A55A-425C-B233-E2249EEA7421")
+                        }}>
+
+                            <ButtonTextConsulta clickButton={selecionado === "DD6E0928-A55A-425C-B233-E2249EEA7421"}>
+                                Urgência
+                            </ButtonTextConsulta>
                         </ButtonConsulta>
-                    </FilterAppointment>
+                    </FilterAppointment2>
 
                     <SubTitleModal>Informe a localização desejada</SubTitleModal>
 
                     <ProntuarioInputMenor
                         placeholder="Informe a localização"
 
-                        value={tipoConsulta}
-                        onChangeText={txt => setTipoConsulta(txt)}
+                        value={agendamento ? agendamento.localização : null}
+                        onChangeText={(txt) => setAgendamento({
+                            ...agendamento,
+                            localização: txt
+                        })}
                     />
 
-                    <Button onPress={() => handleClose()}>
+                    <Button onPress={() => handleContinue()}>
                         <ButtonTitle>Continuar</ButtonTitle>
                     </Button>
 
-                    <ButtonSecondary onPress={e => setShowModalAgendar(false)}>
+                    <ButtonSecondary onPress={() => setShowModalAgendar(false)}>
                         <ButtonSecondaryTitle>Cancelar</ButtonSecondaryTitle>
                     </ButtonSecondary>
 
                 </AppointmentModalView>
             </AppointmentModal>
-
-
         </Modal>
     )
 }

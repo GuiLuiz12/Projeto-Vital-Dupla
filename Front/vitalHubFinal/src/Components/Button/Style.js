@@ -45,7 +45,8 @@ export const ButtonModal = styled(Button)`
 export const ButtonSecondary = styled(Button)`
     background-color: transparent;
     border: none;
-    
+    margin-bottom: 15px;
+    margin-top: 30px;
 `
 export const ButtonCinza = styled(Button)`
     background-color: #ACABB7;

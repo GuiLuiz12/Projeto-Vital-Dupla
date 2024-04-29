@@ -8,7 +8,7 @@ export const MedicSpecify = styled.Text`
 `
 
 export const CardBoxColored = styled.View`
-    width: 90%;
+    width: 100%;
     height: 102px;
     background-color: #FFFFFF;
     flex-direction: row;

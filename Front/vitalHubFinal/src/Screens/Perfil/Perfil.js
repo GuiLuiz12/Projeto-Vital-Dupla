@@ -4,15 +4,14 @@ import { SubTitle } from "../../Components/SubTitle/Style";
 import { Title } from "../../Components/Title/Style";
 import { TitleComponent } from "../../Components/TitleComponent/TitleComponent";
 import { InputCinza, InputCinzaMenor } from "../../Components/InputCinza/Style";
-import { Button, ButtonCinzaPequeno, ButtonPerfil } from "../../Components/Button/Style";
+import { ButtonCinzaPequeno, ButtonPerfil } from "../../Components/Button/Style";
 import { ButtonTitle } from "../../Components/ButtonTitle/Style";
-import { Alert, ScrollView } from "react-native";
+import { ScrollView } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useEffect, useState } from "react";
 import { userDecodeToken } from "../../Utils/Auth";
 import api from "../../Service/Service";
 import { invalid } from "moment";
-import { faPersonWalkingDashedLineArrowRight } from "@fortawesome/free-solid-svg-icons";
 
 export const Perfil = ({ navigation, route }) => {
     const [token, setToken] = useState({})
@@ -21,6 +20,7 @@ export const Perfil = ({ navigation, route }) => {
     const [oqueFazer, setOqueFazer] = useState(false)
     const [baseUser, setBaseUser] = useState(null)
     const [attUser, setAttUser] = useState({})
+
 
     function EditarFunction() {
         setEditing(true)

@@ -5,6 +5,7 @@ export const Title = styled.Text`
     font-size: 20px;
     font-family: 'MontserratAlternates_600SemiBold';
     color: #33303E;
+    margin-top: 10px;
     /* text-shadow: 1px 2px 2px #33303E; */
 `
 
@@ -25,6 +26,8 @@ export const TitleData = styled(Title)`
 export const SubTitleData = styled(TitleProntuario)`
     font-size: 14px;
     color: #000000;
+    align-self: flex-start;
+    margin-left: 24px;
 `
 
 export const ModalSubTitle = styled(TitleProntuario)`

@@ -47,15 +47,17 @@ export const DiaSemanaText = styled.Text`
     font-family: "Quicksand_600SemiBold";
 `
 export const Card = styled.View`
+    background-color: white;
     width: 100%;
-    height: 84px;
-    /* elevation: 4; */
-    ${(props) => props.ClickButton ? 
-    css`
+    height: 90px;
+    justify-content: center;
+    elevation: 4;
+    ${(props) => props.ClickButton ?
+        css`
         border: 2px solid #496BBA;
     `
-    :
-    css`
+        :
+        css`
         border: 1px solid white;
     `
     }
