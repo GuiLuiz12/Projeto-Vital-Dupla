@@ -36,7 +36,7 @@ export const Perfil = ({ navigation, route }) => {
         if (tokenDecode) {
             setToken(tokenDecode);
 
-            BuscarUsuario(tokenDecode);
+            // BuscarUsuario(tokenDecode);
         }
     }
 

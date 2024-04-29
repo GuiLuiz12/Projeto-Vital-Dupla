@@ -13,13 +13,15 @@ import { ContentAccount, TextAccountLink } from "../../Components/ContentAccount
 import { useEffect, useState } from "react"
 import { Image } from "react-native"
 import { userDecodeToken } from "../../Utils/Auth"
+import api from "../../Service/Service"
 
 
 export const ProntuarioPronto = ({ navigation, route }) => {
 
     const [token, setToken] = useState({})
-    const [buscarId, setBuscarId] = useState(null)
+    const [buscarId, setBuscarId] = useState("")
     const [especialidade, setEspecialidade] = useState(null)
+    const [fotoPerfil, setFotoPerfil] = useState("")
 
     const [savePhoto, setSavePhoto] = useState(null)
 
@@ -37,22 +39,31 @@ export const ProntuarioPronto = ({ navigation, route }) => {
 
     async function ProfileLoad() {
         const tokenDecode = await userDecodeToken();
-        console.log(tokenDecode);
+        // console.log(tokenDecode);
 
         if (tokenDecode) {
-            BuscarProntuario(tokenDecode)
+            // BuscarProntuario(tokenDecode)
 
             setToken(tokenDecode)
         }
+    };
+
+    async function BuscarFoto(){
+        // const url = (token.role == 'Medico' ? 'Medicos' : "Pacientes")
+        const response = await api.get(`http://172.16.39.103:4466/api/Usuario/BuscarPorId?id=F1EC6D56-4F7C-4EEA-AAB4-763AF058000F`)
+        setFotoPerfil(response.data.foto)
+        // console.log(response.data.foto);
+        
     }
 
     async function BuscarProntuario() {
-        // const url = (tokenUsuario.role == 'Medico' ? 'Medicos' : "Pacientes")
-        const response = await api.get(`http://172.16.39.103:4466/api/Consultas?idPaciente=F1EC6D56-4F7C-4EEA-AAB4-763AF058000F`)
+        // const url = (tokenConsulta.role == 'Medico' ? 'Medicos' : "Pacientes")
+        const response = await api.get(`http://172.16.39.103:4466/api/Consultas/BuscarPorId?id=468D4040-4216-4B66-8A81-9F4FE6DA0744`)
         setBuscarId(response.data)
         console.log("oi");
-        //console.log(response.data);
+        console.log(buscarId);
     }
+
     async function BuscarEspecialidade(tokenEspecialidade) {
         const url = (tokenUsuario.role == 'Medico' ? 'Medicos' : "Pacientes")
         const response2 = await api.get(`/${url}/Medicos/BuscarPorId?id=${tokenEspecialidade.jti}`)
@@ -60,6 +71,7 @@ export const ProntuarioPronto = ({ navigation, route }) => {
         // console.log("oi");
         //console.log(response2.data);
     }
+
 
     async function InserirExame() {
         const formData = new FormData();
@@ -102,27 +114,27 @@ export const ProntuarioPronto = ({ navigation, route }) => {
 
     useEffect(() => {
 
-        if (route.params) {
-            InserirExame();
-        }
+        // if (route.params) {
+        //     InserirExame();
+        // }
 
         ProfileLoad()
+        BuscarFoto()
         // BuscarEspecialidade()
-        // BuscarProntuario()
+        BuscarProntuario()
         // BuscarUsuario()
         // console.log(token.role == "Medico");
         // console.log(buscarId);
     }, [route.params])
-
 
     return (
         <ScrollView>
 
             <Container>
                 <ContainerSpace>
-
+                    
                     <FotoPerfil
-                        source={require('../../Assets/Images/MaskGroup.png')}
+                        source={fotoPerfil.foto}
                     />
 
                     <Title>{token.name}</Title>
@@ -134,9 +146,7 @@ export const ProntuarioPronto = ({ navigation, route }) => {
                     <ContainerLeft>
                         <TitleProntuario>Descrição da consulta</TitleProntuario>
                         <CaixaProntuario>
-                            <TextCaixaProntuario>O paciente possui uma infecção no
-                                ouvido. Necessário repouso de 2 dias
-                                e acompanhamento médico constante</TextCaixaProntuario>
+                            <TextCaixaProntuario>{buscarId.descricao}</TextCaixaProntuario>
                         </CaixaProntuario>
                     </ContainerLeft>
 
@@ -144,17 +154,14 @@ export const ProntuarioPronto = ({ navigation, route }) => {
 
                         <TitleProntuario>Diagnóstico do paciente</TitleProntuario>
                         <CaixaProntuarioMenor>
-                            <TextCaixaProntuario>Infecção no ouvido</TextCaixaProntuario>
+                            <TextCaixaProntuario>{buscarId.diagnostico}</TextCaixaProntuario>
                         </CaixaProntuarioMenor>
                     </ContainerLeft>
                     <ContainerLeft>
 
                         <TitleProntuario>Prescrição médica</TitleProntuario>
                         <CaixaProntuario>
-                            <TextCaixaProntuario>Medicamento: Advil</TextCaixaProntuario>
-                            <TextCaixaProntuario>Dosagem: 50 mg</TextCaixaProntuario>
-                            <TextCaixaProntuario>Frequência: 3 vezes ao dia</TextCaixaProntuario>
-                            <TextCaixaProntuario>Duração: 3 dias</TextCaixaProntuario>
+                            <TextCaixaProntuario>{buscarId.receita.medicamento}</TextCaixaProntuario>
                         </CaixaProntuario>
                     </ContainerLeft>
 
