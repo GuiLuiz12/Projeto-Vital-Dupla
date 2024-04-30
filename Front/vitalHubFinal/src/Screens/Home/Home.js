@@ -229,7 +229,7 @@ export const Home = ({ navigation, route }) => {
                             <TouchableOpacity onPress={() => MostrarModal("local", item)}>
                                 <AppointmentCardDr
                                     situacao={item.situacao.situacao}
-                                    navigation={() => navigation.navigate("ProntuarioPronto")}
+                                    navigation={() => navigation.navigate("ProntuarioPronto", {idConsulta: item.id})}
                                     onPressLocal={() => MostrarModal('local', item)}
                                     onPressCancel={() => MostrarModal('cancelar', item)}
                                     profile={token.role}

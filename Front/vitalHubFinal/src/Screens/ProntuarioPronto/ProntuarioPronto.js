@@ -42,34 +42,48 @@ export const ProntuarioPronto = ({ navigation, route }) => {
         // console.log(tokenDecode);
 
         if (tokenDecode) {
-            // BuscarProntuario(tokenDecode)
-
             setToken(tokenDecode)
+            // BuscarProntuario(tokenDecode)
+            // console.log(tokenDecode);
+            // console.log(token);
         }
     };
 
     async function BuscarFoto(){
-        // const url = (token.role == 'Medico' ? 'Medicos' : "Pacientes")
-        const response = await api.get(`http://172.16.39.103:4466/api/Usuario/BuscarPorId?id=F1EC6D56-4F7C-4EEA-AAB4-763AF058000F`)
-        setFotoPerfil(response.data.foto)
-        // console.log(response.data.foto);
+        const formData = new FormData();
+        formData.append("Arquivo", {
+            uri : route.params.photoUri,
+            name : `image.${route.params.photoUri.split(".")[1] }`,
+            type : `image/${route.params.photoUri.split(".")[1] }`
+        });
+        
+        const response = await api.get(`/Usuario/BuscarPorId?id=${token.jti}`, formData, {
+            headers: {
+                "Content-Type" : "multipart/form-data"
+            }
+        }).then(() => {
+            setFotoPerfil(route.params.photoUri)
+
+        }).catch(error => {
+            console.log(error);
+        })
+        console.log(response.data.foto);
         
     }
 
     async function BuscarProntuario() {
-        // const url = (tokenConsulta.role == 'Medico' ? 'Medicos' : "Pacientes")
-        const response = await api.get(`http://172.16.39.103:4466/api/Consultas/BuscarPorId?id=468D4040-4216-4B66-8A81-9F4FE6DA0744`)
-        setBuscarId(response.data)
-        console.log("oi");
-        console.log(buscarId);
+        const response = await api.get(`/Consultas/BuscarPorId?id=${route.params.idConsulta}`)
+        
+        setBuscarId(response.data);
+        
     }
 
     async function BuscarEspecialidade(tokenEspecialidade) {
-        const url = (tokenUsuario.role == 'Medico' ? 'Medicos' : "Pacientes")
-        const response2 = await api.get(`/${url}/Medicos/BuscarPorId?id=${tokenEspecialidade.jti}`)
+        // const url = (tokenUsuario.role == 'Medico' ? 'Medicos' : "Pacientes")
+        const response2 = await api.get(`/Consultas/BuscarPorId?id=${route.params.idConsulta}`)
         setEspecialidade(response2.data)
-        // console.log("oi");
-        //console.log(response2.data);
+        console.log("oi");
+        console.log(response2.data);
     }
 
 
@@ -119,13 +133,14 @@ export const ProntuarioPronto = ({ navigation, route }) => {
         // }
 
         ProfileLoad()
-        BuscarFoto()
-        // BuscarEspecialidade()
+        // BuscarFoto()
+        BuscarEspecialidade()
         BuscarProntuario()
+        console.log(route.params);
         // BuscarUsuario()
         // console.log(token.role == "Medico");
         // console.log(buscarId);
-    }, [route.params])
+    }, [route])
 
     return (
         <ScrollView>
@@ -134,13 +149,13 @@ export const ProntuarioPronto = ({ navigation, route }) => {
                 <ContainerSpace>
                     
                     <FotoPerfil
-                        source={fotoPerfil.foto}
+                        // source={{uri : photoUri}}
                     />
 
                     <Title>{token.name}</Title>
                     <ContainerRow>
-                        {/* <TextAge>{buscarId.especialidade.especialidade1}</TextAge>
-                        <SubTitle>{buscarId.crm}</SubTitle> */}
+                        <TextAge>{especialidade.medicoClinica.medico.especialidade.especialidade1}</TextAge>
+                        <SubTitle>{especialidade.medicoClinica.medico.crm}</SubTitle>
                     </ContainerRow>
 
                     <ContainerLeft>
