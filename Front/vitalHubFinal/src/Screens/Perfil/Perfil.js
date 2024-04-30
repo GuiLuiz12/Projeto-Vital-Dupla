@@ -45,7 +45,7 @@ export const Perfil = ({ navigation, route }) => {
         const url = (token.role == 'Médico' ? 'Medicos' : "Pacientes")
 
         const response = await api.get(`/${url}/BuscarPorId?id=${token.jti}`)
-            .catch((error) => { console.log(error); console.log("error"); })
+            .catch((error) => { console.log(error);})
 
         setBaseUser(response.data)
     }

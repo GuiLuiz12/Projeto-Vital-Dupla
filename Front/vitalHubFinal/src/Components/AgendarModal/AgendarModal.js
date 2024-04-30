@@ -91,10 +91,10 @@ export const AgendarModal = ({
                     <ProntuarioInputMenor
                         placeholder="Informe a localização"
 
-                        value={agendamento ? agendamento.localização : null}
+                        value={agendamento ? agendamento.localizacao : null}
                         onChangeText={(txt) => setAgendamento({
                             ...agendamento,
-                            localização: txt
+                            localizacao: txt
                         })}
                     />
 

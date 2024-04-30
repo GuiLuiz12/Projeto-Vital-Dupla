@@ -21,7 +21,7 @@ export const CardBoxColored = styled.View`
     margin: 0px auto;
     margin-bottom: 12px;
     border-radius: 5px;
-    elevation: 4px;
+    elevation: 4;
 
     ${(props) => props.ClickButton ?
         css`

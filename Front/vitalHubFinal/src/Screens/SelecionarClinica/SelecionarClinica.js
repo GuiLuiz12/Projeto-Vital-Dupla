@@ -28,7 +28,7 @@ export const SelecionarClinica = ({ navigation, route }) => {
     }
 
     async function ListarClinicas() {
-        await api.get(`/Clinica/BuscarPorCidade?cidade=${route.params.agendamento.localização}`)
+        await api.get(`/Clinica/BuscarPorCidade?cidade=${route.params.agendamento.localizacao}`)
             .then(response => {
                 setClinicaLista(response.data)
             }).catch(error => {
@@ -39,12 +39,6 @@ export const SelecionarClinica = ({ navigation, route }) => {
     useEffect(() => {
         ListarClinicas()
     }, [])
-
-    useEffect(() => {
-        console.log(route);
-    }, [route])
-
-
     return (
         <Container>
             <ContainerSpace>

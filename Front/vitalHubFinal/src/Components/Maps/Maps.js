@@ -42,8 +42,6 @@ export default function Maps() {
       const currentPosition = await getCurrentPositionAsync()
 
       await setInitialPosition(currentPosition)
-
-      console.log(initialPosition);
     }
   }
 

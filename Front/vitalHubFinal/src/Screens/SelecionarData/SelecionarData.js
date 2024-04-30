@@ -35,7 +35,7 @@ export const SelecionarData = ({ navigation, route }) => {
             let valor = new Date().getHours() + (index + 1)
 
             return {
-                label: `${valor}:00`, value: valor
+                label: `${valor}:00`, value: `${valor}:00`
             }
         })
 
@@ -46,14 +46,14 @@ export const SelecionarData = ({ navigation, route }) => {
         loadOptions()
     }, [])
 
+    function handleContinue() {
+        setAgendamento({
+            ...route.params.agendamento,
+            dataConsulta: `${dataSelecionada} ${horaSelecionada}`
+        })
 
-    const handleOpenModal = () => {
-        setShowModalConfirm(true);
-    };
-
-    const handleCloseModal = () => {
-        setShowModalConfirm(false);
-    };
+        setShowModalConfirm(true)
+    }
 
     const currentDate = new Date();
     const startingDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate());
@@ -80,11 +80,6 @@ export const SelecionarData = ({ navigation, route }) => {
         dayNamesShort: ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"],
     };
     LocaleConfig.defaultLocale = "pt-br";
-
-    useEffect(() => {
-        console.log(dataSelecionada);
-    }, [dataSelecionada])
-
     return (
         <Container>
             {arrayOptions ? (
@@ -112,7 +107,7 @@ export const SelecionarData = ({ navigation, route }) => {
                             },
                         }}
 
-                        minDate={startingDate}
+                        minDate={`${startingDate}`}
 
                         theme={{
                             calendarBackground: '#FAFAFA',
@@ -147,28 +142,31 @@ export const SelecionarData = ({ navigation, route }) => {
                                 value: null,
                                 color: '#34898F'
                             }}
-                            onValueChange={(value) => {setHoraSelecionada(value)}}
+                            onValueChange={(value) => { setHoraSelecionada(value) }}
                             items={arrayOptions}
                         />
                     </View>
 
-                    <Button>
-                        <TouchableOpacity onPress={handleOpenModal}>
-                            <ButtonTitle>Confirmar</ButtonTitle>
-                        </TouchableOpacity>
-                        <ConfirmarModal
-                            visible={showModalConfirm}
-                            setShowModalConfirm={setShowModalConfirm}
-                            onClose={handleCloseModal}
-                        />
+                    <Button onPress={() => handleContinue()}>
+                        <ButtonTitle>Confirmar</ButtonTitle>
                     </Button>
 
                     <ContentAccount onPress={Voltar}>
                         <TextAccountLink>Cancelar</TextAccountLink>
                     </ContentAccount>
-
+                    
+                    { agendamento ? 
+                        <ConfirmarModal
+                        visible={showModalConfirm}
+                        setShowModalConfirm={setShowModalConfirm}
+                        agendamento={agendamento}
+                        navigation={navigation}
+                    />
+                    : 
+                        <></>
+                    }
+                    
                 </ContainerSpace>
-
             )
                 :
                 (

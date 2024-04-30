@@ -1,14 +1,12 @@
 import styled from "styled-components";
 
 export const ConfirmarModalView = styled.View`
-    width: 90%;
+    width: 335px;
     height: 554px;
     border-radius: 5px;
     background-color: #FFFFFF;
-    /* justify-content: center; */
+    justify-content: center;
     align-items: center;
-    flex: 1;
-    padding: 10px;
     gap: 20px;
 `
 

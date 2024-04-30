@@ -31,8 +31,12 @@ export const SubTitleData = styled(TitleProntuario)`
 `
 
 export const ModalSubTitle = styled(TitleProntuario)`
+    width: 100%;
     font-size: 16px;
     color: #000000;
+    text-align: center;
+    font-family: "Quicksand_500Medium";
+    margin-bottom: 10px;
 `
 
 export const ModalContentSubTitle = styled(TitleProntuario)`

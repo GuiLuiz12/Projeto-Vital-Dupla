@@ -37,11 +37,6 @@ export const SelecionarMedico = ({ navigation, route }) => {
     useEffect(() => {
         ListarMedicos();
     }, [])
-
-    useEffect(() => {
-        console.log(route);
-    }, [route])
-
     return (
         <Container>
             <ContainerSpace>

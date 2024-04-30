@@ -13,7 +13,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { StyleSheet, TouchableOpacity } from 'react-native';
 import { LocalModal } from '../../Components/LocalModal/LocalModal';
 import { AppointmentCard, AppointmentCardDr } from '../../Components/AppointmentCard/AppointmentCard';
-import { userDecodeToken } from '../../Utils/Auth';
+import { idadeCalc, userDecodeToken } from '../../Utils/Auth';
 import { IconModal, ImagemBotao, ViewIcon } from '../../Components/Button/Style';
 import { AgendarModal } from "../../Components/AgendarModal/AgendarModal";
 import api from '../../Service/Service';
@@ -99,7 +99,6 @@ export const Home = ({ navigation }) => {
         ProfileLoad();
 
         ListarPacientes();
-        console.log();
     }, [dateConsulta, situacaoConsultaAlterada])
 
     return (
@@ -193,7 +192,8 @@ export const Home = ({ navigation }) => {
                                 onPressAppointment={() => MostrarModal('prontuario', item)}
                                 prioridade={item.prioridade.prioridade}
                                 nome={item.paciente.idNavigation.nome}
-                                idade={"22"}
+                                idade={idadeCalc(item.paciente.dataNascimento)}
+                                data={item.dataConsulta}
                             />
                         )
                     }
@@ -216,6 +216,7 @@ export const Home = ({ navigation }) => {
                                     nome={item.medicoClinica.medico.idNavigation.nome}
                                     crm={item.medicoClinica.medico.crm}
                                     prioridade={item.prioridade.prioridade}
+                                    data={item.dataConsulta}
                                 />
                             </TouchableOpacity>
                         )
