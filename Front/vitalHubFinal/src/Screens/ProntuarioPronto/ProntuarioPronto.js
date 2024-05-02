@@ -11,12 +11,21 @@ import { CameraButtonTitle } from "../../Components/ButtonTitle/Style"
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { ContentAccount, TextAccountLink } from "../../Components/ContentAccount/Style"
 import { useEffect, useState } from "react"
-
 import { Image } from "react-native"
+import { userDecodeToken } from "../../Utils/Auth"
+import api from "../../Service/Service"
 
 
 export const ProntuarioPronto = ({ navigation, route }) => {
+
+    const [token, setToken] = useState({})
+    const [buscarId, setBuscarId] = useState("")
+    const [especialidade, setEspecialidade] = useState(null)
+    const [fotoPerfil, setFotoPerfil] = useState("")
+
     const [savePhoto, setSavePhoto] = useState(null)
+
+    const [descricaoExame, setDescricaoExame] = useState(null)
 
     const [showCamera, setShowCamera] = useState(false);
 
@@ -28,39 +37,131 @@ export const ProntuarioPronto = ({ navigation, route }) => {
         navigation.navigate('CameraProntuario');
     };
 
-    useEffect(() => {
-        // async function xpto  ()  {
-        if (route.params != undefined) {
-            setSavePhoto(route.params.photo)
+    async function ProfileLoad() {
+        const tokenDecode = await userDecodeToken();
+        // console.log(tokenDecode);
+
+        if (tokenDecode) {
+            setToken(tokenDecode)
+            // BuscarProntuario(tokenDecode)
+            // console.log(tokenDecode);
+            // console.log(token);
         }
-        // };
+    };
 
-        // xpto()
+    async function BuscarFoto(){
+        const formData = new FormData();
+        formData.append("Arquivo", {
+            uri : route.params.photoUri,
+            name : `image.${route.params.photoUri.split(".")[1] }`,
+            type : `image/${route.params.photoUri.split(".")[1] }`
+        });
+        
+        const response = await api.get(`/Usuario/BuscarPorId?id=${token.jti}`, formData, {
+            headers: {
+                "Content-Type" : "multipart/form-data"
+            }
+        }).then(() => {
+            setFotoPerfil(route.params.photoUri)
+
+        }).catch(error => {
+            console.log(error);
+        })
+        console.log(response.data.foto);
+        
+    }
+
+    async function BuscarProntuario() {
+        const response = await api.get(`/Consultas/BuscarPorId?id=${route.params.idConsulta}`)
+        
+        setBuscarId(response.data);
+        
+    }
+
+    async function BuscarEspecialidade(tokenEspecialidade) {
+        // const url = (tokenUsuario.role == 'Medico' ? 'Medicos' : "Pacientes")
+        const response2 = await api.get(`/Consultas/BuscarPorId?id=${route.params.idConsulta}`)
+        setEspecialidade(response2.data)
+        console.log("oi");
+        console.log(response2.data);
+    }
+
+
+    async function InserirExame() {
+        const formData = new FormData();
+        formData.append("consultaId", prontuario.id)
+        formData.append("Imagem", {
+            uri: route.params,
+            name: `image.${route.params.split('.').pop()}`,
+            type: `image/${route.params.split('.').pop()}`
+        });
+
+        await api.post(`/Exame/Cadastrar`, formData, {
+            headers : {
+                "Content-Type" : "multipart/form-data"
+            }
+        }).then(response => {
+            setDescricaoExame(descricaoExame + "/n" + response.data.descricao)
+        }).catch(error => {
+            console.log(error);
+        })
+    }
+
+    // async function BuscarUsuario(tokenUsuario) {
+    //     const url = (tokenUsuario.role == 'Medico' ? 'Medicos' : "Pacientes")
+    //     //console.log(tokenUsuario.role);
+
+    //     const response = await api.get(`/Pacientes/BuscarPorId?id=${tokenUsuario.jti}`)
+    //     setBuscarId(response.data)
+    //     console.log(response.data);
+    // }
+
+    // useEffect(() => {
+    //     // async function xpto  ()  {
+    //     if (route.params != undefined) {
+    //         setSavePhoto(route.params.photo)
+    //     }
+    //     // };
+
+    //     // xpto()
+    // }, [route])
+
+    useEffect(() => {
+
+        // if (route.params) {
+        //     InserirExame();
+        // }
+
+        ProfileLoad()
+        // BuscarFoto()
+        BuscarEspecialidade()
+        BuscarProntuario()
+        console.log(route.params);
+        // BuscarUsuario()
+        // console.log(token.role == "Medico");
+        // console.log(buscarId);
     }, [route])
-
 
     return (
         <ScrollView>
 
             <Container>
                 <ContainerSpace>
-
+                    
                     <FotoPerfil
-                        source={require('../../Assets/Images/MaskGroup.png')}
+                        // source={{uri : photoUri}}
                     />
 
-                    <Title>Dr Claudio</Title>
+                    <Title>{token.name}</Title>
                     <ContainerRow>
-                        <TextAge>Clínico Geral</TextAge>
-                        <SubTitle>CRM-15286</SubTitle>
+                        <TextAge>{especialidade.medicoClinica.medico.especialidade.especialidade1}</TextAge>
+                        <SubTitle>{especialidade.medicoClinica.medico.crm}</SubTitle>
                     </ContainerRow>
 
                     <ContainerLeft>
                         <TitleProntuario>Descrição da consulta</TitleProntuario>
                         <CaixaProntuario>
-                            <TextCaixaProntuario>O paciente possui uma infecção no
-                                ouvido. Necessário repouse de 2 dias
-                                e acompanhamento médico constante</TextCaixaProntuario>
+                            <TextCaixaProntuario>{buscarId.descricao}</TextCaixaProntuario>
                         </CaixaProntuario>
                     </ContainerLeft>
 
@@ -68,17 +169,14 @@ export const ProntuarioPronto = ({ navigation, route }) => {
 
                         <TitleProntuario>Diagnóstico do paciente</TitleProntuario>
                         <CaixaProntuarioMenor>
-                            <TextCaixaProntuario>Infecção no ouvido</TextCaixaProntuario>
+                            <TextCaixaProntuario>{buscarId.diagnostico}</TextCaixaProntuario>
                         </CaixaProntuarioMenor>
                     </ContainerLeft>
                     <ContainerLeft>
 
                         <TitleProntuario>Prescrição médica</TitleProntuario>
                         <CaixaProntuario>
-                            <TextCaixaProntuario>Medicamento: Advil</TextCaixaProntuario>
-                            <TextCaixaProntuario>Dosagem: 50 mg</TextCaixaProntuario>
-                            <TextCaixaProntuario>Frequência: 3 vezes ao dia</TextCaixaProntuario>
-                            <TextCaixaProntuario>Duração: 3 dias</TextCaixaProntuario>
+                            <TextCaixaProntuario>{buscarId.receita.medicamento}</TextCaixaProntuario>
                         </CaixaProntuario>
                     </ContainerLeft>
 

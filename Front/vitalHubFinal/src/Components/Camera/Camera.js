@@ -5,16 +5,20 @@ import { useEffect, useState, useRef } from 'react';
 import { FontAwesome } from '@expo/vector-icons'
 import * as MediaLibrary from 'expo-media-library'
 
-export default function CameraProntuario({navigation}) {
+export default function CameraProntuario({ route, navigation }) {
 
     const cameraRef = useRef(null)
     const [photo, setPhoto] = useState(null)
     const [openModal, setOpenModal] = useState(false)
     const [tipoCamera, setTipoCamera] = useState(CameraType.back)
+    const [cameraAvaliable, setCameraAvaliable] = useState(null)
 
     useEffect(() => {
         (async () => {
             const { status: cameraStatus } = await Camera.requestCameraPermissionsAsync()
+            if (cameraStatus === 'granted') {
+                setCameraAvaliable(true)
+            }
 
             const { status: mediaStatus } = await MediaLibrary.requestPermissionsAsync()
         })();
@@ -29,14 +33,21 @@ export default function CameraProntuario({navigation}) {
             setOpenModal(true)
         }
     }
-    
+
+    //navigation.replace("Home", {uriPhoto : uri, screen : "Perfil"})
+
     async function UploadPhoto() {
         setOpenModal(false)
 
-        await navigation.navigate('ProntuarioPronto', { photo : photo });
+        if (route.params.screen == "Perfil") {
+            await navigation.navigate('Perfil', { photoUri: photo });
+
+        } else {
+            console.log('prontootario')
+            await navigation.navigate('ProntuarioPronto', { photoUri: photo });
+
+        }
     }
-
-
 
     function ClearPhoto() {
         setPhoto(null)
@@ -86,52 +97,51 @@ export default function CameraProntuario({navigation}) {
 
 const styles = StyleSheet.create({
     container: {
-      flex: 1,
-      backgroundColor: '#fff',
-      alignItems: 'center',
-      justifyContent: 'center',
+        flex: 1,
+        backgroundColor: '#fff',
+        alignItems: 'center',
+        justifyContent: 'center',
     },
     camera: {
-      flex: 1,
-      height: '80%',
-      width: '100%'
+        flex: 1,
+        height: '80%',
+        width: '100%'
     },
     viewFlip: {
-      flex: 1,
-      backgroundColor: 'transparent',
-      flexDirection: 'row',
-      alignItems: 'flex-end',
-      justifyContent: 'center'
+        flex: 1,
+        backgroundColor: 'transparent',
+        flexDirection: 'row',
+        alignItems: 'flex-end',
+        justifyContent: 'center'
     },
     btnFlip: {
-      padding: 20
+        padding: 20
     },
     txtFlip: {
-      fontSize: 20,
-      color: '#fff',
-      marginBottom: 20
+        fontSize: 20,
+        color: '#fff',
+        marginBottom: 20
     },
     btnCapture: {
-      padding: 20,
-      margin: 20,
-      borderRadius: 10,
-      backgroundColor: "#121212",
-      justifyContent: 'center',
-      alignItems: 'center'
+        padding: 20,
+        margin: 20,
+        borderRadius: 10,
+        backgroundColor: "#121212",
+        justifyContent: 'center',
+        alignItems: 'center'
     },
     btnClear: {
-      padding: 20,
-      backgroundColor: "transparent",
-  
-      justifyContent: 'center',
-      alignItems: 'center'
+        padding: 20,
+        backgroundColor: "transparent",
+
+        justifyContent: 'center',
+        alignItems: 'center'
     },
     btnUpload: {
-      padding: 20,
-      backgroundColor: "transparent",
-  
-      justifyContent: 'center',
-      alignItems: 'center'
+        padding: 20,
+        backgroundColor: "transparent",
+
+        justifyContent: 'center',
+        alignItems: 'center'
     }
-  });
-  
+});

@@ -11,6 +11,7 @@ export const ProntuarioModal = ({
     navigation,
     consulta,
     roleUsuario,
+    clinicaId,
     ...rest
 }) => {
 
@@ -38,7 +39,6 @@ export const ProntuarioModal = ({
                         />
 
                         <Title>Niccole Sarga</Title>
-
                         <IdadeEmail>
                             <TextoProntuario>22 anos</TextoProntuario>
                             <TextoProntuario>niccole.sarga@gmail.com</TextoProntuario>

@@ -5,8 +5,25 @@ import { Input } from "../../Components/Input/Style"
 import { Button } from "../../Components/Button/Style"
 import { ButtonTitle } from "../../Components/ButtonTitle/Style"
 import { SubTitle } from "../../Components/SubTitle/Style"
+import { useState } from "react"
+import { api } from "../../Service/Service"
+import { useNavigation } from "@react-navigation/native"
 
-export const RecuperarSenha = () => {
+export const RecuperarSenha = ({navigation}) => {
+
+    const [email, setEmail] = useState('');
+
+    async function EnviarEmail(){
+        await api.post(`/RecuperarSenha?email=${email}`)
+        .then(() =>{
+
+            navigation.replace("CodigoEmail", { "emailRecuperacao" : email })
+
+        }).catch(error => {
+            console.log(error);
+        })
+    }
+
     return (
         <Container>
             <ContainerSpace>
@@ -21,11 +38,14 @@ export const RecuperarSenha = () => {
 
                 <Input
                     placeholder="Usuário ou E-mail"
+
+                    value={email}
+                    onChangeText={(txt) => setEmail(txt)}
                 />
 
             </ContainerSpace>
 
-            <Button>
+            <Button onPress={() => EnviarEmail()}>
                 <ButtonTitle>Continuar</ButtonTitle>
             </Button>
 

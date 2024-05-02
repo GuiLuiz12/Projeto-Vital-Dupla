@@ -18,7 +18,10 @@ import { IconModal, ImagemBotao, ViewIcon } from '../../Components/Button/Style'
 import { AgendarModal } from "../../Components/AgendarModal/AgendarModal";
 import api from '../../Service/Service';
 
-export const Home = ({ navigation }) => {
+export const Home = ({ navigation, route }) => {
+
+    const routeParams = route.params
+
     const [token, setToken] = useState({})
     const [showModalAgendar, setShowModalAgendar] = useState(false);
     const [showModalLocal, setShowModalLocal] = useState(false);
@@ -78,6 +81,7 @@ export const Home = ({ navigation }) => {
 
         const response = await api.get(`/${url}/BuscarPorData?data=${dateConsulta}&id=${token.jti}`)
         setListaConsultas(response.data)
+        console.log(listaConsultas);
     }
 
     function MostrarModal(modal, consulta) {
@@ -209,7 +213,7 @@ export const Home = ({ navigation }) => {
                             <TouchableOpacity onPress={() => MostrarModal("local", item)}>
                                 <AppointmentCardDr
                                     situacao={item.situacao.situacao}
-                                    navigation={() => navigation.navigate("ProntuarioPronto")}
+                                    navigation={() => navigation.navigate("ProntuarioPronto", {idConsulta: item.id})}
                                     onPressLocal={() => MostrarModal('local', item)}
                                     onPressCancel={() => MostrarModal('cancelar', item)}
                                     profile={token.role}
@@ -236,6 +240,13 @@ export const Home = ({ navigation }) => {
             <ProntuarioModal
                 visible={showModalAppointment}
                 setShowModalAppointment={setShowModalAppointment}
+                navigation={navigation}
+                consulta={consultaSelecionada}
+            />
+
+            <LocalModal
+                visible={showModalLocal}
+                setShowModalLocal={setShowModalLocal}
                 consulta={consultaSelecionada}
                 roleUsuario={token.role}
                 navigation={navigation}
@@ -253,8 +264,6 @@ export const Home = ({ navigation }) => {
                     consulta={consultaSelecionada}
                 />
             }
-
-
             {token.role === "Medico" ?
                 <></>
                 :

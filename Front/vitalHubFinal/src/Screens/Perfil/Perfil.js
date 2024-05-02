@@ -6,16 +6,25 @@ import { TitleComponent } from "../../Components/TitleComponent/TitleComponent";
 import { InputCinza, InputCinzaMenor } from "../../Components/InputCinza/Style";
 import { Button, ButtonCinzaPequeno, ButtonPerfil } from "../../Components/Button/Style";
 import { ButtonTitle } from "../../Components/ButtonTitle/Style";
-import { Alert, ScrollView } from "react-native";
+import { ScrollView, View } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useEffect, useState } from "react";
 import { userDecodeToken } from "../../Utils/Auth";
 import api from "../../Service/Service";
 import { invalid } from "moment";
 import { faPersonWalkingDashedLineArrowRight } from "@fortawesome/free-solid-svg-icons";
+import { MaterialCommunityIcons } from "@expo/vector-icons"
+import { ButtonCamera } from "./Style";
+import CameraProntuario from "../../Components/Camera/Camera";
+import * as MediaLibrary from "expo-media-library"
+import * as ImagePicker from "expo-image-picker"
+import { Camera } from 'expo-camera';
+import { requestForegroundPermissionsAsync } from 'expo-location';
 
 export const Perfil = ({ navigation, route }) => {
     const [token, setToken] = useState({})
+    const [buscarId, setBuscarId] = useState(null);
+    const [photo, setPhoto] = useState(null)
     const [editing, setEditing] = useState(false)
     const [desativarNavigation, setDesativarNavigation] = useState(false)
     const [oqueFazer, setOqueFazer] = useState(false)
@@ -27,10 +36,10 @@ export const Perfil = ({ navigation, route }) => {
         setOqueFazer(true)
         setDesativarNavigation(true)
     }
-
+    
     async function Logout() {
-        await AsyncStorage.removeItem("token")
-        navigation.navigate("Login")
+        await AsyncStorage.removeItem("token");
+        navigation.navigate("Login");
     }
 
     async function ProfileLoad() {
@@ -94,9 +103,72 @@ export const Perfil = ({ navigation, route }) => {
         setDesativarNavigation(false)
     }
 
+    async function BuscarUsuario(token) {
+        console.log("bucou");
+        try{
+            const url = (token.role == 'Medico' ? 'Medicos' : "Pacientes");
+
+            const response = await api.get(`/${url}/BuscarPorId?id=${token.jti}`);
+
+            setBuscarId(response.data);
+
+            setPhoto(response.data.idNavigation.foto);
+
+        }catch ( error ){
+            console.log(error.message);
+        }
+    }
+
+    async function requestGaleria(){
+        await MediaLibrary.requestPermissionsAsync();
+      
+        await ImagePicker.requestMediaLibraryPermissionsAsync();
+    }
+      
+    async function requestCamera(){
+        await Camera.requestCameraPermissionsAsync();
+    }
+      
+    async function requestLocation(){
+        await requestForegroundPermissionsAsync();
+    }
+
+    async function AlterarFotoPerfil(){
+        const formData = new FormData();
+        formData.append("Arquivo", {
+            uri : route.params.photoUri,
+            name : `image.${route.params.photoUri.split(".")[1] }`,
+            type : `image/${route.params.photoUri.split(".")[1] }`
+        });
+
+        await api.put(`/Usuario/AlterarFotoPerfil?id=${buscarId.id}`, formData, {
+            headers: {
+                "Content-Type" : "multipart/form-data"
+            }
+
+        }).then(() => {
+            setPhoto(route.params.photoUri)
+
+        }).catch(error => {
+            console.log(error);
+        })
+    }
+
     useEffect(() => {
+        // requestLocation();
+      
+        // requestCamera();
+      
+        // requestGaleria();
+
         ProfileLoad();
-    }, [editing])
+    }, [route]);
+      
+    useEffect(() => {
+        if (route.params != null && buscarId) {
+            AlterarFotoPerfil()
+        }
+    }, [route, buscarId])
 
     return (
         <ScrollView>
@@ -109,8 +181,15 @@ export const Perfil = ({ navigation, route }) => {
 
                     <Title>{token.name}</Title>
                     <SubTitle>{token.email}</SubTitle>
+                        <ContainerLocal>
 
-
+                            <FotoPerfil
+                                source={{uri : photo}}
+                            />
+                            <ButtonCamera onPress={() => navigation.navigate("CameraProntuario", { screen : "Perfil" })}>
+                                <MaterialCommunityIcons name="camera-plus" size={20} color="#fbfbfb"/>
+                            </ButtonCamera>
+                        </ContainerLocal>
 
                     {token.role === "Médico" ?
                         <>
@@ -197,7 +276,6 @@ export const Perfil = ({ navigation, route }) => {
                         <ContainerLocalNumeroP>
 
                             <TitleComponent>Número</TitleComponent>
-
                             <InputCinzaMenor
                                 value={baseUser.endereco.numero != undefined ? `${baseUser.endereco.numero}` : ""}
                                 editable={editing}
@@ -265,8 +343,6 @@ export const Perfil = ({ navigation, route }) => {
                 :
                 <></>
             }
-
-
         </ScrollView >
     )
 }
