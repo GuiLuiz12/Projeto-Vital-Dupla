@@ -19,8 +19,6 @@ export default function CameraProntuario({ route, navigation }) {
             if (cameraStatus === 'granted') {
                 setCameraAvaliable(true)
             }
-
-            const { status: mediaStatus } = await MediaLibrary.requestPermissionsAsync()
         })();
 
     }, [])
@@ -34,16 +32,12 @@ export default function CameraProntuario({ route, navigation }) {
         }
     }
 
-    //navigation.replace("Home", {uriPhoto : uri, screen : "Perfil"})
-
     async function UploadPhoto() {
         setOpenModal(false)
 
         if (route.params.screen == "Perfil") {
             await navigation.navigate('Perfil', { photoUri: photo });
-
         } else {
-            console.log('prontootario')
             await navigation.navigate('ProntuarioPronto', { photoUri: photo });
 
         }

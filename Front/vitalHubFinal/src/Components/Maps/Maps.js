@@ -17,15 +17,15 @@ import { mapsKey } from './mapsKey';
 
 import Constants from 'expo-constants';
 
-export default function Maps() {
+export default function Maps( latitude, longitude) {
 
   const mapReference = useRef(null)
 
   const [initialPosition, setInitialPosition] = useState(null)
 
   const [finalPosition, setPosition] = useState({
-    latitude: -23.2447,
-    longitude: -46.2640,
+    latitude: latitude,
+    longitude: longitude,
   })
 
   const [mapStyle, setMapStyle] = useState(grayMapStyle);
@@ -113,8 +113,8 @@ export default function Maps() {
                   initialPosition.coords
                 }
                 destination={{
-                  latitude: -23.2447,
-                  longitude: -46.2640,
+                  latitude: finalPosition.latitude,
+                  longitude: finalPosition.longitude,
                   latitudeDelta: 0.005,
                   longitudeDelta: 0.005
                 }}
@@ -127,8 +127,8 @@ export default function Maps() {
               />
               <Marker
                 coordinate={{
-                  latitude: -23.2447,
-                  longitude: -46.2640,
+                  latitude: finalPosition.latitude,
+                  longitude: finalPosition.longitude,
                 }}
                 title='Praia Grande'
                 description='Qualquer lugar no mapa'

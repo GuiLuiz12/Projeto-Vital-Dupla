@@ -265,7 +265,7 @@ export const Home = ({ navigation, route }) => {
                     consulta={consultaSelecionada}
                 />
             }
-            {token.role === "Medico" ?
+            {token.role === "Médico" ?
                 <></>
                 :
                 <ViewIcon>

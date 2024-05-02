@@ -23,9 +23,8 @@ export const ContainerRow = styled.View`
     flex-direction: row;
     gap: 10px;
     width: 90%;
-    align-items: center;
+    justify-content: space-between;
     margin-bottom: 10px;
-    width: 172px;
 `
 
 export const ContainerRowButtons = styled(ContainerRow)`
@@ -54,7 +53,6 @@ export const ContainerClinicas = styled.View`
 export const ContainerSpace = styled.View`
     justify-content: center;
     align-items: center;
-    gap: 20px;
     width: 100%;
     padding-top: 30px;
 `
@@ -63,11 +61,11 @@ export const ContainerLocal = styled.View`
     align-items: baseline;
     justify-content: center;
     flex-direction: column;
-    width: 45%;
+    width: 144px;
 `
 
 export const ContainerLocalEndereco = styled(ContainerLocal)`
-    width: 370px;
+    width: 90%;
 `
 
 export const ContainerLocalEderecoP = styled(ContainerLocal)`
@@ -81,4 +79,8 @@ export const ContainerLocalNumeroP = styled(ContainerLocal)`
 export const ContainerRowInputs = styled(ContainerRowButtons)`
     gap: 0px;
     justify-content: space-between;
+`
+
+export const ContainerLocal_Nome = styled(ContainerLocal)`
+    width: 190px;
 `

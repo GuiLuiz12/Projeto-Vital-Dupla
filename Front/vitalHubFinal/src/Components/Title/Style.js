@@ -5,7 +5,7 @@ export const Title = styled.Text`
     font-size: 20px;
     font-family: 'MontserratAlternates_600SemiBold';
     color: #33303E;
-    margin-top: 10px;
+    margin-top: 25px;
     /* text-shadow: 1px 2px 2px #33303E; */
 `
 

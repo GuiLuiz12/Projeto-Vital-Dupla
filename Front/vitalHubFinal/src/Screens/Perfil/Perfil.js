@@ -21,7 +21,6 @@ import { requestForegroundPermissionsAsync } from 'expo-location';
 
 export const Perfil = ({ navigation, route }) => {
     const [token, setToken] = useState({})
-    const [buscarId, setBuscarId] = useState(null);
     const [photo, setPhoto] = useState(null)
     const [editing, setEditing] = useState(false)
     const [desativarNavigation, setDesativarNavigation] = useState(false)
@@ -35,7 +34,7 @@ export const Perfil = ({ navigation, route }) => {
         setOqueFazer(true)
         setDesativarNavigation(true)
     }
-    
+
     async function Logout() {
         await AsyncStorage.removeItem("token");
         navigation.navigate("Login");
@@ -49,20 +48,11 @@ export const Perfil = ({ navigation, route }) => {
         }
     }
 
-    async function BuscarUsuario() {
-        const url = (token.role == 'Médico' ? 'Medicos' : "Pacientes")
-
-        const response = await api.get(`/${url}/BuscarPorId?id=${token.jti}`)
-            .catch((error) => { console.log(error);})
-
-        setBaseUser(response.data)
-    }
-
     async function SalvarFunction() {
         setAttUser(baseUser)
         const response = await api.get(`/Especialidade/BuscarPorNome?esp=${attUser.especialidade.especialidade1}`)
-        await setAttUser({...attUser, especialidade: {id:response.data.id ,especialidade1: attUser.especialidade.especialidade1 }})
-        
+        await setAttUser({ ...attUser, especialidade: { id: response.data.id, especialidade1: attUser.especialidade.especialidade1 } })
+
         if (token.role == "Médico") {
             await api.put("/Medicos", {
                 id: token.jti,
@@ -73,13 +63,13 @@ export const Perfil = ({ navigation, route }) => {
                 cidade: attUser.cidade,
                 crm: attUser.crm,
                 especialidade: attUser.especialidade.id
-            }).catch((error)=> {
+            }).catch((error) => {
                 console.log(error);
             })
         }
-        else{
+        else {
             await api.put(`/Pacientes?idUsuario=${token.jti}`, {
-            
+
                 rg: attUser.rg,
                 cpf: attUser.cpf,
                 dataNascimento: attUser.dataNascimento,
@@ -89,7 +79,7 @@ export const Perfil = ({ navigation, route }) => {
                 cidade: attUser.cidade,
             }).catch((error) => {
                 console.log(error);
-            })    
+            })
         }
         setEditing(false)
         setOqueFazer(false)
@@ -102,47 +92,47 @@ export const Perfil = ({ navigation, route }) => {
         setDesativarNavigation(false)
     }
 
-    async function BuscarUsuario(token) {
-        console.log("bucou");
-        try{
-            const url = (token.role == 'Medico' ? 'Medicos' : "Pacientes");
+    async function BuscarUsuario() {
+        try {
+            const url = (token.role == 'Médico' ? 'Medicos' : "Pacientes");
 
             const response = await api.get(`/${url}/BuscarPorId?id=${token.jti}`);
 
-            setBuscarId(response.data);
+            setBaseUser(response.data);
 
             setPhoto(response.data.idNavigation.foto);
 
-        }catch ( error ){
-            console.log(error.message);
+        } catch (error) {
+            console.log(error);
         }
     }
 
-    async function requestGaleria(){
+    async function requestGaleria() {
         await MediaLibrary.requestPermissionsAsync();
-      
+
         await ImagePicker.requestMediaLibraryPermissionsAsync();
     }
-      
-    async function requestCamera(){
+
+    async function requestCamera() {
         await Camera.requestCameraPermissionsAsync();
     }
-      
-    async function requestLocation(){
+
+    async function requestLocation() {
         await requestForegroundPermissionsAsync();
     }
 
-    async function AlterarFotoPerfil(){
+    async function AlterarFotoPerfil() {
+        console.log(route);
         const formData = new FormData();
         formData.append("Arquivo", {
-            uri : route.params.photoUri,
-            name : `image.${route.params.photoUri.split(".")[1] }`,
-            type : `image/${route.params.photoUri.split(".")[1] }`
+            uri: route.params.photoUri,
+            name: `image.${route.params.photoUri.split(".")[1]}`,
+            type: `image/${route.params.photoUri.split(".")[1]}`
         });
 
-        await api.put(`/Usuario/AlterarFotoPerfil?id=${buscarId.id}`, formData, {
+        await api.put(`/Usuario/AlterarFotoPerfil?id=${baseUser.id}`, formData, {
             headers: {
-                "Content-Type" : "multipart/form-data"
+                "Content-Type": "multipart/form-data"
             }
 
         }).then(() => {
@@ -154,41 +144,37 @@ export const Perfil = ({ navigation, route }) => {
     }
 
     useEffect(() => {
-        // requestLocation();
-      
-        // requestCamera();
-      
-        // requestGaleria();
+        requestLocation();
+
+        requestCamera();
+
+        requestGaleria();
 
         ProfileLoad();
     }, [route]);
-      
+
     useEffect(() => {
-        if (route.params != null && buscarId) {
+        if (route.params != null && baseUser) {
             AlterarFotoPerfil()
         }
-    }, [route, buscarId])
+    }, [route, baseUser])
 
     return (
         <ScrollView>
             {baseUser != null ?
                 <Container>
+                    <ContainerLocal>
 
-                    <FotoPerfil
-                        source={require('../../Assets/Images/Richard.png')}
-                    />
+                        <FotoPerfil
+                            source={{ uri: photo }}
+                        />
+                        <ButtonCamera onPress={() => navigation.navigate("CameraProntuario", { screen: "Perfil" })}>
+                            <MaterialCommunityIcons name="camera-plus" size={20} color="#fbfbfb" />
+                        </ButtonCamera>
+                    </ContainerLocal>
 
                     <Title>{token.name}</Title>
                     <SubTitle>{token.email}</SubTitle>
-                        <ContainerLocal>
-
-                            <FotoPerfil
-                                source={{uri : photo}}
-                            />
-                            <ButtonCamera onPress={() => navigation.navigate("CameraProntuario", { screen : "Perfil" })}>
-                                <MaterialCommunityIcons name="camera-plus" size={20} color="#fbfbfb"/>
-                            </ButtonCamera>
-                        </ContainerLocal>
 
                     {token.role === "Médico" ?
                         <>
@@ -198,7 +184,7 @@ export const Perfil = ({ navigation, route }) => {
                                     value={baseUser.especialidade.especialidade1}
                                     editable={editing}
                                     onChangeText={(txt) => {
-                                        setBaseUser({ ...baseUser, especialidade: {id: baseUser.especialidade.id, especialidade1:txt} })
+                                        setBaseUser({ ...baseUser, especialidade: { id: baseUser.especialidade.id, especialidade1: txt } })
                                     }}
                                     autoComplete={"off"}
                                 />
