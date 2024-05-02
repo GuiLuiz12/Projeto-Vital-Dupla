@@ -11,12 +11,8 @@ import { AntDesign } from '@expo/vector-icons';
 import { ContentAccount, TextAccount, TextAccountLink } from "../../Components/ContentAccount/Style"
 import { useEffect, useState } from "react"
 import Spinner from "../../Components/Spinner/Spinner"
-
 import AsyncStorage from '@react-native-async-storage/async-storage'
-
 import api from "../../Service/Service"
-
-
 
 export const Login = ({navigation}) => {
     const [email, setEmail] = useState('cleber@email.com')
