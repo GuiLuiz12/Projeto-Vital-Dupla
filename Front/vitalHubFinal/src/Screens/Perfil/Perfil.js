@@ -4,18 +4,16 @@ import { SubTitle } from "../../Components/SubTitle/Style";
 import { Title } from "../../Components/Title/Style";
 import { TitleComponent } from "../../Components/TitleComponent/TitleComponent";
 import { InputCinza, InputCinzaMenor } from "../../Components/InputCinza/Style";
-import { Button, ButtonCinzaPequeno, ButtonPerfil } from "../../Components/Button/Style";
+import { ButtonCinzaPequeno, ButtonPerfil } from "../../Components/Button/Style";
 import { ButtonTitle } from "../../Components/ButtonTitle/Style";
-import { ScrollView, View } from "react-native";
+import { ScrollView } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useEffect, useState } from "react";
 import { userDecodeToken } from "../../Utils/Auth";
 import api from "../../Service/Service";
 import { invalid } from "moment";
-import { faPersonWalkingDashedLineArrowRight } from "@fortawesome/free-solid-svg-icons";
 import { MaterialCommunityIcons } from "@expo/vector-icons"
 import { ButtonCamera } from "./Style";
-import CameraProntuario from "../../Components/Camera/Camera";
 import * as MediaLibrary from "expo-media-library"
 import * as ImagePicker from "expo-image-picker"
 import { Camera } from 'expo-camera';
@@ -30,6 +28,7 @@ export const Perfil = ({ navigation, route }) => {
     const [oqueFazer, setOqueFazer] = useState(false)
     const [baseUser, setBaseUser] = useState(null)
     const [attUser, setAttUser] = useState({})
+
 
     function EditarFunction() {
         setEditing(true)
@@ -54,7 +53,7 @@ export const Perfil = ({ navigation, route }) => {
         const url = (token.role == 'Médico' ? 'Medicos' : "Pacientes")
 
         const response = await api.get(`/${url}/BuscarPorId?id=${token.jti}`)
-            .catch((error) => { console.log(error); console.log("error"); })
+            .catch((error) => { console.log(error);})
 
         setBaseUser(response.data)
     }

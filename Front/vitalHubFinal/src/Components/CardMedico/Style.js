@@ -12,7 +12,7 @@ export const CardMedico = styled.TouchableOpacity`
     border-color: #496BBA;
     border-radius: 5px;
     padding: 8px;
-    elevation: 3
+    elevation: 3;
 `
 
 export const ImagemCardMedico = styled.Image`

@@ -14,26 +14,31 @@ export const SelecionarClinica = ({ navigation, route }) => {
     const [selected, setSelected] = useState("")
 
     const Continuar = () => {
-        navigation.navigate("SelecionarMedico")
+        
+        navigation.replace("SelecionarMedico", {
+            agendamento : {
+                ...route.params.agendamento,
+                ...selected
+            }
+        })
     }
+
     const Voltar = () => {
         navigation.navigate("Main")
     }
 
     async function ListarClinicas() {
-        await api.get(`/Clinica/BuscarPorCidade?cidade=${route.params.cidade}`)
-        .then(response => {
-            setClinicaLista(response.data)
-        }).catch(error => {
-            console.log(error)
-        })
+        await api.get(`/Clinica/BuscarPorCidade?cidade=${route.params.agendamento.localizacao}`)
+            .then(response => {
+                setClinicaLista(response.data)
+            }).catch(error => {
+                console.log(error)
+            })
     }
 
     useEffect(() => {
         ListarClinicas()
     }, [])
-
-
     return (
         <Container>
             <ContainerSpace>
@@ -44,10 +49,15 @@ export const SelecionarClinica = ({ navigation, route }) => {
                     <ListComponent
                         data={clinicaLista}
                         renderItem={({ item }) => <ClinicCard
-                            Selected={item.nomeFantasia === selected}
+                            Selected={item.nomeFantasia === selected.clinicaLabel}
                             NomeFantasia={item.nomeFantasia}
                             Cidade={item.endereco.cidade}
-                            OnPress={() => setSelected(item.nomeFantasia)}
+                            OnPress={() => {
+                                setSelected({
+                                    clinicaId: item.id,
+                                    clinicaLabel: item.nomeFantasia
+                                })
+                            }}
                         />}
                         keyExtractor={(item) => {
                             item.id;
@@ -57,7 +67,7 @@ export const SelecionarClinica = ({ navigation, route }) => {
                     />
                 </ContainerClinicas>
 
-                <Button onPress={Continuar}>
+                <Button onPress={() => Continuar()}>
                     <ButtonTitle>Continuar</ButtonTitle>
                 </Button>
 
