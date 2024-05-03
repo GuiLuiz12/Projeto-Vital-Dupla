@@ -39,7 +39,6 @@ export const ButtonMenorBranco = styled(ButtonMenor)`
 
 export const ButtonModal = styled(Button)`
     width: 90%;
-    margin-bottom: 20px;
 `
 
 export const ButtonSecondary = styled(Button)`

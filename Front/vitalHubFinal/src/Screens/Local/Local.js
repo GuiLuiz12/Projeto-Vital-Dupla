@@ -23,7 +23,6 @@ export const Local = ({ navigation, route }) => {
         await api.get(`/Clinica/BuscarPorId?id=${route.params.clinicaId}`)
             .then(response => {
                 setClinica(response.data)
-                console.log(clinica);
             })
             .catch(error => {
                 console.log(error);
@@ -31,7 +30,12 @@ export const Local = ({ navigation, route }) => {
 
     }
 
+    async function requestLocation() {
+        await requestForegroundPermissionsAsync();
+    }
+
     useEffect(() => {
+        requestLocation()
         BuscarClinica()
     }, [])
     return (

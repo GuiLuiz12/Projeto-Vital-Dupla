@@ -4,6 +4,8 @@ import { ButtonSecondaryTitle, ButtonTitle } from "../ButtonTitle/Style"
 import { IdadeEmail, ImagemProntuario, TextoProntuario } from "./Style"
 import { ButtonModal, ButtonSecondary } from "../Button/Style"
 import { ModalContent, PatientModal } from "../CancelationModal/Style"
+import { idadeCalc } from "../../Utils/Auth"
+import { useEffect } from "react"
 
 export const ProntuarioModal = ({
     visible,
@@ -18,7 +20,6 @@ export const ProntuarioModal = ({
     function HandlePress(rota) {
         navigation.navigate(rota, { clinicaId: consulta.medicoClinica.clinicaId })
     }
-
     return (
         consulta == null ?
 
@@ -38,10 +39,10 @@ export const ProntuarioModal = ({
                             source={require('../../Assets/Images/Niccole.png')}
                         />
 
-                        <Title>Niccole Sarga</Title>
+                        <Title>{consulta.paciente.idNavigation.nome}</Title>
                         <IdadeEmail>
-                            <TextoProntuario>22 anos</TextoProntuario>
-                            <TextoProntuario>niccole.sarga@gmail.com</TextoProntuario>
+                            <TextoProntuario>{idadeCalc(consulta.paciente.dataNascimento)} anos</TextoProntuario>
+                            <TextoProntuario>{consulta.paciente.idNavigation.email}</TextoProntuario>
                         </IdadeEmail>
 
                         {/* button */}

@@ -101,7 +101,6 @@ export const Home = ({ navigation, route }) => {
 
     useEffect(() => {
         ProfileLoad();
-
         ListarPacientes();
     }, [dateConsulta, situacaoConsultaAlterada])
 
@@ -213,7 +212,7 @@ export const Home = ({ navigation, route }) => {
                             <TouchableOpacity onPress={() => MostrarModal("local", item)}>
                                 <AppointmentCardDr
                                     situacao={item.situacao.situacao}
-                                    navigation={() => navigation.navigate("ProntuarioPronto", {idConsulta: item.id})}
+                                    navigation={() => navigation.navigate("ProntuarioPronto", { idConsulta: item.id })}
                                     onPressLocal={() => MostrarModal('local', item)}
                                     onPressCancel={() => MostrarModal('cancelar', item)}
                                     profile={token.role}
@@ -237,25 +236,13 @@ export const Home = ({ navigation, route }) => {
                 setSituacaoConsultaAlterada={setSituacaoConsultaAlterada}
             />
 
-            {/* modal prontuario */}
-            <ProntuarioModal
-                visible={showModalAppointment}
-                setShowModalAppointment={setShowModalAppointment}
-                navigation={navigation}
-                consulta={consultaSelecionada}
-            />
-
-            <LocalModal
-                visible={showModalLocal}
-                setShowModalLocal={setShowModalLocal}
-                consulta={consultaSelecionada}
-                roleUsuario={token.role}
-                navigation={navigation}
-            />
-
             {token.role === 'Médico' ?
-                <>
-                </>
+                < ProntuarioModal
+                    visible={showModalAppointment}
+                    setShowModalAppointment={setShowModalAppointment}
+                    navigation={navigation}
+                    consulta={consultaSelecionada}
+                />
                 :
                 <LocalModal
                     visible={showModalLocal}
@@ -265,6 +252,8 @@ export const Home = ({ navigation, route }) => {
                     consulta={consultaSelecionada}
                 />
             }
+
+
             {token.role === "Médico" ?
                 <></>
                 :

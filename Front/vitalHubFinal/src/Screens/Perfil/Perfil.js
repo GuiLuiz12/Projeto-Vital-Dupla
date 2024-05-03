@@ -17,7 +17,6 @@ import { ButtonCamera } from "./Style";
 import * as MediaLibrary from "expo-media-library"
 import * as ImagePicker from "expo-image-picker"
 import { Camera } from 'expo-camera';
-import { requestForegroundPermissionsAsync } from 'expo-location';
 
 export const Perfil = ({ navigation, route }) => {
     const [token, setToken] = useState({})
@@ -49,9 +48,10 @@ export const Perfil = ({ navigation, route }) => {
     }
 
     async function SalvarFunction() {
-        setAttUser(baseUser)
-        const response = await api.get(`/Especialidade/BuscarPorNome?esp=${attUser.especialidade.especialidade1}`)
-        await setAttUser({ ...attUser, especialidade: { id: response.data.id, especialidade1: attUser.especialidade.especialidade1 } })
+        if (token.role == "Médico") {
+            const response = await api.get(`/Especialidade/BuscarPorNome?esp=${attUser.especialidade.especialidade1}`)
+            await setAttUser({ ...attUser, especialidade: { id: response.data.id, especialidade1: attUser.especialidade.especialidade1 } })
+        }
 
         if (token.role == "Médico") {
             await api.put("/Medicos", {
@@ -117,10 +117,6 @@ export const Perfil = ({ navigation, route }) => {
         await Camera.requestCameraPermissionsAsync();
     }
 
-    async function requestLocation() {
-        await requestForegroundPermissionsAsync();
-    }
-
     async function AlterarFotoPerfil() {
         console.log(route);
         const formData = new FormData();
@@ -129,6 +125,7 @@ export const Perfil = ({ navigation, route }) => {
             name: `image.${route.params.photoUri.split(".")[1]}`,
             type: `image/${route.params.photoUri.split(".")[1]}`
         });
+        console.log("2");
 
         await api.put(`/Usuario/AlterarFotoPerfil?id=${baseUser.id}`, formData, {
             headers: {
@@ -144,12 +141,8 @@ export const Perfil = ({ navigation, route }) => {
     }
 
     useEffect(() => {
-        requestLocation();
-
         requestCamera();
-
         requestGaleria();
-
         ProfileLoad();
     }, [route]);
 
@@ -184,7 +177,7 @@ export const Perfil = ({ navigation, route }) => {
                                     value={baseUser.especialidade.especialidade1}
                                     editable={editing}
                                     onChangeText={(txt) => {
-                                        setBaseUser({ ...baseUser, especialidade: { id: baseUser.especialidade.id, especialidade1: txt } })
+                                        setBaseUser({ ...attUser, especialidade: { id: attUser.especialidade.id, especialidade1: txt } })
                                     }}
                                     autoComplete={"off"}
                                 />
@@ -196,7 +189,7 @@ export const Perfil = ({ navigation, route }) => {
                                     value={baseUser.crm}
                                     editable={editing}
                                     onChangeText={(txt) => {
-                                        setBaseUser({ ...baseUser, crm: txt })
+                                        setBaseUser({ ...attUser, crm: txt })
                                     }}
                                     keyboardType={"numeric"}
                                     autoComplete={"off"}
@@ -211,7 +204,7 @@ export const Perfil = ({ navigation, route }) => {
                                 <InputCinza
                                     value={baseUser.dataNascimento === invalid ? new Date(baseUser.dataNascimento).toLocaleDateString() : null}
                                     editable={editing}
-                                    onChangeText={(txt) => setBaseUser({ ...baseUser, dataNascimento: txt })}
+                                    onChangeText={(txt) => setBaseUser({ ...attUser, dataNascimento: txt })}
                                     keyboardType={"numeric"}
                                     placeholder={"Formato de escrita: (DD-MM-YYYY)"}
                                 />
@@ -223,7 +216,7 @@ export const Perfil = ({ navigation, route }) => {
                                     value={baseUser.rg}
                                     editable={editing}
                                     onChangeText={(txt) => {
-                                        setBaseUser({ ...baseUser, rg: txt })
+                                        setBaseUser({ ...attUser, rg: txt })
                                     }}
                                     keyboardType={"numeric"}
                                     autoComplete={"off"}
@@ -235,7 +228,7 @@ export const Perfil = ({ navigation, route }) => {
                                 <InputCinza
                                     value={baseUser.cpf}
                                     editable={editing}
-                                    onChangeText={(txt) => setBaseUser({ ...baseUser, cpf: txt })}
+                                    onChangeText={(txt) => setBaseUser({ ...attUser, cpf: txt })}
                                     keyboardType={"numeric"}
                                     autoComplete={"off"}
                                 />
@@ -252,7 +245,7 @@ export const Perfil = ({ navigation, route }) => {
                                 value={baseUser.endereco.logradouro}
                                 editable={editing}
                                 onChangeText={(txt) => {
-                                    setBaseUser({ ...baseUser, logradouro: txt, })
+                                    setBaseUser({ ...attUser, logradouro: txt, })
                                 }}
                                 autoComplete={"off"}
                             />
@@ -262,9 +255,9 @@ export const Perfil = ({ navigation, route }) => {
 
                             <TitleComponent>Número</TitleComponent>
                             <InputCinzaMenor
-                                value={baseUser.endereco.numero != undefined ? `${baseUser.endereco.numero}` : ""}
+                                value={baseUser.endereco.numero != undefined ? `${baseUser.endereco.numero}` : null}
                                 editable={editing}
-                                onChangeText={(txt) => setBaseUser({ ...baseUser, numero: txt })
+                                onChangeText={(txt) => setBaseUser({ ...attUser, numero: txt })
                                 }
                                 keyboardType={"numeric"}
                                 autoComplete={"off"}
@@ -280,7 +273,7 @@ export const Perfil = ({ navigation, route }) => {
                                 value={baseUser.endereco.cep}
                                 editable={editing}
                                 onChangeText={(txt) => {
-                                    setBaseUser({ ...baseUser, cep: txt })
+                                    setBaseUser({ ...attUser, cep: txt })
                                 }}
                                 keyboardType={"numeric"}
                                 autoComplete={"off"}
@@ -293,7 +286,7 @@ export const Perfil = ({ navigation, route }) => {
                                 value={baseUser.endereco.cidade}
                                 editable={editing}
                                 onChangeText={(txt) => {
-                                    setBaseUser({ ...baseUser, cidade: txt })
+                                    setBaseUser({ ...attUser, cidade: txt })
                                 }}
                                 autoComplete={"off"}
                             />

@@ -17,15 +17,15 @@ import { mapsKey } from './mapsKey';
 
 import Constants from 'expo-constants';
 
-export default function Maps( latitude, longitude) {
+export default function Maps({ latitude, longitude }) {
 
   const mapReference = useRef(null)
 
   const [initialPosition, setInitialPosition] = useState(null)
 
   const [finalPosition, setPosition] = useState({
-    latitude: latitude,
-    longitude: longitude,
+    latitude: longitude,
+    longitude: latitude,
   })
 
   const [mapStyle, setMapStyle] = useState(grayMapStyle);
@@ -50,11 +50,11 @@ export default function Maps( latitude, longitude) {
       await mapReference.current.fitToCoordinates(
         [
           { latitude: initialPosition.coords.latitude, longitude: initialPosition.coords.longitude },
-          { latitude: finalPosition.latitude, longitude : finalPosition.longitude }
+          { latitude: finalPosition.latitude, longitude: finalPosition.longitude }
         ],
         {
-          edgePadding : { top : 60, right : 60, bottom : 60, left: 60 },
-          animated : true
+          edgePadding: { top: 60, right: 60, bottom: 60, left: 60 },
+          animated: true
         }
       )
     }
@@ -65,25 +65,26 @@ export default function Maps( latitude, longitude) {
 
     //Capturar a localizacao em tempo real
     watchPositionAsync({
-      accuracy : LocationAccuracy.High,
-      timeInterval : 1000,
-      distanceInterval : 1
+      accuracy: LocationAccuracy.High,
+      timeInterval: 1000,
+      distanceInterval: 1
     }, async (response) => {
       await setInitialPosition(response)
 
       mapReference.current?.animateCamera({
-        pitch : 60,
-        center : response.coords
+        pitch: 60,
+        center: response.coords
       })
     })
   }, [1000])
 
   useEffect(() => {
     RecarregarVisualizacaoMapa()
+    console.log(finalPosition);
   }, [initialPosition])
 
   return (
-    <View style={styles.map}>
+      <View style={styles.map}>
       {
         initialPosition != null
           ? (

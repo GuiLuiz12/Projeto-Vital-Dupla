@@ -14,19 +14,21 @@ export const CancelationModal = ({
   setSituacaoConsultaAlterada,
   ...rest
 }) => {
-
+  const [statusNotification, setStatusNotification] = useState("")
 
   //funcao para lidar com a chamada de notificacao
   const handleCallNotifications = async () => {
 
-    //obtem o status da permissao
-    const { status } = await Notifications.getPermissionsAsync();
+    do {
+      //obtem o status da permissao
+      const status = await Notifications.getPermissionsAsync();
+      setStatusNotification(status)
 
-    //verifica se o usuario concedeu permissão
-    if (status !== "granted") {
-      alert("voce nao deixou as notificacoes ativas")
-      return;
-    }
+      //verifica se o usuario concedeu permissão
+      if (status !== "granted") {
+        alert("voce nao deixou as notificacoes ativas")
+      }
+    } while (statusNotification !== "granted");
 
     HandleCancel()
       .then(() => {
@@ -76,7 +78,7 @@ export const CancelationModal = ({
           </ButtonModal>
 
           {/* button cancel */}
-          <ButtonSecondary onPress={() => handleCallNotifications()}>
+          <ButtonSecondary onPress={() => setShowModalCancel(false)}>
             <ButtonSecondaryTitle>Cancelar</ButtonSecondaryTitle>
           </ButtonSecondary>
 
