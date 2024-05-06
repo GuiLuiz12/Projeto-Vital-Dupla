@@ -133,11 +133,11 @@ export const ProntuarioPronto = ({ navigation, route }) => {
         // }
 
         ProfileLoad()
-        // BuscarFoto()
+        BuscarFoto()
         BuscarEspecialidade()
         BuscarProntuario()
-        console.log(route.params);
-        // BuscarUsuario()
+        // console.log(route.params);
+        // BuscarUsuario(
         // console.log(token.role == "Medico");
         // console.log(buscarId);
     }, [route])
@@ -149,7 +149,7 @@ export const ProntuarioPronto = ({ navigation, route }) => {
                 <ContainerSpace>
                     
                     <FotoPerfil
-                        // source={{uri : photoUri}}
+                        source={require=(fotoPerfil)}
                     />
 
                     <Title>{token.name}</Title>
