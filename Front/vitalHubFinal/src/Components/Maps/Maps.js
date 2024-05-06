@@ -17,15 +17,15 @@ import { mapsKey } from './mapsKey';
 
 import Constants from 'expo-constants';
 
-export default function Maps() {
+export default function Maps({ latitude, longitude }) {
 
   const mapReference = useRef(null)
 
   const [initialPosition, setInitialPosition] = useState(null)
 
   const [finalPosition, setPosition] = useState({
-    latitude: -23.2447,
-    longitude: -46.2640,
+    latitude: longitude,
+    longitude: latitude,
   })
 
   const [mapStyle, setMapStyle] = useState(grayMapStyle);
@@ -50,11 +50,11 @@ export default function Maps() {
       await mapReference.current.fitToCoordinates(
         [
           { latitude: initialPosition.coords.latitude, longitude: initialPosition.coords.longitude },
-          { latitude: finalPosition.latitude, longitude : finalPosition.longitude }
+          { latitude: finalPosition.latitude, longitude: finalPosition.longitude }
         ],
         {
-          edgePadding : { top : 60, right : 60, bottom : 60, left: 60 },
-          animated : true
+          edgePadding: { top: 60, right: 60, bottom: 60, left: 60 },
+          animated: true
         }
       )
     }
@@ -65,25 +65,26 @@ export default function Maps() {
 
     //Capturar a localizacao em tempo real
     watchPositionAsync({
-      accuracy : LocationAccuracy.High,
-      timeInterval : 1000,
-      distanceInterval : 1
+      accuracy: LocationAccuracy.High,
+      timeInterval: 1000,
+      distanceInterval: 1
     }, async (response) => {
       await setInitialPosition(response)
 
       mapReference.current?.animateCamera({
-        pitch : 60,
-        center : response.coords
+        pitch: 60,
+        center: response.coords
       })
     })
   }, [1000])
 
   useEffect(() => {
     RecarregarVisualizacaoMapa()
+    console.log(finalPosition);
   }, [initialPosition])
 
   return (
-    <View style={styles.map}>
+      <View style={styles.map}>
       {
         initialPosition != null
           ? (
@@ -113,8 +114,8 @@ export default function Maps() {
                   initialPosition.coords
                 }
                 destination={{
-                  latitude: -23.2447,
-                  longitude: -46.2640,
+                  latitude: finalPosition.latitude,
+                  longitude: finalPosition.longitude,
                   latitudeDelta: 0.005,
                   longitudeDelta: 0.005
                 }}
@@ -127,8 +128,8 @@ export default function Maps() {
               />
               <Marker
                 coordinate={{
-                  latitude: -23.2447,
-                  longitude: -46.2640,
+                  latitude: finalPosition.latitude,
+                  longitude: finalPosition.longitude,
                 }}
                 title='Praia Grande'
                 description='Qualquer lugar no mapa'

@@ -6,7 +6,7 @@ export const Button = styled.TouchableOpacity`
 
     background-color: #496bba;
     border: 1px solid #496bba;
-    margin-top: 15px;
+    margin-top: 30px;
     padding: 12px 8px 12px 8px;
     border-radius: 5px;
 
@@ -28,7 +28,7 @@ export const ButtonMenor = styled.TouchableHighlight`
         background-color: #496bba;
     `: css`
         background-color: transparent;
-        border: 2px solid #607ec5
+        border: 2px solid #607ec5;
         `}
 `
 
@@ -39,7 +39,6 @@ export const ButtonMenorBranco = styled(ButtonMenor)`
 
 export const ButtonModal = styled(Button)`
     width: 90%;
-    margin-bottom: 20px;
 `
 
 export const ButtonSecondary = styled(Button)`
@@ -108,4 +107,17 @@ export const ButtonPerfil = styled(Button)`
         background-color: #496bba;
     `}
     border: 1px solid transparent;
+`
+
+export const IconBox = styled.TouchableOpacity`
+    margin-top: 20px;
+    height: 30px;
+    width: 30px;
+    background-color: rgba(73, 179, 186, .15);
+    border-radius: 20px;
+    align-items: center;
+    justify-content: center;
+    align-self: flex-start;
+    margin-left: 20px;
+    margin-top: 20px;
 `

@@ -36,14 +36,14 @@ export const LocalModal = ({
                         {/* content */}
                         <ModalContent>
                             <ImagemProntuario
-                                source={require('../../Assets/Images/MaskGroup.png')}
+                                source={{ uri: consulta.medicoClinica.medico.idNavigation.foto}}
                             />
 
                             <Title>Dr. {consulta.medicoClinica.medico.idNavigation.nome}</Title>
 
                             <IdadeEmail>
                                 <TextoProntuario>Clínico Geral</TextoProntuario>
-                                <TextoProntuario>CRM - {consulta.medicoClinica.medico.crm}</TextoProntuario>
+                                <TextoProntuario>CRM-{consulta.medicoClinica.medico.crm}</TextoProntuario>
                             </IdadeEmail>
 
                             {/* button */}

@@ -23,6 +23,7 @@ export const Home = ({ navigation, route }) => {
     const routeParams = route.params
 
     const [token, setToken] = useState({})
+    const [user, setUser] = useState(null)
     const [showModalAgendar, setShowModalAgendar] = useState(false);
     const [showModalLocal, setShowModalLocal] = useState(false);
     const [listaConsultas, setListaConsultas] = useState([])
@@ -76,16 +77,31 @@ export const Home = ({ navigation, route }) => {
         }
     }
 
+    async function BuscarUsuario() {
+        try {
+            console.log(token);
+            const url = (token.role === 'Médico' ? 'Medicos' : "Pacientes");
+
+            const response = await api.get(`/${url}/BuscarPorId?id=${token.jti}`);
+
+            setUser(response.data);
+
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     async function ListarPacientes() {
         const url = (token.role == 'Médico' ? 'Medicos' : "Pacientes")
 
         const response = await api.get(`/${url}/BuscarPorData?data=${dateConsulta}&id=${token.jti}`)
+        console.log();
         setListaConsultas(response.data)
-        console.log(listaConsultas);
     }
 
     function MostrarModal(modal, consulta) {
         setConsultaSelecionada(consulta)
+        console.log(consulta);
 
         if (modal == 'cancelar') {
             setShowModalCancel(true)
@@ -101,192 +117,197 @@ export const Home = ({ navigation, route }) => {
 
     useEffect(() => {
         ProfileLoad();
-
         ListarPacientes();
     }, [dateConsulta, situacaoConsultaAlterada])
 
-    return (
-        <Container>
-            <FaixaAzul>
-                <ImagemTexto>
+    useEffect(() => {
+        if (token) {
+            BuscarUsuario();
+        }
+    }, [token])
 
-                    <FotoPerfilConsulta
-                        source={require('../../Assets/Images/MaskGroup.png')}
+    return (
+        <>
+            {user != null ?
+                <Container>
+                    <FaixaAzul>
+                        <ImagemTexto>
+
+                            <FotoPerfilConsulta
+                                source={{ uri: user.idNavigation.foto }}
+                            />
+
+                            <DataUser>
+
+                                <BemVindo>Bem Vindo</BemVindo>
+                                <UsuarioAtual>{token.role == "Médico" ? `Dr. ${token.name}` : `${token.name}`}</UsuarioAtual>
+
+                            </DataUser>
+
+                        </ImagemTexto>
+                        <Sino>
+                            <MaterialCommunityIcons name="bell" size={25} color="#fbfbfb" />
+                        </Sino>
+
+                    </FaixaAzul>
+
+                    <StyledCalendarStrip
+                        // animação e seleção de cada data
+                        calendarAnimation={{ type: "sequence", duration: 30 }}
+                        daySelectionAnimation={styles.selectedAnimationStyle}
+
+                        // seta esquerda e direita para avançar e voltar(aqui como display none)
+                        iconLeftStyle={styles.iconsStyle}
+                        iconRightStyle={styles.iconsStyle}
+
+                        // deixa uma marcação default - data atual
+                        selectedDate={currentDate}
+                        // dia que começamos a visualizar a barra
+                        startingDate={moment()}
+
+                        //data min e max - início do mês e final do mês
+                        minDate={startingDate}
+                        maxDate={endingDate}
+
+                        //estilização dos itens que não estão selecionados
+                        calendarHeaderStyle={styles.calendarHeaderStyle}
+                        dateNumberStyle={styles.numberDateStyle}
+                        dateNameStyle={styles.nameDateStyle}
+
+                        // estilização do item que está selecionado - efeito do item marcado
+                        highlightDateNameStyle={styles.selectedDateNameStyle}
+                        highlightDateNumberStyle={styles.selectedDateNumberStyle}
+                        highlightDateContainerStyle={styles.selectedContainerStyle}
+
+                        //tamanho do container
+                        iconContainer={{ flex: 0.1 }}
+
+                        //scroll da barra
+                        scrollable={true}
+
+                        onDateSelected={date => setDateConsulta(moment(date).format('YYYY-MM-DD'))}
                     />
 
-                    <DataUser>
-
-                        <BemVindo>Bem Vindo</BemVindo>
-                        <UsuarioAtual>{token.role == "Médico" ? `Dr. ${token.name}` : `${token.name}`}</UsuarioAtual>
-
-                    </DataUser>
-
-                </ImagemTexto>
-                <Sino>
-                    <MaterialCommunityIcons name="bell" size={25} color="#fbfbfb" />
-                </Sino>
-
-            </FaixaAzul>
-
-            <StyledCalendarStrip
-                // animação e seleção de cada data
-                calendarAnimation={{ type: "sequence", duration: 30 }}
-                daySelectionAnimation={styles.selectedAnimationStyle}
-
-                // seta esquerda e direita para avançar e voltar(aqui como display none)
-                iconLeftStyle={styles.iconsStyle}
-                iconRightStyle={styles.iconsStyle}
-
-                // deixa uma marcação default - data atual
-                selectedDate={currentDate}
-                // dia que começamos a visualizar a barra
-                startingDate={moment()}
-
-                //data min e max - início do mês e final do mês
-                minDate={startingDate}
-                maxDate={endingDate}
-
-                //estilização dos itens que não estão selecionados
-                calendarHeaderStyle={styles.calendarHeaderStyle}
-                dateNumberStyle={styles.numberDateStyle}
-                dateNameStyle={styles.nameDateStyle}
-
-                // estilização do item que está selecionado - efeito do item marcado
-                highlightDateNameStyle={styles.selectedDateNameStyle}
-                highlightDateNumberStyle={styles.selectedDateNumberStyle}
-                highlightDateContainerStyle={styles.selectedContainerStyle}
-
-                //tamanho do container
-                iconContainer={{ flex: 0.1 }}
-
-                //scroll da barra
-                scrollable={true}
-
-                onDateSelected={date => setDateConsulta(moment(date).format('YYYY-MM-DD'))}
-            />
-
-            <FilterAppointment>
-                <BtnListAppointment
-                    textButton={"Agendadas"}
-                    clickButton={statusLista === "pendente"}
-                    onPress={() => setStatusLista("pendente")}
-                />
-                <BtnListAppointment
-                    textButton={"Realizadas"}
-                    clickButton={statusLista === "realizado"}
-                    onPress={() => setStatusLista("realizado")}
-                />
-                <BtnListAppointment
-                    textButton={"Canceladas"}
-                    clickButton={statusLista === "cancelado"}
-                    onPress={() => setStatusLista("cancelado")}
-                />
-
-            </FilterAppointment>
-            {token.role === "Médico" ?
-                <ListComponent
-                    data={listaConsultas}
-                    keyExtractor={(item) => item.id}
-                    renderItem={({ item }) =>
-
-                        statusLista == item.situacao.situacao && (
-                            <AppointmentCard
-                                situacao={item.situacao.situacao}
-                                onPressCancel={() => MostrarModal('cancelar', item)}
-                                onPressAppointment={() => MostrarModal('prontuario', item)}
-                                prioridade={item.prioridade.prioridade}
-                                nome={item.paciente.idNavigation.nome}
-                                idade={idadeCalc(item.paciente.dataNascimento)}
-                                data={item.dataConsulta}
-                            />
-                        )
-                    }
-                    showsVerticalScrollIndicator={false}
-                />
-                :
-                <ListComponent
-                    data={listaConsultas}
-                    keyExtractor={(item) => item.id}
-                    renderItem={({ item }) =>
-
-                        statusLista == item.situacao.situacao && (
-                            <TouchableOpacity onPress={() => MostrarModal("local", item)}>
-                                <AppointmentCardDr
-                                    situacao={item.situacao.situacao}
-                                    navigation={() => navigation.navigate("ProntuarioPronto", {idConsulta: item.id})}
-                                    onPressLocal={() => MostrarModal('local', item)}
-                                    onPressCancel={() => MostrarModal('cancelar', item)}
-                                    profile={token.role}
-                                    nome={item.medicoClinica.medico.idNavigation.nome}
-                                    crm={item.medicoClinica.medico.crm}
-                                    prioridade={item.prioridade.prioridade}
-                                    data={item.dataConsulta}
-                                />
-                            </TouchableOpacity>
-                        )
-                    }
-                    showsVerticalScrollIndicator={false}
-                />
-            }
-
-            {/* modal cancelar */}
-            <CancelationModal
-                visible={showModalCancel}
-                setShowModalCancel={setShowModalCancel}
-                consultaCancelar={consultaSelecionada}
-                setSituacaoConsultaAlterada={setSituacaoConsultaAlterada}
-            />
-
-            {/* modal prontuario */}
-            <ProntuarioModal
-                visible={showModalAppointment}
-                setShowModalAppointment={setShowModalAppointment}
-                navigation={navigation}
-                consulta={consultaSelecionada}
-            />
-
-            <LocalModal
-                visible={showModalLocal}
-                setShowModalLocal={setShowModalLocal}
-                consulta={consultaSelecionada}
-                roleUsuario={token.role}
-                navigation={navigation}
-            />
-
-            {token.role === 'Médico' ?
-                <>
-                </>
-                :
-                <LocalModal
-                    visible={showModalLocal}
-                    setShowModalLocal={setShowModalLocal}
-                    roleUsuario={token.role}
-                    navigation={navigation}
-                    consulta={consultaSelecionada}
-                />
-            }
-            {token.role === "Medico" ?
-                <></>
-                :
-                <ViewIcon>
-                    <IconModal>
-
-                        <TouchableOpacity onPress={() => MostrarModal('agendamento', null)}>
-                            <ImagemBotao source={require('../../Assets/Images/Estetoscopio.png')} />
-                        </TouchableOpacity>
-
-                        <AgendarModal
-                            navigation={navigation}
-                            visible={showModalAgendar}
-                            setShowModalAgendar={setShowModalAgendar}
+                    <FilterAppointment>
+                        <BtnListAppointment
+                            textButton={"Agendadas"}
+                            clickButton={statusLista === "pendente"}
+                            onPress={() => setStatusLista("pendente")}
                         />
-                    </IconModal>
-                </ViewIcon>
+                        <BtnListAppointment
+                            textButton={"Realizadas"}
+                            clickButton={statusLista === "realizado"}
+                            onPress={() => setStatusLista("realizado")}
+                        />
+                        <BtnListAppointment
+                            textButton={"Canceladas"}
+                            clickButton={statusLista === "cancelado"}
+                            onPress={() => setStatusLista("cancelado")}
+                        />
 
+                    </FilterAppointment>
+                    {token.role === "Médico" ?
+                        <ListComponent
+                            data={listaConsultas}
+                            keyExtractor={(item) => item.id}
+                            renderItem={({ item }) =>
+
+                                statusLista == item.situacao.situacao && (
+                                    <AppointmentCard
+                                        situacao={item.situacao.situacao}
+                                        onPressCancel={() => MostrarModal('cancelar', item)}
+                                        onPressAppointment={() => MostrarModal('prontuario', item)}
+                                        prioridade={item.prioridade.prioridade}
+                                        nome={item.paciente.idNavigation.nome}
+                                        idade={idadeCalc(item.paciente.dataNascimento)}
+                                        data={item.dataConsulta}
+                                        user={item}
+                                    />
+                                )
+                            }
+                            showsVerticalScrollIndicator={false}
+                        />
+                        :
+                        <ListComponent
+                            data={listaConsultas}
+                            keyExtractor={(item) => item.id}
+                            renderItem={({ item }) =>
+
+                                statusLista == item.situacao.situacao && (
+                                    <TouchableOpacity onPress={() => MostrarModal("local", item)} disabled={statusLista != "pendente"}>
+                                        <AppointmentCardDr
+                                            situacao={item.situacao.situacao}
+                                            navigation={() => navigation.navigate("ProntuarioPronto", { idConsulta: item.id })}
+                                            onPressLocal={() => MostrarModal('local', item)}
+                                            onPressCancel={() => MostrarModal('cancelar', item)}
+                                            profile={token.role}
+                                            nome={item.medicoClinica.medico.idNavigation.nome}
+                                            crm={item.medicoClinica.medico.crm}
+                                            prioridade={item.prioridade.prioridade}
+                                            data={item.dataConsulta}
+                                            foto={item.medicoClinica.medico.idNavigation.foto}
+                                        />
+                                    </TouchableOpacity>
+                                )
+                            }
+                            showsVerticalScrollIndicator={false}
+                        />
+                    }
+
+                    {/* modal cancelar */}
+                    <CancelationModal
+                        visible={showModalCancel}
+                        setShowModalCancel={setShowModalCancel}
+                        consultaCancelar={consultaSelecionada}
+                        setSituacaoConsultaAlterada={setSituacaoConsultaAlterada}
+                    />
+
+                    {token.role === 'Médico' ?
+                        < ProntuarioModal
+                            visible={showModalAppointment}
+                            setShowModalAppointment={setShowModalAppointment}
+                            navigation={navigation}
+                            consulta={consultaSelecionada}
+                        />
+                        :
+                        <LocalModal
+                            visible={showModalLocal}
+                            setShowModalLocal={setShowModalLocal}
+                            roleUsuario={token.role}
+                            navigation={navigation}
+                            consulta={consultaSelecionada}
+                        />
+                    }
+
+
+                    {token.role === "Médico" ?
+                        <></>
+                        :
+                        <ViewIcon>
+                            <IconModal>
+
+                                <TouchableOpacity onPress={() => MostrarModal('agendamento', null)}>
+                                    <ImagemBotao source={require('../../Assets/Images/Estetoscopio.png')} />
+                                </TouchableOpacity>
+
+                                <AgendarModal
+                                    navigation={navigation}
+                                    visible={showModalAgendar}
+                                    setShowModalAgendar={setShowModalAgendar}
+                                />
+                            </IconModal>
+                        </ViewIcon>
+
+                    }
+
+
+                </Container>
+
+                :
+                <></>
             }
+        </>
 
-
-        </Container>
     )
 }
 
