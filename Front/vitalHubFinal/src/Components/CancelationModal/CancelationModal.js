@@ -21,7 +21,7 @@ export const CancelationModal = ({
 
     //verifica se o usuario concedeu permissão
     if (status !== "granted") {
-      alert("voce nao deixou as notificacoes ativas")
+      alert("Você não deixou as notificacoes ativas")
       return;
     }
 

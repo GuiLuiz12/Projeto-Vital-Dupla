@@ -29,7 +29,7 @@ export const ContainerRow = styled.View`
 export const ContainerRowButtons = styled(ContainerRow)`
     width: 90%;
     gap: 60px;
-    justify-content: flex-start
+    justify-content: flex-start;
 `
 
 export const ContainerConsultas = styled.SafeAreaView`
@@ -66,4 +66,10 @@ export const ContainerLocal = styled.View`
 
 export const ContainerLocalEndereco = styled(ContainerLocal)`
     width: 370px;
+`
+
+export const CaxinhaSla = styled.View`
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
 `

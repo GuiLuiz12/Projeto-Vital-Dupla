@@ -1,6 +1,6 @@
 import { ScrollView } from "react-native"
 import { ButtonCard, ButtonText, TextAge } from "../../Components/AppointmentCard/Style"
-import { Container, ContainerLeft, ContainerRow, ContainerRowButtons, ContainerSpace } from "../../Components/Container/Style"
+import { Container, ContainerLeft, CaxinhaSla, ContainerRowButtons, ContainerSpace } from "../../Components/Container/Style"
 import { FotoPerfil } from "../../Components/FotoPerfil/Style"
 import { SubTitle } from "../../Components/SubTitle/Style"
 import { Title, TitleProntuario } from "../../Components/Title/Style"
@@ -19,7 +19,7 @@ import api from "../../Service/Service"
 export const ProntuarioPronto = ({ navigation, route }) => {
 
     const [token, setToken] = useState({})
-    const [buscarId, setBuscarId] = useState("")
+    const [buscarId, setBuscarId] = useState(null)
     const [especialidade, setEspecialidade] = useState(null)
     const [fotoPerfil, setFotoPerfil] = useState("")
 
@@ -39,13 +39,10 @@ export const ProntuarioPronto = ({ navigation, route }) => {
 
     async function ProfileLoad() {
         const tokenDecode = await userDecodeToken();
-        // console.log(tokenDecode);
 
         if (tokenDecode) {
             setToken(tokenDecode)
             // BuscarProntuario(tokenDecode)
-            // console.log(tokenDecode);
-            // console.log(token);
         }
     };
 
@@ -144,19 +141,20 @@ export const ProntuarioPronto = ({ navigation, route }) => {
 
     return (
         <ScrollView>
-
+            {especialidade != null && buscarId != null ?
+            <>
             <Container>
                 <ContainerSpace>
                     
                     <FotoPerfil
                         source={require=(fotoPerfil)}
-                    />
+                        />
 
                     <Title>{token.name}</Title>
-                    <ContainerRow>
+                    <CaxinhaSla>
                         <TextAge>{especialidade.medicoClinica.medico.especialidade.especialidade1}</TextAge>
                         <SubTitle>{especialidade.medicoClinica.medico.crm}</SubTitle>
-                    </ContainerRow>
+                    </CaxinhaSla>
 
                     <ContainerLeft>
                         <TitleProntuario>Descrição da consulta</TitleProntuario>
@@ -176,7 +174,7 @@ export const ProntuarioPronto = ({ navigation, route }) => {
 
                         <TitleProntuario>Prescrição médica</TitleProntuario>
                         <CaixaProntuario>
-                            <TextCaixaProntuario>{buscarId.receita.medicamento}</TextCaixaProntuario>
+                            <TextCaixaProntuario>{buscarId.receita.medicamento == null ? "Não Informado" : buscarId.receita.medicamento}</TextCaixaProntuario>
                         </CaixaProntuario>
                     </ContainerLeft>
 
@@ -221,6 +219,9 @@ export const ProntuarioPronto = ({ navigation, route }) => {
                     </ContentAccount>
                 </ContainerSpace>
             </Container>
+            </> 
+            :
+            <></>}
         </ScrollView>
     )
 }
