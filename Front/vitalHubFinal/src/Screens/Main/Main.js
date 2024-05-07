@@ -5,7 +5,7 @@ import { Home } from '../Home/Home';
 
 const Tab = createBottomTabNavigator();
 
-export function Main() {
+export function Main({route}) {
     return (
         <Tab.Navigator
             screenOptions={{

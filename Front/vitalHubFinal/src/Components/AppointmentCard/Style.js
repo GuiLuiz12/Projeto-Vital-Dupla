@@ -2,10 +2,11 @@ import styled from "styled-components"
 import { Title } from "../Title/Style"
 
 export const ContainerCardsList = styled.View`
+    align-items: center;
     width: 90%;
+    height: 102px;
     margin: 0px auto;
     margin-bottom: 12px;
-    padding: 10px;
     border-radius: 5px;
     flex-direction: row;
     gap: 10px;
@@ -20,8 +21,9 @@ export const ProfileImage = styled.Image`
 `
 
 export const ContentCard = styled.View`
+    margin-top: -10px;
     width: 70%;
-    gap: 11px;
+    gap: 10px;
 `
 
 export const DataProfileCard = styled.View`
@@ -66,7 +68,6 @@ export const ClockCard = styled.View`
 
 export const ButtonCard = styled.TouchableOpacity`
     font-size: 12px;
-
 `
 
 export const ButtonText = styled.Text`

@@ -11,7 +11,6 @@ import { RedefinirSenha } from './src/Screens/RedefinirSenha/RedefinirSenha';
 import { CriarConta } from './src/Screens/CriarConta/CriarConta';
 import { Perfil } from './src/Screens/Perfil/Perfil';
 import { Local } from './src/Screens/Local/Local';
-import { Prontuario } from './src/Screens/Prontuario/Prontuario';
 import { SelecionarClinica } from './src/Screens/SelecionarClinica/SelecionarClinica';
 import { SelecionarMedico } from './src/Screens/SelecionarMedico/SelecionarMedico';
 import { SelecionarData } from './src/Screens/SelecionarData/SelecionarData';
@@ -19,6 +18,15 @@ import { ProntuarioPronto } from './src/Screens/ProntuarioPronto/ProntuarioPront
 import CameraProntuario from './src/Components/Camera/Camera';
 import { Main } from './src/Screens/Main/Main';
 import { Home } from './src/Screens/Home/Home';
+import { Prontuario } from './src/Screens/Prontuario/Prontuario';
+
+//Solicitar acessos a galeria
+import * as MediaLibrary from "expo-media-library"
+import * as ImagePicker from "expo-image-picker"
+import { useEffect } from 'react';
+import { Camera } from 'expo-camera';
+import { requestForegroundPermissionsAsync } from 'expo-location';
+
 
 const Stack = createNativeStackNavigator();
 

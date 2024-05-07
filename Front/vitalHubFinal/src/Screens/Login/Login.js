@@ -9,27 +9,23 @@ import { ButtonGoogle } from "../../Components/Button/Style"
 import { LinkMedium } from "../../Components/Link/Style"
 import { AntDesign } from '@expo/vector-icons';
 import { ContentAccount, TextAccount, TextAccountLink } from "../../Components/ContentAccount/Style"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import Spinner from "../../Components/Spinner/Spinner"
-
 import AsyncStorage from '@react-native-async-storage/async-storage'
-
 import api from "../../Service/Service"
 
+export const Login = ({ navigation }) => {
 
-
-export const Login = ({navigation}) => {
-
-<<<<<<< HEAD
-    const [email, setEmail] = useState('gui@email.com')
-=======
     const [email, setEmail] = useState('joao@email.com')
->>>>>>> 516ea7c7ae78c6d09d800bcf25dff4efa0346045
+
+
+
+
     const [senha, setSenha] = useState('12345')
     const [showSpinner, setShowSpinner] = useState(false)
-    const [press, setPress] = useState(false) 
+    const [press, setPress] = useState(false)
 
-    async function LoginFunct(){
+    async function LoginFunct() {
         if (!email || !senha) { // Verifica se os campos de e-mail e senha estão preenchidos
             Alert.alert("Erro", "Por favor, preencha todos os campos."); // Exibe uma mensagem de erro se algum campo estiver vazio
             return;
@@ -58,10 +54,9 @@ export const Login = ({navigation}) => {
     const LinkCriarConta = () => {
         navigation.navigate("CriarConta")
     }
-
     return (
         <Container>
-            { showSpinner ? <Spinner/> : null}
+            {showSpinner ? <Spinner /> : null}
 
             <Logo
                 source={require('../../Assets/Images/VitalHub_Logo.png')}

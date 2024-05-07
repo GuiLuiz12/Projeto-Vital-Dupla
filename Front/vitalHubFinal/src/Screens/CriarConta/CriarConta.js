@@ -3,16 +3,65 @@ import { Logo } from "../../Components/Logo/Style"
 import { Title } from "../../Components/Title/Style"
 import { Input } from "../../Components/Input/Style"
 import { Button } from "../../Components/Button/Style"
-import { ButtonTitle} from "../../Components/ButtonTitle/Style"
+import { ButtonTitle } from "../../Components/ButtonTitle/Style"
 import { ContentAccount, TextAccountLink } from "../../Components/ContentAccount/Style"
 import { SubTitle } from "../../Components/SubTitle/Style"
+import { useState } from "react"
+import api from "../../Service/Service"
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
-export const CriarConta = ({navigation}) => {
+export const CriarConta = ({ navigation }) => {
+
+    const [email, setEmail] = useState("edu@email.com")
+    const [senha, setSenha] = useState("12345")
+    const [confirmSenha, setConfirmSenha] = useState("12345")
+    const [nome, setNome] = useState("Eduardo")
 
     const Cancelar = () => {
         navigation.navigate("Login")
     }
 
+    function Cadastrar() {
+        if (senha == confirmSenha) {
+            CadatroApi()
+            LoginFunct()
+            navigation.navigate("Perfil")
+        } else {
+            alert("Senhas não iguais")
+        }
+    }
+
+    async function CadatroApi() {
+        await AsyncStorage.removeItem("token")
+
+        const form = new FormData()
+        form.append("Nome", nome)
+        form.append("Email", email)
+        form.append("Senha", senha)
+        form.append("IdTipoUsuario", "4fa85f64-5717-4562-b3fc-2c963f66afa6")
+
+        
+
+        await api.post("/Pacientes", form, {
+            headers: {
+                "Content-Type": "multipart/form-data"
+            }
+        }).then(() => {
+
+        })
+            .catch(error => {
+                console.log(error);
+            })
+    }
+
+    async function LoginFunct() {
+        try {
+            const response = await api.post('/Login', { email, senha });
+            await AsyncStorage.setItem("token", JSON.stringify(response.data));
+        } catch (error) {
+            console.log(error);
+        }
+    }
 
     return (
         <Container>
@@ -26,27 +75,39 @@ export const CriarConta = ({navigation}) => {
 
                 <SubTitle>Insira seu endereço de e-mail e senha para realizar seu cadastro.</SubTitle>
 
-                </ContainerSpace>
-                <Input
-                    placeholder="Usuário ou email"
-                />
+            </ContainerSpace>
+            <Input
+                placeholder="Usuário ou email"
+                onChangeText={(event) => setEmail(event)}
+                value={email}
+            />
 
-                <Input
-                    placeholder="Senha"
-                />
+            <Input
+                placeholder="Senha"
+                onChangeText={(event) => setSenha(event)}
+                value={senha}
+            />
 
-                <Input
-                    placeholder="Confirmar senha"
-                />
+            <Input
+                placeholder="Confirmar senha"
+                onChangeText={(event) => setConfirmSenha(event)}
+                value={confirmSenha}
+            />
 
-                <Button>
-                    <ButtonTitle>Cadastrar</ButtonTitle>
-                </Button>
+            <Input
+                placeholder="Nome"
+                onChangeText={(event) => setNome(event)}
+                value={nome}
+            />
+
+            <Button onPress={() => Cadastrar()}>
+                <ButtonTitle>Cadastrar</ButtonTitle>
+            </Button>
 
 
-                <ContentAccount onPress={() => Cancelar()}>
-                    <TextAccountLink>Cancelar</TextAccountLink>
-                </ContentAccount>
+            <ContentAccount onPress={() => Cancelar()}>
+                <TextAccountLink>Cancelar</TextAccountLink>
+            </ContentAccount>
 
         </Container>
     )

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { Container, ContainerLocal, ContainerLocalEndereco, ContainerRow, ContainerSpace } from "../../Components/Container/Style"
+import { Container, ContainerLocal, ContainerLocalEndereco, ContainerLocal_Nome, ContainerRow, ContainerSpace } from "../../Components/Container/Style"
 import { ContentAccount, TextAccountLink } from "../../Components/ContentAccount/Style"
 import { InputCinza, InputCinzaMenor } from "../../Components/InputCinza/Style"
 import { Mapa } from "../../Components/Mapa/Style"
@@ -12,7 +12,7 @@ import { ActivityIndicator } from "react-native"
 
 export const Local = ({ navigation, route }) => {
 
-    const [clinica, setClinica] = useState({})
+    const [clinica, setClinica] = useState(null)
 
     const VoltarHome = () => {
         navigation.navigate("Main")
@@ -30,11 +30,14 @@ export const Local = ({ navigation, route }) => {
 
     }
 
+    async function requestLocation() {
+        await requestForegroundPermissionsAsync();
+    }
+
     useEffect(() => {
-        if (clinica == null) {
-            BuscarClinica()
-        }
-    }, [clinica])
+        requestLocation()
+        BuscarClinica()
+    }, [])
     return (
 
         <Container>
@@ -44,7 +47,10 @@ export const Local = ({ navigation, route }) => {
                         <ContainerSpace>
 
                             <Mapa>
-                                <Maps />
+                                <Maps 
+                                    latitude={clinica.endereco.latitude}
+                                    longitude={clinica.endereco.longitude}
+                                />
                             </Mapa>
 
                             <Title>Clínica Natureh</Title>
@@ -55,25 +61,25 @@ export const Local = ({ navigation, route }) => {
                                 <TitleComponent>Endereço</TitleComponent>
 
                                 <InputCinza
-                                    placeholder="Rua Vicenso Silva, 987"
+                                    value={`${clinica.endereco.logradouro}, ${clinica.endereco.numero}`}
                                 />
                             </ContainerLocalEndereco>
 
                             <ContainerRow>
                                 <ContainerLocal>
-
-                                    <TitleComponent>Número</TitleComponent>
+                                    <TitleComponent>cidade</TitleComponent>
                                     <InputCinzaMenor
-                                        placeholder="578"
+                                        value={`${clinica.endereco.cidade}`}
+    
                                     />
                                 </ContainerLocal>
-                                <ContainerLocal>
+                                <ContainerLocal_Nome>
 
-                                    <TitleComponent>Bairro</TitleComponent>
+                                    <TitleComponent>Nome</TitleComponent>
                                     <InputCinzaMenor
-                                        placeholder="Moema-SP"
+                                        value={`${clinica.nomeFantasia}`}
                                     />
-                                </ContainerLocal>
+                                </ContainerLocal_Nome>
                             </ContainerRow>
 
 

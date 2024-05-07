@@ -13,12 +13,15 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { StyleSheet, TouchableOpacity } from 'react-native';
 import { LocalModal } from '../../Components/LocalModal/LocalModal';
 import { AppointmentCard, AppointmentCardDr } from '../../Components/AppointmentCard/AppointmentCard';
-import { userDecodeToken } from '../../Utils/Auth';
+import { idadeCalc, userDecodeToken } from '../../Utils/Auth';
 import { IconModal, ImagemBotao, ViewIcon } from '../../Components/Button/Style';
 import { AgendarModal } from "../../Components/AgendarModal/AgendarModal";
 import api from '../../Service/Service';
 
-export const Home = ({ navigation }) => {
+export const Home = ({ navigation, route }) => {
+
+    const routeParams = route.params
+
     const [token, setToken] = useState({})
     const [showModalAgendar, setShowModalAgendar] = useState(false);
     const [showModalLocal, setShowModalLocal] = useState(false);
@@ -28,23 +31,7 @@ export const Home = ({ navigation }) => {
     const [showModalAppointment, setShowModalAppointment] = useState(false);
     const [statusLista, setStatusLista] = useState("pendente")
     const [consultaSelecionada, setConsultaSelecionada] = useState(null)
-
-
-
-    const handleOpenModal = () => {
-        setShowModalAgendar(true);
-    };
-
-    // Função para fechar o modal
-    const handleCloseModal = () => {
-        setShowModalAgendar(false);
-    };
-
-    // Função para fechar o modal
-    const handleCloseModalLocal = () => {
-        setShowModalLocal(false);
-    };
-    
+    const [situacaoConsultaAlterada, setSituacaoConsultaAlterada] = useState("")
 
     //define padrão pt-br para calendário
     moment.updateLocale("pt-br", {
@@ -94,28 +81,28 @@ export const Home = ({ navigation }) => {
 
         const response = await api.get(`/${url}/BuscarPorData?data=${dateConsulta}&id=${token.jti}`)
         setListaConsultas(response.data)
+        console.log(listaConsultas);
     }
 
-    function MostrarModal( modal, consulta) {
+    function MostrarModal(modal, consulta) {
         setConsultaSelecionada(consulta)
 
-        if(modal == 'cancelar'){
+        if (modal == 'cancelar') {
             setShowModalCancel(true)
-        }else if (modal == 'prontuario') {
+            setSituacaoConsultaAlterada(consulta.situacaoId)
+        } else if (modal == 'prontuario') {
             setShowModalAppointment(true)
-        }else if (modal == 'local'){
+        } else if (modal == 'local') {
             setShowModalLocal(true)
-        }else{
+        } else {
             setShowModalAgendar(true)
         }
-
     }
 
     useEffect(() => {
         ProfileLoad();
-
         ListarPacientes();
-    }, [dateConsulta])
+    }, [dateConsulta, situacaoConsultaAlterada])
 
     return (
         <Container>
@@ -129,7 +116,6 @@ export const Home = ({ navigation }) => {
                     <DataUser>
 
                         <BemVindo>Bem Vindo</BemVindo>
-
                         <UsuarioAtual>{token.role == "Médico" ? `Dr. ${token.name}` : `${token.name}`}</UsuarioAtual>
 
                     </DataUser>
@@ -209,7 +195,8 @@ export const Home = ({ navigation }) => {
                                 onPressAppointment={() => MostrarModal('prontuario', item)}
                                 prioridade={item.prioridade.prioridade}
                                 nome={item.paciente.idNavigation.nome}
-                                idade={"22 anos"}
+                                idade={idadeCalc(item.paciente.dataNascimento)}
+                                data={item.dataConsulta}
                             />
                         )
                     }
@@ -225,13 +212,14 @@ export const Home = ({ navigation }) => {
                             <TouchableOpacity onPress={() => MostrarModal("local", item)}>
                                 <AppointmentCardDr
                                     situacao={item.situacao.situacao}
-                                    navigation={() => navigation.navigate("Prontuario")}
+                                    navigation={() => navigation.navigate("ProntuarioPronto", { idConsulta: item.id })}
                                     onPressLocal={() => MostrarModal('local', item)}
                                     onPressCancel={() => MostrarModal('cancelar', item)}
                                     profile={token.role}
                                     nome={item.medicoClinica.medico.idNavigation.nome}
                                     crm={item.medicoClinica.medico.crm}
                                     prioridade={item.prioridade.prioridade}
+                                    data={item.dataConsulta}
                                 />
                             </TouchableOpacity>
                         )
@@ -244,22 +232,28 @@ export const Home = ({ navigation }) => {
             <CancelationModal
                 visible={showModalCancel}
                 setShowModalCancel={setShowModalCancel}
+                consultaCancelar={consultaSelecionada}
+                setSituacaoConsultaAlterada={setSituacaoConsultaAlterada}
             />
 
-            {/* modal prontuario */}
-            <ProntuarioModal
-                visible={showModalAppointment}
-                setShowModalAppointment={setShowModalAppointment}
-            />
+            {token.role === 'Médico' ?
+                < ProntuarioModal
+                    visible={showModalAppointment}
+                    setShowModalAppointment={setShowModalAppointment}
+                    navigation={navigation}
+                    consulta={consultaSelecionada}
+                />
+                :
+                <LocalModal
+                    visible={showModalLocal}
+                    setShowModalLocal={setShowModalLocal}
+                    roleUsuario={token.role}
+                    navigation={navigation}
+                    consulta={consultaSelecionada}
+                />
+            }
 
-            <LocalModal
-                visible={showModalLocal}
-                setShowModalLocal={setShowModalLocal}
-                consulta={ consultaSelecionada }
-                roleUsuario={token.role}
-                navigation={navigation}
-            />
-            
+
             {token.role === "Médico" ?
                 <></>
                 :
@@ -271,9 +265,9 @@ export const Home = ({ navigation }) => {
                         </TouchableOpacity>
 
                         <AgendarModal
+                            navigation={navigation}
                             visible={showModalAgendar}
                             setShowModalAgendar={setShowModalAgendar}
-                            onClose={handleCloseModal}
                         />
                     </IconModal>
                 </ViewIcon>

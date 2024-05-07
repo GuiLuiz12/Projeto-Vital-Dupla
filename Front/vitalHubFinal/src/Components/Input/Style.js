@@ -35,4 +35,6 @@ export const ProntuarioInputMaior = styled.TextInput.attrs({
 
 export const ProntuarioInputMenor = styled(ProntuarioInputMaior)`
     height: 53px;
+    width: 100%;
+    margin-bottom: 30px;
 `

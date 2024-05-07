@@ -24,6 +24,7 @@ export const ModalText = styled.Text`
     text-align: center;
     margin-top: 10px;
     font-family: "Quicksand_500Medium";
+    margin-bottom: 30px;
 `
 
 export const ModalContentConfirmar = styled(ModalContent)`

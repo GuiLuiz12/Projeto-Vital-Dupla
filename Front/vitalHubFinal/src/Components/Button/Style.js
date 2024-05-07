@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
 export const Button = styled.TouchableOpacity`
     width: 90%;
@@ -6,7 +6,7 @@ export const Button = styled.TouchableOpacity`
 
     background-color: #496bba;
     border: 1px solid #496bba;
-    margin-top: 15px;
+    margin-top: 30px;
     padding: 12px 8px 12px 8px;
     border-radius: 5px;
 
@@ -28,7 +28,7 @@ export const ButtonMenor = styled.TouchableHighlight`
         background-color: #496bba;
     `: css`
         background-color: transparent;
-        border: 2px solid #607ec5
+        border: 2px solid #607ec5;
         `}
 `
 
@@ -38,12 +38,14 @@ export const ButtonMenorBranco = styled(ButtonMenor)`
 `
 
 export const ButtonModal = styled(Button)`
-    width: 80%;
+    width: 90%;
 `
 
 export const ButtonSecondary = styled(Button)`
     background-color: transparent;
     border: none;
+    margin-bottom: 15px;
+    margin-top: 30px;
 `
 export const ButtonCinza = styled(Button)`
     background-color: #ACABB7;
@@ -93,4 +95,29 @@ export const CancelarText = styled.Text`
 
 export const ButtonCinzaPequeno = styled(ButtonCinza)`
     width: 189px;
+`
+
+export const ButtonPerfil = styled(Button)`
+     ${props => props.color ? 
+    css`
+        background-color: #ACABB7;
+    `
+    : 
+    css`
+        background-color: #496bba;
+    `}
+    border: 1px solid transparent;
+`
+
+export const IconBox = styled.TouchableOpacity`
+    margin-top: 20px;
+    height: 30px;
+    width: 30px;
+    background-color: rgba(73, 179, 186, .15);
+    border-radius: 20px;
+    align-items: center;
+    justify-content: center;
+    align-self: flex-start;
+    margin-left: 20px;
+    margin-top: 20px;
 `

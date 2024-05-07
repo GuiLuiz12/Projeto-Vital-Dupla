@@ -4,7 +4,7 @@ export const Container = styled.SafeAreaView`
     flex: 1;
     align-items: center;
     background-color: #FAFAFA;
-    margin-top: 62px;
+    margin-top: 40px;
 `
 
 export const ContainerLeft = styled.View`
@@ -22,7 +22,15 @@ export const ContainerLeftPaddingLeft = styled(ContainerLeft)`
 export const ContainerRow = styled.View`
     flex-direction: row;
     gap: 10px;
-    align-items: center;
+    width: 90%;
+    justify-content: space-between;
+    margin-bottom: 10px;
+`
+
+export const ContainerRowButtons = styled(ContainerRow)`
+    width: 90%;
+    gap: 60px;
+    justify-content: flex-start;
 `
 
 export const ContainerConsultas = styled.SafeAreaView`
@@ -45,7 +53,6 @@ export const ContainerClinicas = styled.View`
 export const ContainerSpace = styled.View`
     justify-content: center;
     align-items: center;
-    gap: 20px;
     width: 100%;
     padding-top: 30px;
 `
@@ -54,9 +61,26 @@ export const ContainerLocal = styled.View`
     align-items: baseline;
     justify-content: center;
     flex-direction: column;
-    width: 180px;
+    width: 144px;
 `
 
 export const ContainerLocalEndereco = styled(ContainerLocal)`
-    width: 370px;
+    width: 90%;
+`
+
+export const ContainerLocalEderecoP = styled(ContainerLocal)`
+    width: 70%;
+`
+
+export const ContainerLocalNumeroP = styled(ContainerLocal)`
+    width: 25%;
+`
+
+export const ContainerRowInputs = styled(ContainerRowButtons)`
+    gap: 0px;
+    justify-content: space-between;
+`
+
+export const ContainerLocal_Nome = styled(ContainerLocal)`
+    width: 190px;
 `

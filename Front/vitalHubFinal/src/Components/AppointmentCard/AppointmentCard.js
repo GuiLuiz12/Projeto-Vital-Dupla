@@ -1,6 +1,7 @@
 import { AntDesign } from '@expo/vector-icons';
 import { ButtonCard, ButtonText, ClockCard, ContainerCardsList, ContentCard, DataProfileCard, ProfileData, ProfileImage, ProfileName, TextAge, TextBold, ViewRow } from './Style';
 import { useState } from 'react';
+import moment from 'moment';
 
 export const AppointmentCard = ({
     situacao = "pendente",
@@ -9,6 +10,7 @@ export const AppointmentCard = ({
     prioridade,
     nome,
     idade,
+    data,
 }) => {
     
     return(
@@ -36,7 +38,7 @@ export const AppointmentCard = ({
                            
                             <ClockCard situacao={situacao}>
                                 <AntDesign name="clockcircle" size={14} color={situacao == "pendente" ? "#49b3ba" : "#8c8a97"} />
-                                <TextBold situacao={situacao}>14:00</TextBold>
+                                <TextBold situacao={situacao}>{moment(data).format("HH:mm")}</TextBold>
                             </ClockCard>
 
                             {
@@ -66,7 +68,8 @@ export const AppointmentCardDr = ({
     onPressCancel,
     nome,
     crm,
-    prioridade
+    prioridade,
+    data
 
 }) => {
     return(
@@ -94,7 +97,7 @@ export const AppointmentCardDr = ({
                            
                             <ClockCard situacao={situacao}>
                                 <AntDesign name="clockcircle" size={14} color={situacao == "pendente" ? "#49b3ba" : "#8c8a97"} />
-                                <TextBold situacao={situacao}>14:00</TextBold>
+                                <TextBold situacao={situacao}>{moment(data).format("HH:mm")}</TextBold>
                             </ClockCard>
 
                             {
