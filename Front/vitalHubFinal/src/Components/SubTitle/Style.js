@@ -8,3 +8,7 @@ export const SubTitle = styled.Text`
     margin-bottom: 5px;
     margin-top: 15px;
 `
+
+export const SubTitle_NotMargin = styled(SubTitle)`
+    margin: 0 0 0 0;
+`

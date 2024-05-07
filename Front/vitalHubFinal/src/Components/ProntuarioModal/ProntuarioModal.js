@@ -18,7 +18,7 @@ export const ProntuarioModal = ({
 }) => {
 
     function HandlePress(rota) {
-        navigation.navigate(rota, { clinicaId: consulta.medicoClinica.clinicaId })
+        navigation.navigate(rota, { consulta: consulta })
     }
     return (
         consulta == null ?

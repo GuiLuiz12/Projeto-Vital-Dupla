@@ -79,7 +79,6 @@ export const Home = ({ navigation, route }) => {
 
     async function BuscarUsuario() {
         try {
-            console.log(token);
             const url = (token.role === 'Médico' ? 'Medicos' : "Pacientes");
 
             const response = await api.get(`/${url}/BuscarPorId?id=${token.jti}`);
@@ -95,13 +94,11 @@ export const Home = ({ navigation, route }) => {
         const url = (token.role == 'Médico' ? 'Medicos' : "Pacientes")
 
         const response = await api.get(`/${url}/BuscarPorData?data=${dateConsulta}&id=${token.jti}`)
-        console.log();
         setListaConsultas(response.data)
     }
 
     function MostrarModal(modal, consulta) {
         setConsultaSelecionada(consulta)
-        console.log(consulta);
 
         if (modal == 'cancelar') {
             setShowModalCancel(true)
