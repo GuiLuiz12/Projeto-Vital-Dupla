@@ -1,71 +1,138 @@
 import { ScrollView } from "react-native"
-import { ButtonCard, ButtonText, TextAge } from "../../Components/AppointmentCard/Style"
-import { Button, ButtonCinza } from "../../Components/Button/Style"
-import { Container, ContainerLeft, ContainerLeftPaddingLeft } from "../../Components/Container/Style"
+import { TextAge } from "../../Components/AppointmentCard/Style"
+import { ButtonPerfil } from "../../Components/Button/Style"
+import { Container, ContainerLeftPaddingLeft } from "../../Components/Container/Style"
 import { ContainerRow } from "../../Components/ContainerRow/Style"
 import { FotoPerfil } from "../../Components/FotoPerfil/Style"
-import { ProntuarioInputMaior, ProntuarioInputMenor } from "../../Components/Input/Style"
-import { SubTitle } from "../../Components/SubTitle/Style"
+import { ProntuarioInputMaior, ProntuarioInputMenor_NoMargin } from "../../Components/Input/Style"
+import { SubTitle_NotMargin } from "../../Components/SubTitle/Style"
 import { Title, TitleProntuario } from "../../Components/Title/Style"
 import { ButtonTitle } from "../../Components/ButtonTitle/Style"
+import { useEffect, useState } from "react"
+import { idadeCalc } from "../../Utils/Auth"
+import { ContentAccount, TextAccountLink } from "../../Components/ContentAccount/Style"
+import api from "../../Service/Service"
 
-export const Prontuario = ({navigation}) => {
+export const Prontuario = ({ navigation, route }) => {
+
+    const [consulta, setConsulta] = useState(null)
+    const [editing, setEditing] = useState(false)
+
+    function EditarFunction() {
+        setEditing(true)
+    }
+
+    function CancelFunction() {
+        setEditing(false)
+    }
+
+    async function SalvarFunction() {
+        if (consulta) {
+            await api.put("/Consultas/Prontuario", {
+                consultaId: route.params.consulta.id,
+                medicamento: consulta.medicamento,
+                descricao: consulta.descricao,
+                diagnostico: consulta.diagnostico
+            }).then(() => {
+                setEditing(false)
+                setAttConsulta({})
+            }).catch((error) => {
+                console.log(error);
+            })
+        }
+
+    }
+    useEffect(async () => {
+        await setConsulta(route.params.consulta)
+
+        setConsulta({ ...consulta, medicamento: consulta.receita.medicamento })
+    }, [route])
+
     return (
         <ScrollView>
-            <Container>
+            {consulta != null ?
+                <Container>
 
-                <FotoPerfil
-                    source={require('../../Assets/Images/Richard.png')}
-                />
-
-                <Title>Richard Kosta</Title>
-
-                <ContainerRow>
-                    <TextAge>22 Anos</TextAge>
-                    <SubTitle>richard.kosta@gmail.com</SubTitle>
-                </ContainerRow>
-
-                <ContainerLeftPaddingLeft>
-
-                    <TitleProntuario>Descrição da consulta</TitleProntuario>
-
-                    <ProntuarioInputMaior
-                        placeholder="Descrição"
+                    <FotoPerfil
+                        source={{ uri: consulta.paciente.idNavigation.foto }}
                     />
-                </ContainerLeftPaddingLeft>
 
-                <ContainerLeftPaddingLeft>
+                    <Title>{consulta.paciente.idNavigation.nome}</Title>
 
-                    <TitleProntuario>Diagnóstico do paciente</TitleProntuario>
+                    <ContainerRow>
+                        <TextAge>{idadeCalc(consulta.paciente.dataNascimento)} anos</TextAge>
+                        <SubTitle_NotMargin>{consulta.paciente.idNavigation.email}</SubTitle_NotMargin>
+                    </ContainerRow>
 
-                    <ProntuarioInputMenor
-                        placeholder="Diagnóstico"
-                    />
-                </ContainerLeftPaddingLeft>
+                    <ContainerLeftPaddingLeft>
 
-                <ContainerLeftPaddingLeft>
+                        <TitleProntuario>Descrição da consulta</TitleProntuario>
 
-                    <TitleProntuario>Prescrição médica</TitleProntuario>
+                        <ProntuarioInputMaior
+                            placeholder="Não Informado"
+                            value={consulta.descricao}
+                            editable={editing}
+                            onChangeText={(txt) => setConsulta({ ...consulta, descricao: txt })
+                            }
+                            multiline={true}
+                        />
+                    </ContainerLeftPaddingLeft>
 
-                    <ProntuarioInputMaior
-                        placeholder="Prescrição médica"
-                    />
-                </ContainerLeftPaddingLeft>
+                    <ContainerLeftPaddingLeft>
 
-                <Button>
-                    <ButtonTitle>Salvar</ButtonTitle>
-                </Button>
+                        <TitleProntuario>Diagnóstico do paciente</TitleProntuario>
 
-                <ButtonCinza>
-                    <ButtonTitle>Editar</ButtonTitle>
-                </ButtonCinza>
+                        <ProntuarioInputMenor_NoMargin
+                            placeholder="Não Informado"
+                            value={consulta.diagnostico}
+                            editable={editing}
+                            onChangeText={(txt) => setConsulta({ ...consulta, diagnostico: txt })
+                            }
+                        />
+                    </ContainerLeftPaddingLeft>
 
-                <ButtonCard onPress={() => navigation.navigate("Main")}>
-                    <ButtonText>Cancelar</ButtonText>
-                </ButtonCard>
+                    <ContainerLeftPaddingLeft>
 
+                        <TitleProntuario>Prescrição médica</TitleProntuario>
 
-            </Container>
+                        <ProntuarioInputMaior
+                            placeholder="Não Informado"
+                            value={consulta.medicamento}
+                            editable={editing}
+                            onChangeText={(txt) => setConsulta({ ...consulta, medicamento: txt })
+                            }
+                            multiline={true}
+                        />
+                    </ContainerLeftPaddingLeft>
+
+                    <ButtonPerfil onPress={() => SalvarFunction()} disabled={!editing} color={!editing}>
+                        <ButtonTitle>Salvar</ButtonTitle>
+                    </ButtonPerfil>
+
+                    {editing ?
+                        <>
+                            <ButtonPerfil onPress={() => CancelFunction()}>
+                                <ButtonTitle>Cancelar Edição</ButtonTitle>
+                            </ButtonPerfil>
+                        </>
+
+                        :
+                        <>
+                            <ButtonPerfil onPress={() => EditarFunction()}>
+                                <ButtonTitle>Editar</ButtonTitle>
+                            </ButtonPerfil>
+
+                            <ContentAccount onPress={() => navigation.navigate("Main")}>
+                                <TextAccountLink>Cancelar</TextAccountLink>
+                            </ContentAccount>
+                        </>
+
+                    }
+                </Container>
+                :
+                <></>
+            }
+
         </ScrollView>
     )
 }

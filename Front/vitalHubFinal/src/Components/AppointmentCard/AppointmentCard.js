@@ -1,6 +1,6 @@
 import { AntDesign } from '@expo/vector-icons';
 import { ButtonCard, ButtonText, ClockCard, ContainerCardsList, ContentCard, DataProfileCard, ProfileData, ProfileImage, ProfileName, TextAge, TextBold, ViewRow } from './Style';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import moment from 'moment';
 
 export const AppointmentCard = ({
@@ -11,13 +11,13 @@ export const AppointmentCard = ({
     nome,
     idade,
     data,
-}) => {
-    
+    user
+}) => { 
     return(
             <ContainerCardsList>
 
                 <ProfileImage
-                    source={require('../../Assets/Images/Niccole.png')}
+                    source={{uri : user.paciente.idNavigation.foto}}
                 />
 
                 
@@ -69,14 +69,15 @@ export const AppointmentCardDr = ({
     nome,
     crm,
     prioridade,
-    data
-
+    data,
+    foto
 }) => {
+
     return(
             <ContainerCardsList>
 
                 <ProfileImage
-                    source={require('../../Assets/Images/MaskGroup.png')}
+                    source={{ uri: foto}}
                 />
 
                 

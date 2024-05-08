@@ -23,15 +23,13 @@ export const Perfil = ({ navigation, route }) => {
     const [photo, setPhoto] = useState(null)
     const [editing, setEditing] = useState(false)
     const [desativarNavigation, setDesativarNavigation] = useState(false)
-    const [oqueFazer, setOqueFazer] = useState(false)
     const [baseUser, setBaseUser] = useState(null)
     const [attUser, setAttUser] = useState({})
 
 
     function EditarFunction() {
         setEditing(true)
-        setOqueFazer(true)
-        setDesativarNavigation(true)
+                setDesativarNavigation(true)
     }
 
     async function Logout() {
@@ -82,14 +80,13 @@ export const Perfil = ({ navigation, route }) => {
             })
         }
         setEditing(false)
-        setOqueFazer(false)
         setDesativarNavigation(false)
     }
 
     function CancelFunction() {
         setEditing(false)
-        setOqueFazer(false)
-        setDesativarNavigation(false)
+
+         setDesativarNavigation(false)
     }
 
     async function BuscarUsuario() {
@@ -150,7 +147,8 @@ export const Perfil = ({ navigation, route }) => {
         if (route.params != null && baseUser) {
             AlterarFotoPerfil()
         }
-    }, [route, baseUser])
+
+    }, [route, baseUser, photo])
 
     return (
         <ScrollView>
