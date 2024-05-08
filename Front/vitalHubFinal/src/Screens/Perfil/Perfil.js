@@ -141,6 +141,7 @@ export const Perfil = ({ navigation, route }) => {
         requestCamera();
         requestGaleria();
         ProfileLoad();
+        console.log(baseUser);
     }, [route]);
 
     useEffect(() => {

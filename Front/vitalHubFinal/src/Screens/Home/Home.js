@@ -20,8 +20,6 @@ import api from '../../Service/Service';
 
 export const Home = ({ navigation, route }) => {
 
-    const routeParams = route.params
-
     const [token, setToken] = useState({})
     const [user, setUser] = useState(null)
     const [showModalAgendar, setShowModalAgendar] = useState(false);
@@ -112,10 +110,40 @@ export const Home = ({ navigation, route }) => {
         }
     }
 
+    async function ExpirarConsultas() {
+        try {
+          //BUSCA AS CONSULTAS
+          await ListarPacientes();
+          //PERCORRE AS CONSULTAS E VERIFICA SE A DATA DA CONSULTA E MENOR QUE A DATA ATUAL
+          listaConsultas.forEach(async (consulta) => {
+            if (
+              new Date(consulta.dataConsulta) < new Date() &&
+              consulta.situacaoId == "E11B5D10-E9FF-4827-ACDA-B25FF3AE27DB"
+            ) {
+              //ATUALIZA A CONSULTA PARA STATUS REALIZADAS
+              await api
+                .put(
+                  `/Consultas/Status?idConsulta=${consulta.id}&status=realizado`
+                )
+                .then(async () => {
+                  //BUSCA NOVAMENTE AS CONSULTAS
+                  await getConsultas();
+                });
+            }
+          });
+        } catch (error) {
+          console.log(error);
+        }
+      }
+
     useEffect(() => {
         ProfileLoad();
         ListarPacientes();
     }, [dateConsulta, situacaoConsultaAlterada])
+
+    useEffect(() => {
+        ExpirarConsultas()
+    }, [dateConsulta])
 
     useEffect(() => {
         if (token) {

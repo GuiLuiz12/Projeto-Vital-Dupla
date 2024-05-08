@@ -17,7 +17,6 @@ export const Prontuario = ({ navigation, route }) => {
 
     const [consulta, setConsulta] = useState(null)
     const [editing, setEditing] = useState(false)
-    const [attConsulta, setAttConsulta] = useState({})
 
     function EditarFunction() {
         setEditing(true)
@@ -28,12 +27,12 @@ export const Prontuario = ({ navigation, route }) => {
     }
 
     async function SalvarFunction() {
-        if (attConsulta) {
+        if (consulta) {
             await api.put("/Consultas/Prontuario", {
-                id: route.params.consulta.id,
-                medicamento: attConsulta.prescricao,
-                descricao: attConsulta.descricao,
-                diagnostico: attConsulta.diagnostico
+                consultaId: route.params.consulta.id,
+                medicamento: consulta.medicamento,
+                descricao: consulta.descricao,
+                diagnostico: consulta.diagnostico
             }).then(() => {
                 setEditing(false)
                 setAttConsulta({})
@@ -43,8 +42,10 @@ export const Prontuario = ({ navigation, route }) => {
         }
 
     }
-    useEffect(() => {
-        setConsulta(route.params.consulta)
+    useEffect(async () => {
+        await setConsulta(route.params.consulta)
+
+        setConsulta({ ...consulta, medicamento: consulta.receita.medicamento })
     }, [route])
 
     return (
@@ -71,8 +72,9 @@ export const Prontuario = ({ navigation, route }) => {
                             placeholder="Não Informado"
                             value={consulta.descricao}
                             editable={editing}
-                            onChangeText={(txt) => setAttConsulta({ ...attConsulta, descricao: txt })
+                            onChangeText={(txt) => setConsulta({ ...consulta, descricao: txt })
                             }
+                            multiline={true}
                         />
                     </ContainerLeftPaddingLeft>
 
@@ -84,7 +86,7 @@ export const Prontuario = ({ navigation, route }) => {
                             placeholder="Não Informado"
                             value={consulta.diagnostico}
                             editable={editing}
-                            onChangeText={(txt) => setAttConsulta({ ...attConsulta, diagnostico: txt })
+                            onChangeText={(txt) => setConsulta({ ...consulta, diagnostico: txt })
                             }
                         />
                     </ContainerLeftPaddingLeft>
@@ -95,10 +97,11 @@ export const Prontuario = ({ navigation, route }) => {
 
                         <ProntuarioInputMaior
                             placeholder="Não Informado"
-                            value={consulta.receita.medicamento}
+                            value={consulta.medicamento}
                             editable={editing}
-                            onChangeText={(txt) => setAttConsulta({ ...attConsulta, prescricao: txt })
+                            onChangeText={(txt) => setConsulta({ ...consulta, medicamento: txt })
                             }
+                            multiline={true}
                         />
                     </ContainerLeftPaddingLeft>
 
