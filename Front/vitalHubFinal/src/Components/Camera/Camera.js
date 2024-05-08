@@ -11,19 +11,23 @@ export default function CameraProntuario({ route, navigation }) {
     const [photo, setPhoto] = useState(null)
     const [openModal, setOpenModal] = useState(false)
     const [tipoCamera, setTipoCamera] = useState(CameraType.back)
-    const [cameraAvaliable, setCameraAvaliable] = useState(null)
+    const [cameraAvailable, setCameraAvailable] = useState(null)
 
     useEffect(() => {
         (async () => {
-            const { status: cameraStatus } = await Camera.requestCameraPermissionsAsync()
+            const { status: cameraStatus } = await RequestCameraPermissionsAsync()
             if (cameraStatus === 'granted') {
-                setCameraAvaliable(true)
+                setCameraAvailable(true)
             }
 
             const { status: mediaStatus } = await MediaLibrary.requestPermissionsAsync()
         })();
 
     }, [])
+
+    function toggleCameraFacing(){
+        setTipoCamera(current => (current === 'back' ? 'front' : 'back'))
+    }
 
     async function CapturePhoto() {
         if (cameraRef) {
@@ -59,12 +63,13 @@ export default function CameraProntuario({ route, navigation }) {
             <Camera
                 ref={cameraRef}
                 style={styles.camera}
-                type={tipoCamera}
+                facing={tipoCamera}
                 ratio='16:9'
             >
                 <View>
                     <TouchableOpacity style={styles.btnFlip}
-                        onPress={() => setTipoCamera(tipoCamera == CameraType.front ? CameraType.back : CameraType.front)}
+                        // onPress={() => setTipoCamera(tipoCamera == CameraType.front ? CameraType.back : CameraType.front)}
+                        onPress={toggleCameraFacing}
                     >
                         <Text style={styles.txtFlip}>Trocar</Text>
                     </TouchableOpacity>

@@ -21,7 +21,7 @@ import api from "../../Service/Service"
 export const Login = ({navigation}) => {
 
 
-    const [email, setEmail] = useState('guii0305@outlook.com')
+    const [email, setEmail] = useState('claudio@email.com')
 
    
 
