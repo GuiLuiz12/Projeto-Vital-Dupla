@@ -16,13 +16,15 @@ import { ButtonCamera } from "./Style";
 import CameraProntuario from "../../Components/Camera/Camera";
 import * as MediaLibrary from "expo-media-library"
 import * as ImagePicker from "expo-image-picker"
-import { Camera } from 'expo-camera';
+import { Camera, useCameraPermissions } from 'expo-camera';
 import { requestForegroundPermissionsAsync } from 'expo-location';
 
 export const Perfil = ({ navigation, route }) => {
     const [token, setToken] = useState({})
     const [buscarId, setBuscarId] = useState(null);
-    const [photo, setPhoto] = useState(null)
+    const [photo, setPhoto] = useState(null);
+    const [permission, requestPermission] = useCameraPermissions();
+    const [permissionMedia, requestMediaPermission] = MediaLibrary.usePermissions();
     
     async function Logout() {
         await AsyncStorage.removeItem("token");
@@ -57,13 +59,13 @@ export const Perfil = ({ navigation, route }) => {
     }
 
     async function requestGaleria(){
-        await MediaLibrary.requestPermissionsAsync();
+        await requestMediaPermission();
       
         await ImagePicker.requestMediaLibraryPermissionsAsync();
     }
       
     async function requestCamera(){
-        await Camera.requestCameraPermissionsAsync();
+        await requestPermission();
     }
       
     async function requestLocation(){
@@ -90,6 +92,19 @@ export const Perfil = ({ navigation, route }) => {
             console.log(error);
         })
     }
+
+    useEffect(() => {
+        (async () => {
+            if (permission && !permission.granted) {
+                await requestPermission();
+            }
+
+            // const { status: mediaStatus } = await MediaLibrary.requestPermissionsAsync()
+            if( MediaLibrary.PermissionStatus.DENIED ){
+                await requestMediaPermission();
+            }
+        })();
+    }, []);
 
     useEffect(() => {
         // requestLocation();

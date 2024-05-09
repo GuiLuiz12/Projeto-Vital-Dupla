@@ -1,28 +1,37 @@
 import { StatusBar } from 'expo-status-bar';
 import { Image, Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { Camera, CameraType } from 'expo-camera';
+import { CameraView, useCameraPermissions } from 'expo-camera';
 import { useEffect, useState, useRef } from 'react';
-import { FontAwesome } from '@expo/vector-icons'
+import { FontAwesome, MaterialCommunityIcons } from '@expo/vector-icons'
 import * as MediaLibrary from 'expo-media-library'
+import * as ImagePicker from 'expo-image-picker'
 
 export default function CameraProntuario({ route, navigation }) {
 
     const cameraRef = useRef(null)
     const [photo, setPhoto] = useState(null)
     const [openModal, setOpenModal] = useState(false)
-    const [tipoCamera, setTipoCamera] = useState(CameraType.back)
-    const [cameraAvailable, setCameraAvailable] = useState(null)
+    const [tipoCamera, setTipoCamera] = useState('back');
+    const [latestPhoto, setLatestPhoto] = useState(null);
+
+    const [permission, requestPermission] = useCameraPermissions();
+    const [permissionMedia, requestMediaPermission] = MediaLibrary.usePermissions()
 
     useEffect(() => {
         (async () => {
-            const { status: cameraStatus } = await RequestCameraPermissionsAsync()
-            if (cameraStatus === 'granted') {
-                setCameraAvailable(true)
+            if (permission && !permission.granted) {
+                await requestPermission();
             }
 
-            const { status: mediaStatus } = await MediaLibrary.requestPermissionsAsync()
+            // const { status: mediaStatus } = await MediaLibrary.requestPermissionsAsync()
+            if( MediaLibrary.PermissionStatus.DENIED ){
+                await requestMediaPermission();
+            }
         })();
+    }, []);
 
+    useEffect(() => {
+        GetLastPhoto();
     }, [])
 
     function toggleCameraFacing(){
@@ -35,6 +44,14 @@ export default function CameraProntuario({ route, navigation }) {
             setPhoto(photo.uri)
 
             setOpenModal(true)
+        }
+    }
+
+    async function GetLastPhoto(){
+        const { assets } = await MediaLibrary.getAssetsAsync({ sortBy : [[ MediaLibrary.SortBy.creationTime, false]], first : 1 });
+        
+        if(assets.length > 0 ){
+            setLatestPhoto( assets[0].uri )
         }
     }
 
@@ -53,14 +70,28 @@ export default function CameraProntuario({ route, navigation }) {
         }
     }
 
+    async function SelectImageGallery(){
+        const result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes : ImagePicker.MediaTypeOptions.Images,
+            quality : 1
+        });
+
+        if(!result.canceled){
+            setPhoto(result.assets[0].uri)
+
+            setOpenModal(true)
+        }
+    }
+
     function ClearPhoto() {
         setPhoto(null)
 
         setOpenModal(false)
     }
+
     return (
         <View style={styles.container}>
-            <Camera
+            <CameraView
                 ref={cameraRef}
                 style={styles.camera}
                 facing={tipoCamera}
@@ -74,10 +105,27 @@ export default function CameraProntuario({ route, navigation }) {
                         <Text style={styles.txtFlip}>Trocar</Text>
                     </TouchableOpacity>
                 </View>
-            </Camera>
-            <TouchableOpacity style={styles.btnCapture} onPress={() => CapturePhoto()}>
-                <FontAwesome name='camera' size={23} color='#fff' />
-            </TouchableOpacity>
+            </CameraView>
+            <View style={styles.viewOptions}>
+                <TouchableOpacity onPress={toggleCameraFacing}>
+                    <MaterialCommunityIcons name='camera-retake' size={30} color="black"/>
+                </TouchableOpacity>
+
+                <TouchableOpacity style={styles.btnCapture} onPress={() => CapturePhoto()}>
+                    <FontAwesome name='camera' size={23} color='#fff' />
+                </TouchableOpacity>
+
+                <TouchableOpacity onPress={() => SelectImageGallery()}>
+                    {
+                        latestPhoto && (
+                            <Image
+                                style={{ width : 50, height : 50, borderRadius : 10 }}
+                                source={{ uri : latestPhoto }}
+                            />
+                        )
+                    }
+                </TouchableOpacity>
+            </View>
 
             <Modal animationType='slide' transparent={false} visible={openModal}>
                 <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', margin: 20 }}>
@@ -130,6 +178,7 @@ const styles = StyleSheet.create({
     btnCapture: {
         padding: 20,
         margin: 20,
+        width : 80,
         borderRadius: 10,
         backgroundColor: "#121212",
         justifyContent: 'center',
@@ -148,5 +197,11 @@ const styles = StyleSheet.create({
 
         justifyContent: 'center',
         alignItems: 'center'
+    },
+    viewOptions : {
+        width : '100%',
+        flexDirection : 'row',
+        alignItems : 'center',
+        justifyContent : 'center'
     }
 });

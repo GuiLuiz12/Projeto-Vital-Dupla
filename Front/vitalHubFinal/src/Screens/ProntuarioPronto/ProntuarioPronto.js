@@ -34,7 +34,7 @@ export const ProntuarioPronto = ({ navigation, route }) => {
     }
 
     const handleOpenCamera = () => {
-        navigation.navigate('CameraProntuario');
+        navigation.navigate('CameraProntuario', { screen : "Prontuario"});
     };
 
     async function ProfileLoad() {
