@@ -19,7 +19,7 @@ import * as ImagePicker from "expo-image-picker"
 import { Camera } from 'expo-camera';
 
 export const Perfil = ({ navigation, route }) => {
-    const [token, setToken] = useState({})
+    const [token, setToken] = useState(null)
     const [photo, setPhoto] = useState(null)
     const [editing, setEditing] = useState(false)
     const [desativarNavigation, setDesativarNavigation] = useState(false)
@@ -29,7 +29,7 @@ export const Perfil = ({ navigation, route }) => {
 
     function EditarFunction() {
         setEditing(true)
-                setDesativarNavigation(true)
+        setDesativarNavigation(true)
     }
 
     async function Logout() {
@@ -39,9 +39,9 @@ export const Perfil = ({ navigation, route }) => {
 
     async function ProfileLoad() {
         const tokenDecode = await userDecodeToken();
-        if (tokenDecode != null) {
+        if (tokenDecode) {
             await setToken(tokenDecode)
-            await BuscarUsuario()
+            await BuscarUsuario(tokenDecode)
         }
     }
 
@@ -86,18 +86,18 @@ export const Perfil = ({ navigation, route }) => {
     function CancelFunction() {
         setEditing(false)
 
-         setDesativarNavigation(false)
+        setDesativarNavigation(false)
     }
 
-    async function BuscarUsuario() {
+    async function BuscarUsuario(tokenUser) {
         try {
-            const url = (token.role == 'Médico' ? 'Medicos' : "Pacientes");
+            const url = (tokenUser.role == 'Médico' ? 'Medicos' : "Pacientes");
 
-            const response = await api.get(`/${url}/BuscarPorId?id=${token.jti}`);
+            const response = await api.get(`/${url}/BuscarPorId?id=${tokenUser.jti}`);
 
-            setBaseUser(response.data);
+            setBaseUser(response.data)
 
-            setPhoto(response.data.idNavigation.foto);
+            console.log(baseUser);
 
         } catch (error) {
             console.log(error);
@@ -141,14 +141,13 @@ export const Perfil = ({ navigation, route }) => {
         requestCamera();
         requestGaleria();
         ProfileLoad();
-        console.log(baseUser);
     }, [route]);
 
     useEffect(() => {
         if (route.params != null && baseUser) {
             AlterarFotoPerfil()
         }
-    }, [route, baseUser, photo])
+    }, [route, photo])
 
     return (
         <ScrollView>
