@@ -16,16 +16,15 @@ import { MaterialCommunityIcons } from "@expo/vector-icons"
 import { ButtonCamera } from "./Style";
 import * as MediaLibrary from "expo-media-library"
 import * as ImagePicker from "expo-image-picker"
-import { Camera } from 'expo-camera';
+import { Camera, useCameraPermissions } from 'expo-camera';
+import { requestForegroundPermissionsAsync } from 'expo-location';
 
 export const Perfil = ({ navigation, route }) => {
-    const [token, setToken] = useState(null)
-    const [photo, setPhoto] = useState(null)
-    const [editing, setEditing] = useState(false)
-    const [desativarNavigation, setDesativarNavigation] = useState(false)
-    const [baseUser, setBaseUser] = useState(null)
-    const [attUser, setAttUser] = useState({})
-
+    const [token, setToken] = useState({})
+    const [buscarId, setBuscarId] = useState(null);
+    const [photo, setPhoto] = useState(null);
+    const [permission, requestPermission] = useCameraPermissions();
+    const [permissionMedia, requestMediaPermission] = MediaLibrary.usePermissions();
 
     function EditarFunction() {
         setEditing(true)
@@ -105,13 +104,13 @@ export const Perfil = ({ navigation, route }) => {
     }
 
     async function requestGaleria() {
-        await MediaLibrary.requestPermissionsAsync();
+        await requestMediaPermission();
 
         await ImagePicker.requestMediaLibraryPermissionsAsync();
     }
 
     async function requestCamera() {
-        await Camera.requestCameraPermissionsAsync();
+        await requestPermission();
     }
 
     async function AlterarFotoPerfil() {
@@ -138,8 +137,19 @@ export const Perfil = ({ navigation, route }) => {
     }
 
     useEffect(() => {
-        requestCamera();
-        requestGaleria();
+        (async () => {
+            if (permission && !permission.granted) {
+                await requestPermission();
+            }
+
+            // const { status: mediaStatus } = await MediaLibrary.requestPermissionsAsync()
+            if (MediaLibrary.PermissionStatus.DENIED) {
+                await requestMediaPermission();
+            }
+        })();
+    }, []);
+
+    useEffect(() => {
         ProfileLoad();
     }, [route]);
 

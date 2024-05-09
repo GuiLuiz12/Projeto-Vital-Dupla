@@ -40,8 +40,6 @@ export const CancelationModal = ({
         console.log(error);
       })
 
-
-
     await Notifications.scheduleNotificationAsync({
       content: {
         title: "Consulta cancelada",

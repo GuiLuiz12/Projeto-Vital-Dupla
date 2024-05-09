@@ -84,5 +84,11 @@ export const ContainerRowInputs = styled(ContainerRowButtons)`
 `
 
 export const ContainerLocal_Nome = styled(ContainerLocal)`
-    width: 190px;
+    width: 370px;
+`
+
+export const CaxinhaSla = styled.View`
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
 `
