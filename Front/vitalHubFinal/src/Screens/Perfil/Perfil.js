@@ -21,10 +21,12 @@ import { requestForegroundPermissionsAsync } from 'expo-location';
 
 export const Perfil = ({ navigation, route }) => {
     const [token, setToken] = useState({})
-    const [buscarId, setBuscarId] = useState(null);
+    const [baseUser, setBaseUser] = useState(null);
     const [photo, setPhoto] = useState(null);
     const [permission, requestPermission] = useCameraPermissions();
     const [permissionMedia, requestMediaPermission] = MediaLibrary.usePermissions();
+    const [editing, setEditing] = useState(false);
+    const [desativarNavigation, setDesativarNavigation] = useState(false)
 
     function EditarFunction() {
         setEditing(true)
@@ -151,6 +153,8 @@ export const Perfil = ({ navigation, route }) => {
 
     useEffect(() => {
         ProfileLoad();
+        data = new Date(baseUser.dataNascimento).toLocaleDateString()
+        console.log(data);
     }, [route]);
 
     useEffect(() => {
@@ -209,7 +213,7 @@ export const Perfil = ({ navigation, route }) => {
                                 <TitleComponent>Data de nascimento</TitleComponent>
 
                                 <InputCinza
-                                    value={baseUser.dataNascimento === invalid ? new Date(baseUser.dataNascimento).toLocaleDateString() : null}
+                                    value={baseUser.dataNascimento != invalid ? new Date(baseUser.dataNascimento).toLocaleDateString() : null}
                                     editable={editing}
                                     onChangeText={(txt) => setBaseUser({ ...attUser, dataNascimento: txt })}
                                     keyboardType={"numeric"}

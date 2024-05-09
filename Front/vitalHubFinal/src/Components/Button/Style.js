@@ -3,6 +3,7 @@ import styled, { css } from "styled-components";
 export const Button = styled.TouchableOpacity`
     width: 90%;
     height: 44px;
+    font-family: "MontserratAlternates_700Bold";
 
     background-color: #496bba;
     border: 1px solid #496bba;
