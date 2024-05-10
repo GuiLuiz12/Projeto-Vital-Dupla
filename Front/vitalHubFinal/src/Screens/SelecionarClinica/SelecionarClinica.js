@@ -63,7 +63,7 @@ export const SelecionarClinica = ({ navigation, route }) => {
                             }}
                         />}
                         keyExtractor={(item) => {
-                            item.id;
+                            item.id
                         }}
                         showsVerticalScrollIndicator={false}
 

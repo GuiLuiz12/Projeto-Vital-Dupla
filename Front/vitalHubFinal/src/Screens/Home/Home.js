@@ -70,16 +70,17 @@ export const Home = ({ navigation, route }) => {
 
     async function ProfileLoad() {
         const token = await userDecodeToken();
-        if (token) {
-            setToken(token)
-        }
+        setToken(token)
+        BuscarUsuario(token);
+        
+        setDateConsulta(moment().format("YYYY-MM-DD"));
     }
 
-    async function BuscarUsuario() {
+    async function BuscarUsuario( tokenDecode ) {
         try {
-            const url = (token.role === 'Médico' ? 'Medicos' : "Pacientes");
+            const url = (tokenDecode.role === 'Médico' ? 'Medicos' : "Pacientes");
 
-            const response = await api.get(`/${url}/BuscarPorId?id=${token.jti}`);
+            const response = await api.get(`/${url}/BuscarPorId?id=${tokenDecode.jti}`);
 
             setUser(response.data);
 
@@ -90,6 +91,7 @@ export const Home = ({ navigation, route }) => {
 
     async function ListarPacientes() {
         const url = (token.role == 'Médico' ? 'Medicos' : "Pacientes")
+        console.log(`/${url}/BuscarPorData?data=${dateConsulta}&id=${token.jti}`);
 
         const response = await api.get(`/${url}/BuscarPorData?data=${dateConsulta}&id=${token.jti}`)
         setListaConsultas(response.data)
@@ -112,44 +114,34 @@ export const Home = ({ navigation, route }) => {
 
     async function ExpirarConsultas() {
         try {
-          //BUSCA AS CONSULTAS
-          await ListarPacientes();
-          //PERCORRE AS CONSULTAS E VERIFICA SE A DATA DA CONSULTA E MENOR QUE A DATA ATUAL
-          listaConsultas.forEach(async (consulta) => {
-            if (
-              new Date(consulta.dataConsulta) < new Date() &&
-              consulta.situacaoId == "E11B5D10-E9FF-4827-ACDA-B25FF3AE27DB"
-            ) {
-              //ATUALIZA A CONSULTA PARA STATUS REALIZADAS
-              await api
-                .put(
-                  `/Consultas/Status?idConsulta=${consulta.id}&status=realizado`
-                )
-                .then(async () => {
-                  //BUSCA NOVAMENTE AS CONSULTAS
-                  await getConsultas();
-                });
-            }
-          });
+            listaConsultas.forEach(async (consulta) => {
+                if (
+                    new Date(consulta.dataConsulta) < new Date() &&
+                    consulta.situacaoId == "E11B5D10-E9FF-4827-ACDA-B25FF3AE27DB"
+                ) {
+                    await api.put(`/Consultas/Status?idConsulta=${consulta.id}&status=realizado`)
+                        .then(async () => {
+                            await ListarPacientes();
+                        });
+                }
+            });
         } catch (error) {
-          console.log(error);
+            console.log(error);
         }
-      }
+    }
 
     useEffect(() => {
         ProfileLoad();
-        ListarPacientes();
-    }, [dateConsulta, situacaoConsultaAlterada])
+    }, [])
 
     useEffect(() => {
-        ExpirarConsultas()
-    }, [dateConsulta])
-
-    useEffect(() => {
-        if (token) {
-            BuscarUsuario();
-        }
+        BuscarUsuario(); 
     }, [token])
+
+    useEffect(() => {
+        ListarPacientes();
+        ExpirarConsultas();
+    }, [dateConsulta, situacaoConsultaAlterada])
 
     return (
         <>
@@ -324,10 +316,7 @@ export const Home = ({ navigation, route }) => {
                         </ViewIcon>
 
                     }
-
-
                 </Container>
-
                 :
                 <></>
             }

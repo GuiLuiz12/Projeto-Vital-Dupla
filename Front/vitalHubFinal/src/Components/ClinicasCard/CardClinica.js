@@ -6,10 +6,10 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 export const ClinicCard = ({ NomeFantasia, Cidade, Selected, OnPress }) => {
     return (
         <Card ClickButton={Selected}>
-            <CardClinica  onPress={OnPress} >
-                <ConteudoCardClinica>
-                    <TitleClinica>{NomeFantasia}</TitleClinica>
-                </ConteudoCardClinica>
+            <CardClinica onPress={OnPress} >
+
+                <TitleClinica>{NomeFantasia}</TitleClinica>
+                
                 <ConteudoCardClinica>
                     <CidadeClinica>{Cidade}, SP</CidadeClinica>
                     <DiaSemana>

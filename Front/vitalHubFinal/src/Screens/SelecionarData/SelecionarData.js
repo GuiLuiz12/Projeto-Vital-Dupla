@@ -1,19 +1,15 @@
 import RNPickerSelect from "react-native-picker-select";
-import { StyleSheet, TouchableOpacity, View } from "react-native";
-
-import { SubTitleData, Title, TitleData } from "../../Components/Title/Style"
-
+import { StyleSheet, View } from "react-native";
+import { SubTitleData, Title} from "../../Components/Title/Style"
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faCaretDown } from '@fortawesome/free-solid-svg-icons'
 import { Container, ContainerSpace } from "../../Components/Container/Style";
 import { useEffect, useState } from "react";
-
 import { Calendar, LocaleConfig } from "react-native-calendars";
 import { Button } from "../../Components/Button/Style";
 import { ButtonTitle } from "../../Components/ButtonTitle/Style";
 import { ContentAccount, TextAccountLink } from "../../Components/ContentAccount/Style";
 import { ConfirmarModal } from "../../Components/ConfirmarModal/ConfirmarModal";
-import { useNavigation } from "@react-navigation/native";
 import { SelecionarMedico } from "../SelecionarMedico/SelecionarMedico";
 import moment from "moment";
 

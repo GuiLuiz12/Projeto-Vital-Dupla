@@ -40,3 +40,7 @@ export const ProntuarioInputMenor = styled(ProntuarioInputMaior)`
 export const ProntuarioInputMenor_NoMargin = styled(ProntuarioInputMenor)`
     margin-bottom: 0px;
 `
+
+export const InputAgendamento = styled(Input)`
+    width: 100%;
+`

@@ -35,17 +35,14 @@ export const Prontuario = ({ navigation, route }) => {
                 diagnostico: consulta.diagnostico
             }).then(() => {
                 setEditing(false)
-                setAttConsulta({})
             }).catch((error) => {
                 console.log(error);
             })
         }
 
     }
-    useEffect(async () => {
-        await setConsulta(route.params.consulta)
-
-        setConsulta({ ...consulta, medicamento: consulta.receita.medicamento })
+    useEffect( () => {
+        setConsulta({ ...route.params.consulta, medicamento: route.params.consulta.receita.medicamento })
     }, [route])
 
     return (
