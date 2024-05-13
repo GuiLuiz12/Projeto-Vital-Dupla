@@ -5,6 +5,7 @@ export const Container = styled.SafeAreaView`
     align-items: center;
     background-color: #FAFAFA;
     margin-top: 40px;
+    padding-bottom: 30px;
 `
 
 export const ContainerLeft = styled.View`
@@ -15,9 +16,10 @@ export const ContainerLeft = styled.View`
 `
 
 export const ContainerLeftPaddingLeft = styled(ContainerLeft)`
-    padding: 0px 0px 10px 20px;
+    padding: 0px 0px 0px 20px;
+    margin-top: 20px;
+    gap: 10px;
 `
-
 
 export const ContainerRow = styled.View`
     flex-direction: row;
@@ -82,5 +84,11 @@ export const ContainerRowInputs = styled(ContainerRowButtons)`
 `
 
 export const ContainerLocal_Nome = styled(ContainerLocal)`
-    width: 190px;
+    width: 370px;
+`
+
+export const CaxinhaSla = styled.View`
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
 `

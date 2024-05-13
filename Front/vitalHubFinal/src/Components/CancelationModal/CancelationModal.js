@@ -25,10 +25,11 @@ export const CancelationModal = ({
       setStatusNotification(status)
 
       //verifica se o usuario concedeu permissão
-      if (status !== "granted") {
+
+      if (status != "granted") {
         alert("voce nao deixou as notificacoes ativas")
       }
-    } while (statusNotification !== "granted");
+    } while (statusNotification != "granted");
 
     HandleCancel()
       .then(() => {
@@ -38,8 +39,6 @@ export const CancelationModal = ({
       .catch((error) => {
         console.log(error);
       })
-
-
 
     await Notifications.scheduleNotificationAsync({
       content: {

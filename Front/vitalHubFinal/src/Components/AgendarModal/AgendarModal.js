@@ -1,12 +1,10 @@
 import { Modal } from "react-native"
 import { AppointmentModal, AppointmentModalView, ButtonConsulta, ButtonTextConsulta, SubTitleModal } from "./Style"
 import { Title } from "../Title/Style"
-import { FilterAppointment, FilterAppointment2 } from "../FilterAppointment/FilterAppointment"
-import { ProntuarioInputMenor } from "../Input/Style"
+import { FilterAppointment2 } from "../FilterAppointment/FilterAppointment"
+import { InputAgendamento } from "../Input/Style"
 import { Button, ButtonSecondary } from "../Button/Style"
 import { ButtonSecondaryTitle, ButtonTitle } from "../ButtonTitle/Style"
-import { ButtonCard, ButtonText } from "../AppointmentCard/Style"
-import { useNavigation } from "@react-navigation/native"
 import { useState } from "react"
 
 
@@ -16,14 +14,12 @@ export const AgendarModal = ({
     setShowModalAgendar,
     ...rest
 }) => {
-    // const navigation = useNavigation();
-
+    
     const [agendamento, setAgendamento] = useState(null)
     const [selecionado, setSelecionado] = useState("")
 
     async function handleContinue() {
         await setShowModalAgendar(false)
-        console.log( tipoConsulta )
 
         navigation.replace("SelecionarClinica", { agendamento: agendamento })
     }
@@ -88,7 +84,7 @@ export const AgendarModal = ({
 
                     <SubTitleModal>Informe a localização desejada</SubTitleModal>
 
-                    <ProntuarioInputMenor
+                    <InputAgendamento
                         placeholder="Informe a localização"
 
 

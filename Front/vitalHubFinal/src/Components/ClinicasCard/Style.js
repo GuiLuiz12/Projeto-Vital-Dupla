@@ -5,14 +5,16 @@ export const CardClinica = styled.TouchableOpacity`
     width: 100%;
     height: 100%;
     flex-direction: column;
-    padding: 10px;
     gap: 10px;
+    padding-left: 10px;
+    padding-right: 10px;
+    justify-content: center;
+    padding-bottom: 10px;
 `
 
 export const ConteudoCardClinica = styled.View`
     flex-direction: row;
     justify-content: space-between;
-
 `
 
 export const CidadeClinica = styled.Text`
@@ -52,6 +54,8 @@ export const Card = styled.View`
     height: 90px;
     justify-content: center;
     elevation: 4;
+    border-radius: 8px;
+    overflow: hidden;
     ${(props) => props.ClickButton ?
         css`
         border: 2px solid #496BBA;

@@ -16,21 +16,20 @@ import { MaterialCommunityIcons } from "@expo/vector-icons"
 import { ButtonCamera } from "./Style";
 import * as MediaLibrary from "expo-media-library"
 import * as ImagePicker from "expo-image-picker"
-import { Camera } from 'expo-camera';
+import { Camera, useCameraPermissions } from 'expo-camera';
+import { requestForegroundPermissionsAsync } from 'expo-location';
 
 export const Perfil = ({ navigation, route }) => {
     const [token, setToken] = useState({})
-    const [photo, setPhoto] = useState(null)
-    const [editing, setEditing] = useState(false)
+    const [baseUser, setBaseUser] = useState(null);
+    const [photo, setPhoto] = useState(null);
+    const [permission, requestPermission] = useCameraPermissions();
+    const [permissionMedia, requestMediaPermission] = MediaLibrary.usePermissions();
+    const [editing, setEditing] = useState(false);
     const [desativarNavigation, setDesativarNavigation] = useState(false)
-    const [oqueFazer, setOqueFazer] = useState(false)
-    const [baseUser, setBaseUser] = useState(null)
-    const [attUser, setAttUser] = useState({})
-
 
     function EditarFunction() {
         setEditing(true)
-        setOqueFazer(true)
         setDesativarNavigation(true)
     }
 
@@ -41,9 +40,9 @@ export const Perfil = ({ navigation, route }) => {
 
     async function ProfileLoad() {
         const tokenDecode = await userDecodeToken();
-        if (tokenDecode != null) {
+        if (tokenDecode) {
             await setToken(tokenDecode)
-            await BuscarUsuario()
+            await BuscarUsuario(tokenDecode)
         }
     }
 
@@ -82,25 +81,24 @@ export const Perfil = ({ navigation, route }) => {
             })
         }
         setEditing(false)
-        setOqueFazer(false)
         setDesativarNavigation(false)
     }
 
     function CancelFunction() {
         setEditing(false)
-        setOqueFazer(false)
+
         setDesativarNavigation(false)
     }
 
-    async function BuscarUsuario() {
+    async function BuscarUsuario(tokenUser) {
         try {
-            const url = (token.role == 'Médico' ? 'Medicos' : "Pacientes");
+            const url = (tokenUser.role == 'Médico' ? 'Medicos' : "Pacientes");
 
-            const response = await api.get(`/${url}/BuscarPorId?id=${token.jti}`);
+            const response = await api.get(`/${url}/BuscarPorId?id=${tokenUser.jti}`);
 
-            setBaseUser(response.data);
+            setBaseUser(response.data)
 
-            setPhoto(response.data.idNavigation.foto);
+            console.log(baseUser);
 
         } catch (error) {
             console.log(error);
@@ -108,13 +106,13 @@ export const Perfil = ({ navigation, route }) => {
     }
 
     async function requestGaleria() {
-        await MediaLibrary.requestPermissionsAsync();
+        await requestMediaPermission();
 
         await ImagePicker.requestMediaLibraryPermissionsAsync();
     }
 
     async function requestCamera() {
-        await Camera.requestCameraPermissionsAsync();
+        await requestPermission();
     }
 
     async function AlterarFotoPerfil() {
@@ -141,16 +139,29 @@ export const Perfil = ({ navigation, route }) => {
     }
 
     useEffect(() => {
-        requestCamera();
-        requestGaleria();
+        (async () => {
+            if (permission && !permission.granted) {
+                await requestPermission();
+            }
+
+            // const { status: mediaStatus } = await MediaLibrary.requestPermissionsAsync()
+            if (MediaLibrary.PermissionStatus.DENIED) {
+                await requestMediaPermission();
+            }
+        })();
+    }, []);
+
+    useEffect(() => {
         ProfileLoad();
+        data = new Date(baseUser.dataNascimento).toLocaleDateString()
+        console.log(data);
     }, [route]);
 
     useEffect(() => {
         if (route.params != null && baseUser) {
             AlterarFotoPerfil()
         }
-    }, [route, baseUser])
+    }, [route, baseUser, photo])
 
     return (
         <ScrollView>
@@ -202,7 +213,7 @@ export const Perfil = ({ navigation, route }) => {
                                 <TitleComponent>Data de nascimento</TitleComponent>
 
                                 <InputCinza
-                                    value={baseUser.dataNascimento === invalid ? new Date(baseUser.dataNascimento).toLocaleDateString() : null}
+                                    value={baseUser.dataNascimento != invalid ? new Date(baseUser.dataNascimento).toLocaleDateString() : null}
                                     editable={editing}
                                     onChangeText={(txt) => setBaseUser({ ...attUser, dataNascimento: txt })}
                                     keyboardType={"numeric"}
