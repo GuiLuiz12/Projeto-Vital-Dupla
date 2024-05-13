@@ -16,7 +16,7 @@ export const AgendarModal = ({
     setShowModalAgendar,
     ...rest
 }) => {
-    const navigation = useNavigation();
+    // const navigation = useNavigation();
 
     const [agendamento, setAgendamento] = useState(null)
     const [selecionado, setSelecionado] = useState("")
