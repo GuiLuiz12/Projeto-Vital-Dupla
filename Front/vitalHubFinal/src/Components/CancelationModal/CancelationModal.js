@@ -5,7 +5,7 @@ import { ModalContent, ModalText, PatientModal } from "./Style"
 import { ButtonModal, ButtonSecondary } from "../Button/Style"
 import * as Notifications from 'expo-notifications';
 import api from "../../Service/Service"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 
 export const CancelationModal = ({
   visible,
@@ -16,10 +16,25 @@ export const CancelationModal = ({
 }) => {
   const [statusNotification, setStatusNotification] = useState("")
 
+  useEffect(() => {
+    ( async () => {
+      const status = await Notifications.getPermissionsAsync();
+      setStatusNotification(status)
+  
+      //verifica se o usuario concedeu permissão
+  
+      if (status != "granted") {
+        alert("voce nao deixou as notificacoes ativas")
+      }else{
+        await Notifications.getPermissionsAsync();
+      }
+    })()
+  }, [])
+
   //funcao para lidar com a chamada de notificacao
   const handleCallNotifications = async () => {
 
-    do {
+    // do {
       //obtem o status da permissao
       const status = await Notifications.getPermissionsAsync();
       setStatusNotification(status)
@@ -29,7 +44,7 @@ export const CancelationModal = ({
       if (status != "granted") {
         alert("voce nao deixou as notificacoes ativas")
       }
-    } while (statusNotification != "granted");
+    // } while (statusNotification != "granted");
 
     HandleCancel()
       .then(() => {

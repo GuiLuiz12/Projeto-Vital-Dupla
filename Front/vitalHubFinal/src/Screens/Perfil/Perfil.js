@@ -1,4 +1,4 @@
-import { Container, ContainerLeft, ContainerLocal, ContainerLocalEderecoP, ContainerLocalNumeroP, ContainerRowInputs } from "../../Components/Container/Style";
+import { Container, ContainerLeft, ContainerLocal, ContainerLocalEderecoP, ContainerLocalNumeroP, ContainerRowInputs, ContainerFotoPerfil } from "../../Components/Container/Style";
 import { FotoPerfil } from "../../Components/FotoPerfil/Style";
 import { SubTitle } from "../../Components/SubTitle/Style";
 import { Title } from "../../Components/Title/Style";
@@ -26,6 +26,7 @@ export const Perfil = ({ navigation, route }) => {
     const [permission, requestPermission] = useCameraPermissions();
     const [permissionMedia, requestMediaPermission] = MediaLibrary.usePermissions();
     const [editing, setEditing] = useState(false);
+    const [attUser, setAttUser] = useState({})
     const [desativarNavigation, setDesativarNavigation] = useState(false)
 
     function EditarFunction() {
@@ -47,12 +48,12 @@ export const Perfil = ({ navigation, route }) => {
     }
 
     async function SalvarFunction() {
-        if (token.role == "Médico") {
+        if (token.role == "Medico") {
             const response = await api.get(`/Especialidade/BuscarPorNome?esp=${attUser.especialidade.especialidade1}`)
             await setAttUser({ ...attUser, especialidade: { id: response.data.id, especialidade1: attUser.especialidade.especialidade1 } })
         }
 
-        if (token.role == "Médico") {
+        if (token.role == "Medico") {
             await api.put("/Medicos", {
                 id: token.jti,
                 dataNascimento: attUser.dataNascimento,
@@ -92,7 +93,7 @@ export const Perfil = ({ navigation, route }) => {
 
     async function BuscarUsuario(tokenUser) {
         try {
-            const url = (tokenUser.role == 'Médico' ? 'Medicos' : "Pacientes");
+            const url = (tokenUser.role == 'Medico' ? 'Medicos' : "Pacientes");
 
             const response = await api.get(`/${url}/BuscarPorId?id=${tokenUser.jti}`);
 
@@ -153,7 +154,7 @@ export const Perfil = ({ navigation, route }) => {
 
     useEffect(() => {
         ProfileLoad();
-        data = new Date(baseUser.dataNascimento).toLocaleDateString()
+        data = new Date(attUser.dataNascimento).toLocaleDateString()
         console.log(data);
     }, [route]);
 
@@ -167,7 +168,7 @@ export const Perfil = ({ navigation, route }) => {
         <ScrollView>
             {baseUser != null ?
                 <Container>
-                    <ContainerLocal>
+                    <ContainerFotoPerfil>
 
                         <FotoPerfil
                             source={{ uri: photo }}
@@ -175,12 +176,12 @@ export const Perfil = ({ navigation, route }) => {
                         <ButtonCamera onPress={() => navigation.navigate("CameraProntuario", { screen: "Perfil" })}>
                             <MaterialCommunityIcons name="camera-plus" size={20} color="#fbfbfb" />
                         </ButtonCamera>
-                    </ContainerLocal>
+                    </ContainerFotoPerfil>
 
                     <Title>{token.name}</Title>
                     <SubTitle>{token.email}</SubTitle>
 
-                    {token.role === "Médico" ?
+                    {token.role === "Medico" ?
                         <>
                             <ContainerLeft>
                                 <TitleComponent>Especialidade</TitleComponent>

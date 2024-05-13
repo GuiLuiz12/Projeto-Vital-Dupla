@@ -63,7 +63,7 @@ export default function CameraProntuario({ route, navigation }) {
         if (route.params.screen == "Perfil") {
             await navigation.navigate('Perfil', { photoUri: photo });
         } else {
-            await navigation.navigate('ProntuarioPronto', { photoUri: photo });
+            await navigation.navigate('ProntuarioPronto', { photoUri: photo, idConsulta : route.params.idConsulta });
 
         }
     }

@@ -78,7 +78,7 @@ export const Home = ({ navigation, route }) => {
 
     async function BuscarUsuario( tokenDecode ) {
         try {
-            const url = (tokenDecode.role === 'Médico' ? 'Medicos' : "Pacientes");
+            const url = (tokenDecode.role === 'Medico' ? 'Medicos' : "Pacientes");
 
             const response = await api.get(`/${url}/BuscarPorId?id=${tokenDecode.jti}`);
 
@@ -90,7 +90,7 @@ export const Home = ({ navigation, route }) => {
     }
 
     async function ListarPacientes() {
-        const url = (token.role == 'Médico' ? 'Medicos' : "Pacientes")
+        const url = (token.role == 'Medico' ? 'Medicos' : "Pacientes")
         console.log(`/${url}/BuscarPorData?data=${dateConsulta}&id=${token.jti}`);
 
         const response = await api.get(`/${url}/BuscarPorData?data=${dateConsulta}&id=${token.jti}`)
@@ -136,6 +136,7 @@ export const Home = ({ navigation, route }) => {
 
     useEffect(() => {
         BuscarUsuario(); 
+        
     }, [token])
 
     useEffect(() => {
@@ -157,7 +158,7 @@ export const Home = ({ navigation, route }) => {
                             <DataUser>
 
                                 <BemVindo>Bem Vindo</BemVindo>
-                                <UsuarioAtual>{token.role == "Médico" ? `Dr. ${token.name}` : `${token.name}`}</UsuarioAtual>
+                                <UsuarioAtual>{token.role == "Medico" ? `Dr. ${token.name}` : `${token.name}`}</UsuarioAtual>
 
                             </DataUser>
 
@@ -223,7 +224,7 @@ export const Home = ({ navigation, route }) => {
                             onPress={() => setStatusLista("cancelado")}
                         />
                     </FilterAppointment>
-                    {token.role === "Médico" ?
+                    {token.role === "Medico" ?
                         <ListComponent
                             data={listaConsultas}
                             keyExtractor={(item) => item.id}
@@ -279,7 +280,7 @@ export const Home = ({ navigation, route }) => {
                         setSituacaoConsultaAlterada={setSituacaoConsultaAlterada}
                     />
 
-                    {token.role === 'Médico' ?
+                    {token.role === 'Medico' ?
                         < ProntuarioModal
                             visible={showModalAppointment}
                             setShowModalAppointment={setShowModalAppointment}
@@ -297,7 +298,7 @@ export const Home = ({ navigation, route }) => {
                     }
 
 
-                    {token.role === "Médico" ?
+                    {token.role === "Medico" ?
                         <></>
                         :
                         <ViewIcon>

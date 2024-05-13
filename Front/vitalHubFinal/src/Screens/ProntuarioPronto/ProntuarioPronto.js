@@ -1,6 +1,6 @@
 import { ScrollView } from "react-native"
 import { ButtonCard, ButtonText, TextAge } from "../../Components/AppointmentCard/Style"
-import { Container, ContainerLeft, CaxinhaSla, ContainerRowButtons, ContainerSpace } from "../../Components/Container/Style"
+import { Container, ContainerLeft, CaxinhaSla, ContainerRowButtons, ContainerSpace, ContainerFotoPerfil } from "../../Components/Container/Style"
 import { FotoPerfil } from "../../Components/FotoPerfil/Style"
 import { SubTitle } from "../../Components/SubTitle/Style"
 import { Title, TitleProntuario } from "../../Components/Title/Style"
@@ -34,7 +34,7 @@ export const ProntuarioPronto = ({ navigation, route }) => {
     }
 
     const handleOpenCamera = () => {
-        navigation.navigate('CameraProntuario', { screen : "Prontuario"});
+        navigation.navigate('CameraProntuario', { screen: "Prontuario",  idConsulta : route.params.idConsulta });
     };
 
     async function ProfileLoad() {
@@ -42,37 +42,25 @@ export const ProntuarioPronto = ({ navigation, route }) => {
 
         if (tokenDecode) {
             setToken(tokenDecode)
-            // BuscarProntuario(tokenDecode)
+            BuscarFoto(tokenDecode)
         }
     };
 
-    async function BuscarFoto(){
-        const formData = new FormData();
-        formData.append("Arquivo", {
-            uri : route.params.photoUri,
-            name : `image.${route.params.photoUri.split(".")[1] }`,
-            type : `image/${route.params.photoUri.split(".")[1] }`
-        });
-        
-        const response = await api.get(`/Usuario/BuscarPorId?id=${token.jti}`, formData, {
-            headers: {
-                "Content-Type" : "multipart/form-data"
-            }
-        }).then(() => {
-            setFotoPerfil(route.params.photoUri)
+    async function BuscarFoto( tokenInformado ) {
+        await api.get(`/Usuario/BuscarPorId?id=${tokenInformado.jti}`)
+        .then(response => {
+            setFotoPerfil(response.data.foto)
 
         }).catch(error => {
             console.log(error);
         })
-        console.log(response.data.foto);
-        
     }
 
     async function BuscarProntuario() {
         const response = await api.get(`/Consultas/BuscarPorId?id=${route.params.idConsulta}`)
-        
+
         setBuscarId(response.data);
-        
+
     }
 
     async function BuscarEspecialidade(tokenEspecialidade) {
@@ -86,18 +74,20 @@ export const ProntuarioPronto = ({ navigation, route }) => {
 
     async function InserirExame() {
         const formData = new FormData();
-        formData.append("consultaId", prontuario.id)
+        formData.append("consultaId", route.params.idConsulta)
         formData.append("Imagem", {
-            uri: route.params,
-            name: `image.${route.params.split('.').pop()}`,
-            type: `image/${route.params.split('.').pop()}`
+            uri: route.params.photoUri,
+            name: `image.${route.params.photoUri.split('.').pop()}`,
+            type: `image/${route.params.photoUri.split('.').pop()}`
         });
 
         await api.post(`/Exame/Cadastrar`, formData, {
-            headers : {
-                "Content-Type" : "multipart/form-data"
+            headers: {
+                "Content-Type": "multipart/form-data"
             }
         }).then(response => {
+            console.log(response)
+            console.log(response.data)
             setDescricaoExame(descricaoExame + "/n" + response.data.descricao)
         }).catch(error => {
             console.log(error);
@@ -125,9 +115,9 @@ export const ProntuarioPronto = ({ navigation, route }) => {
 
     useEffect(() => {
 
-        // if (route.params) {
-        //     InserirExame();
-        // }
+        if (route.params && route.params.photoUri) {
+            InserirExame();
+        }
 
         ProfileLoad()
         BuscarFoto()
@@ -136,92 +126,95 @@ export const ProntuarioPronto = ({ navigation, route }) => {
         // console.log(route.params);
         // BuscarUsuario(
         // console.log(token.role == "Medico");
-        // console.log(buscarId);
+        // console.log(buscarId)
     }, [route])
 
     return (
         <ScrollView>
             {especialidade != null && buscarId != null ?
-            <>
-            <Container>
-                <ContainerSpace>
-                    
-                    <FotoPerfil
-                        source={require=(fotoPerfil)}
-                        />
+                <>
+                    <Container>
+                        <ContainerSpace>
+                            <ContainerFotoPerfil>
 
-                    <Title>{token.name}</Title>
-                    <CaxinhaSla>
-                        <TextAge>{especialidade.medicoClinica.medico.especialidade.especialidade1}</TextAge>
-                        <SubTitle>{especialidade.medicoClinica.medico.crm}</SubTitle>
-                    </CaxinhaSla>
+                                <FotoPerfil
+                                    source={{ uri: fotoPerfil }}
+                                />
 
-                    <ContainerLeft>
-                        <TitleProntuario>Descrição da consulta</TitleProntuario>
-                        <CaixaProntuario>
-                            <TextCaixaProntuario>{buscarId.descricao}</TextCaixaProntuario>
-                        </CaixaProntuario>
-                    </ContainerLeft>
+                            </ContainerFotoPerfil>
+                            <Title>{token.name}</Title>
+                            <CaxinhaSla>
+                                <TextAge>{especialidade.medicoClinica.medico.especialidade.especialidade1}</TextAge>
+                                <SubTitle>{especialidade.medicoClinica.medico.crm}</SubTitle>
+                            </CaxinhaSla>
 
-                    <ContainerLeft>
+                            <ContainerLeft>
+                                <TitleProntuario>Descrição da consulta</TitleProntuario>
+                                <CaixaProntuario>
+                                    <TextCaixaProntuario>{buscarId.descricao}</TextCaixaProntuario>
+                                </CaixaProntuario>
+                            </ContainerLeft>
 
-                        <TitleProntuario>Diagnóstico do paciente</TitleProntuario>
-                        <CaixaProntuarioMenor>
-                            <TextCaixaProntuario>{buscarId.diagnostico}</TextCaixaProntuario>
-                        </CaixaProntuarioMenor>
-                    </ContainerLeft>
-                    <ContainerLeft>
+                            <ContainerLeft>
 
-                        <TitleProntuario>Prescrição médica</TitleProntuario>
-                        <CaixaProntuario>
-                            <TextCaixaProntuario>{buscarId.receita.medicamento == null ? "Não Informado" : buscarId.receita.medicamento}</TextCaixaProntuario>
-                        </CaixaProntuario>
-                    </ContainerLeft>
+                                <TitleProntuario>Diagnóstico do paciente</TitleProntuario>
+                                <CaixaProntuarioMenor>
+                                    <TextCaixaProntuario>{buscarId.diagnostico}</TextCaixaProntuario>
+                                </CaixaProntuarioMenor>
+                            </ContainerLeft>
+                            <ContainerLeft>
 
-                    <ContainerLeft>
+                                <TitleProntuario>Prescrição médica</TitleProntuario>
+                                <CaixaProntuario>
+                                    <TextCaixaProntuario>{buscarId.receita.medicamento == null ? "Não Informado" : buscarId.receita.medicamento}</TextCaixaProntuario>
+                                </CaixaProntuario>
+                            </ContainerLeft>
 
-                        <TitleProntuario>Exames médicos</TitleProntuario>
-                        <CaixaProntuarioRow>
-                            {
-                                savePhoto != null
-                                    ? (<Image style={{ width: '100%', height: 100 }} source={{ uri: route.params.photo }} />)
-                                    : (<>
-                                        <SimpleLineIcons name="exclamation" size={24} color="black" />
-                                        <TextCaixaProntuario>Nenhuma foto informada</TextCaixaProntuario>
-                                    </>)
-                            }
+                            <ContainerLeft>
 
-                        </CaixaProntuarioRow>
-                    </ContainerLeft>
+                                <TitleProntuario>Exames médicos</TitleProntuario>
+                                <CaixaProntuarioRow>
+                                    {
+                                        (route.params != null && route.params.photoUri)
+                                            ? (<Image style={{ width: '100%', height: 100 }} source={{ uri: route.params.photoUri }} />)
+                                            : (<>
+                                                <SimpleLineIcons name="exclamation" size={24} color="black" />
+                                                <TextCaixaProntuario>Nenhuma foto informada</TextCaixaProntuario>
+                                            </>)
+                                    }
 
-                    <ContainerRowButtons>
-                        <CameraButton onPress={handleOpenCamera}>
-                            <MaterialCommunityIcons name="camera-plus-outline" size={24} color="white" />
-                            <CameraButtonTitle>Enviar</CameraButtonTitle>
-                        </CameraButton>
-                        <CancelarButton onPress={() => setSavePhoto(null)}>
-                            <CancelarText>Cancelar</CancelarText>
-                        </CancelarButton>
-                    </ContainerRowButtons>
+                                </CaixaProntuarioRow>
+                            </ContainerLeft>
 
-                    <Divider></Divider>
-                    <ContainerLeft>
+                            <ContainerRowButtons>
+                                <CameraButton onPress={handleOpenCamera}>
+                                    <MaterialCommunityIcons name="camera-plus-outline" size={24} color="white" />
+                                    <CameraButtonTitle>Enviar</CameraButtonTitle>
+                                </CameraButton>
+                                <CancelarButton onPress={() => setSavePhoto(null)}>
+                                    <CancelarText>Cancelar</CancelarText>
+                                </CancelarButton>
+                            </ContainerRowButtons>
+
+                            <Divider></Divider>
+                            <ContainerLeft>
 
 
-                        <CaixaProntuario>
-                            <TextCaixaProntuario>Resultado do exame de sangue:</TextCaixaProntuario>
-                            <TextCaixaProntuario>tudo normal</TextCaixaProntuario>
-                        </CaixaProntuario>
-                    </ContainerLeft>
+                                <CaixaProntuario>
+                                    {/* <TextCaixaProntuario>Resultado do exame de sangue:</TextCaixaProntuario>
+                                    <TextCaixaProntuario>tudo normal</TextCaixaProntuario> */}
+                                    <TextCaixaProntuario>{descricaoExame}</TextCaixaProntuario>
+                                </CaixaProntuario>
+                            </ContainerLeft>
 
-                    <ContentAccount onPress={Voltar}>
-                        <TextAccountLink>Voltar</TextAccountLink>
-                    </ContentAccount>
-                </ContainerSpace>
-            </Container>
-            </> 
-            :
-            <></>}
+                            <ContentAccount onPress={Voltar}>
+                                <TextAccountLink>Voltar</TextAccountLink>
+                            </ContentAccount>
+                        </ContainerSpace>
+                    </Container>
+                </>
+                :
+                <></>}
         </ScrollView>
     )
 }

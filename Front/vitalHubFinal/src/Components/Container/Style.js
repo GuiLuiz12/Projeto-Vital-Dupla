@@ -66,6 +66,14 @@ export const ContainerLocal = styled.View`
     width: 144px;
 `
 
+export const ContainerFotoPerfil = styled.View`
+    width: 360px;
+    height: 280px;
+    /* align-items: baseline;
+    justify-content: center;
+    flex-direction: column; */
+`
+
 export const ContainerLocalEndereco = styled(ContainerLocal)`
     width: 90%;
 `
