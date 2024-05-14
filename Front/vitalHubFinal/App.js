@@ -26,6 +26,8 @@ const Stack = createNativeStackNavigator();
 // LogBox.ignoreLogs(['Warning: ...']); // Ignore log notification by message
 // LogBox.ignoreAllLogs();//Ignore all log notifications
 
+//criar conta, local da clinica, marcar consulta, notification
+
 export default function App() {
 
   const[fontsLoaded, fontsError] = useFonts({

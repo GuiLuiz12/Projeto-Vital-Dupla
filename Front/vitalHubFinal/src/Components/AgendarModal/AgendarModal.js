@@ -41,42 +41,42 @@ export const AgendarModal = ({
 
 
                     <FilterAppointment2>
-                        <ButtonConsulta clickButton={selecionado === "7D4FA0A2-B61C-4EC1-87F7-BC95B6D94575"} onPress={() => {
+                        <ButtonConsulta clickButton={selecionado === "23A27EC8-0838-40DD-9A86-D822E85C73D6"} onPress={() => {
                             setAgendamento({
                                 ...agendamento, //manter as infos já passadas
-                                prioridadeId: "7D4FA0A2-B61C-4EC1-87F7-BC95B6D94575",
+                                prioridadeId: "23A27EC8-0838-40DD-9A86-D822E85C73D6",
                                 prioridadeLabel: "Rotina"
                             })
-                            setSelecionado("7D4FA0A2-B61C-4EC1-87F7-BC95B6D94575")
+                            setSelecionado("23A27EC8-0838-40DD-9A86-D822E85C73D6")
                         }}>
-                            <ButtonTextConsulta clickButton={selecionado === "7D4FA0A2-B61C-4EC1-87F7-BC95B6D94575"}>
+                            <ButtonTextConsulta clickButton={selecionado === "23A27EC8-0838-40DD-9A86-D822E85C73D6"}>
                                 Rotina
                             </ButtonTextConsulta>
                         </ButtonConsulta>
 
-                        <ButtonConsulta clickButton={selecionado === "F08A52E6-D46B-45A3-82B1-EA267CDA3BB2"} onPress={() => {
+                        <ButtonConsulta clickButton={selecionado === "E4870835-AC16-4288-8330-F4C80C939F3F"} onPress={() => {
                             setAgendamento({
                                 ...agendamento, //manter as infos já passadas
-                                prioridadeId: "F08A52E6-D46B-45A3-82B1-EA267CDA3BB2",
+                                prioridadeId: "E4870835-AC16-4288-8330-F4C80C939F3F",
                                 prioridadeLabel: "Exame"
                             })
-                            setSelecionado("F08A52E6-D46B-45A3-82B1-EA267CDA3BB2")
+                            setSelecionado("E4870835-AC16-4288-8330-F4C80C939F3F")
                         }}>
-                            <ButtonTextConsulta clickButton={selecionado === "F08A52E6-D46B-45A3-82B1-EA267CDA3BB2"}>
+                            <ButtonTextConsulta clickButton={selecionado === "E4870835-AC16-4288-8330-F4C80C939F3F"}>
                                 Exame
                             </ButtonTextConsulta>
                         </ButtonConsulta>
 
-                        <ButtonConsulta clickButton={selecionado === "DD6E0928-A55A-425C-B233-E2249EEA7421"} onPress={() => {
+                        <ButtonConsulta clickButton={selecionado === "AD0B07C6-2CCA-4AF2-820C-C83DC83A84B3"} onPress={() => {
                             setAgendamento({
                                 ...agendamento, //manter as infos já passadas
-                                prioridadeId: "DD6E0928-A55A-425C-B233-E2249EEA7421",
+                                prioridadeId: "AD0B07C6-2CCA-4AF2-820C-C83DC83A84B3",
                                 prioridadeLabel: "Urgência"
                             })
-                            setSelecionado("DD6E0928-A55A-425C-B233-E2249EEA7421")
+                            setSelecionado("AD0B07C6-2CCA-4AF2-820C-C83DC83A84B3")
                         }}>
 
-                            <ButtonTextConsulta clickButton={selecionado === "DD6E0928-A55A-425C-B233-E2249EEA7421"}>
+                            <ButtonTextConsulta clickButton={selecionado === "AD0B07C6-2CCA-4AF2-820C-C83DC83A84B3"}>
                                 Urgência
                             </ButtonTextConsulta>
                         </ButtonConsulta>

@@ -30,7 +30,7 @@ export const ConfirmarModal = ({
         await api.post("/Consultas/Cadastrar", {
             ...agendamento,
             pacienteId: profile.jti,
-            situacaoId: "E11B5D10-E9FF-4827-ACDA-B25FF3AE27DB"
+            situacaoId: "C08395C4-C96A-41B0-BFC5-543D0521B1C8"
         }).then( async () => {
             await setShowModalConfirm(false);
 
@@ -42,6 +42,7 @@ export const ConfirmarModal = ({
 
     useEffect(() => {
         profileLoad()
+        // handleConfirm()
     }, [visible])
 
     return (

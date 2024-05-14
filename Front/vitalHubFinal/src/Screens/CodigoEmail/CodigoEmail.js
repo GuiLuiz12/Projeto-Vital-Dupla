@@ -58,7 +58,7 @@ export const CodigoEmail = ({ navigation, route }) => {
         <Container>
             <ContainerSpace>
 
-                <IconBox onPress={() => navigation.navigate("RecSenha")}>
+                <IconBox onPress={() => navigation.navigate("RecuperarSenha")}>
                     <AntDesign name="close" size={22} color="#34898F" />
                 </IconBox>
 

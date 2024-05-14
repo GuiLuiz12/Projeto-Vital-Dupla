@@ -23,6 +23,7 @@ export const Local = ({ navigation, route }) => {
         await api.get(`/Clinica/BuscarPorId?id=${route.params.clinicaId}`)
             .then(response => {
                 setClinica(response.data)
+                console.log(response.data);
             })
             .catch(error => {
                 console.log(error);
@@ -67,7 +68,7 @@ export const Local = ({ navigation, route }) => {
 
                             <ContainerRow>
                                 <ContainerLocal>
-                                    <TitleComponent>cidade</TitleComponent>
+                                    <TitleComponent>Cidade</TitleComponent>
                                     <InputCinzaMenor
                                         value={`${clinica.endereco.cidade}`}
     

@@ -24,8 +24,8 @@ export default function Maps({ latitude, longitude }) {
   const [initialPosition, setInitialPosition] = useState(null)
 
   const [finalPosition, setPosition] = useState({
-    latitude: longitude,
-    longitude: latitude,
+    latitude: latitude,
+    longitude: longitude,
   })
 
   const [mapStyle, setMapStyle] = useState(grayMapStyle);
@@ -64,18 +64,18 @@ export default function Maps({ latitude, longitude }) {
     CapturarLocalizacao()
 
     //Capturar a localizacao em tempo real
-    watchPositionAsync({
-      accuracy: LocationAccuracy.High,
-      timeInterval: 1000,
-      distanceInterval: 1
-    }, async (response) => {
-      await setInitialPosition(response)
+    // watchPositionAsync({
+    //   accuracy: LocationAccuracy.High,
+    //   timeInterval: 1000,
+    //   distanceInterval: 1
+    // }, async (response) => {
+    //   await setInitialPosition(response)
 
-      mapReference.current?.animateCamera({
-        pitch: 60,
-        center: response.coords
-      })
-    })
+    //   mapReference.current?.animateCamera({
+    //     pitch: 60,
+    //     center: response.coords
+    //   })
+    // })
   }, [1000])
 
   useEffect(() => {

@@ -98,8 +98,7 @@ export const Perfil = ({ navigation, route }) => {
             const response = await api.get(`/${url}/BuscarPorId?id=${tokenUser.jti}`);
 
             setBaseUser(response.data)
-
-            console.log(baseUser);
+            console.log(response.data);//colocar foto idnavigation.foto
 
         } catch (error) {
             console.log(error);

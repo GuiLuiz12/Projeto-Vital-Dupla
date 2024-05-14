@@ -23,7 +23,7 @@ export const CriarConta = ({ navigation }) => {
 
     function Cadastrar() {
         if (senha == confirmSenha) {
-            CadatroApi()
+            CadastroApi()
             LoginFunct()
             navigation.navigate("Perfil")
         } else {
@@ -31,14 +31,14 @@ export const CriarConta = ({ navigation }) => {
         }
     }
 
-    async function CadatroApi() {
+    async function CadastroApi() {
         await AsyncStorage.removeItem("token")
 
         const form = new FormData()
         form.append("Nome", nome)
         form.append("Email", email)
         form.append("Senha", senha)
-        form.append("IdTipoUsuario", "4fa85f64-5717-4562-b3fc-2c963f66afa6")
+        form.append("IdTipoUsuario", "DBF30A27-F042-455E-B1B4-7EDE58D6DF29")
 
         
 
