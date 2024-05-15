@@ -21,10 +21,10 @@ export const CriarConta = ({ navigation }) => {
         navigation.navigate("Login")
     }
 
-    function Cadastrar() {
+    async function Cadastrar() {
         if (senha == confirmSenha) {
-            CadastroApi()
-            LoginFunct()
+            await CadastroApi()
+            await LoginFunct()
             navigation.navigate("Perfil")
         } else {
             alert("Senhas não iguais")
@@ -56,7 +56,7 @@ export const CriarConta = ({ navigation }) => {
 
     async function LoginFunct() {
         try {
-            const response = await api.post('/Login', { email, senha });
+            const response = await api.post('/Login', { email: email, senha: senha });
             await AsyncStorage.setItem("token", JSON.stringify(response.data));
         } catch (error) {
             console.log(error);

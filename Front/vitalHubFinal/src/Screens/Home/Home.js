@@ -70,9 +70,7 @@ export const Home = ({ navigation, route }) => {
 
     async function ProfileLoad() {
         const token = await userDecodeToken();
-        setToken(token)
-        BuscarUsuario(token);
-        
+        setToken(token)        
         setDateConsulta(moment().format("YYYY-MM-DD"));
     }
 
@@ -85,14 +83,13 @@ export const Home = ({ navigation, route }) => {
             setUser(response.data);
 
         } catch (error) {
+            console.log("0");
             console.log(error);
         }
     }
 
     async function ListarPacientes() {
         const url = (token.role == 'Medico' ? 'Medicos' : "Pacientes")
-        console.log(`/${url}/BuscarPorData?data=${dateConsulta}&id=${token.jti}`);
-
         const response = await api.get(`/${url}/BuscarPorData?data=${dateConsulta}&id=${token.jti}`)
         setListaConsultas(response.data)
     }
@@ -135,8 +132,7 @@ export const Home = ({ navigation, route }) => {
     }, [])
 
     useEffect(() => {
-        BuscarUsuario(); 
-        
+        BuscarUsuario(token); 
     }, [token])
 
     useEffect(() => {

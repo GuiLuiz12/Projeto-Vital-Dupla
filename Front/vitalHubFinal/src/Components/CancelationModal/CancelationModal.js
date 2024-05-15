@@ -16,19 +16,21 @@ export const CancelationModal = ({
 }) => {
   const [statusNotification, setStatusNotification] = useState("")
 
+    //SOLICITA PERMISSÃO DE NOTIFICAÇÕES AO INICIAR O APP
+    Notifications.requestPermissionsAsync();
+
+    Notifications.setNotificationHandler({
+      handleNotification: async () => ({
+        //MOSTRAR ALERTA QUANDO NOTIFICAÇÃO FOR RECEBIDA
+        shouldShowAlert: true,
+        //TOCAR SOM QUANDO NOTIFICAÇÃO FOR RECEBIDA
+        shouldPlaySound: false,
+        //NUMERO DE NOTIFICACOES NO ICONE DO APP
+        shouldSetBadge: false,
+      }),
+    });
+
   useEffect(() => {
-    ( async () => {
-      const status = await Notifications.getPermissionsAsync();
-      setStatusNotification(status)
-  
-      //verifica se o usuario concedeu permissão
-  
-      if (status != "granted") {
-        alert("voce nao deixou as notificacoes ativas")
-      }else{
-        await Notifications.getPermissionsAsync();
-      }
-    })()
   }, [])
 
   //funcao para lidar com a chamada de notificacao

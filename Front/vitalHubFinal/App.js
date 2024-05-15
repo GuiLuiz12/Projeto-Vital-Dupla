@@ -21,12 +21,10 @@ import { Home } from './src/Screens/Home/Home';
 import { Prontuario } from './src/Screens/Prontuario/Prontuario';
 const Stack = createNativeStackNavigator();
 
-// import { LogBox } from 'react-native';
+import { LogBox } from 'react-native';
 
-// LogBox.ignoreLogs(['Warning: ...']); // Ignore log notification by message
-// LogBox.ignoreAllLogs();//Ignore all log notifications
-
-//criar conta, local da clinica, marcar consulta, notification
+LogBox.ignoreLogs(['Warning: ...']); // Ignore log notification by message
+LogBox.ignoreAllLogs();//Ignore all log notifications
 
 export default function App() {
 
@@ -37,7 +35,7 @@ export default function App() {
     Quicksand_400Regular,
     Quicksand_500Medium,
     Quicksand_600SemiBold
-  })
+  }) 
 
   if (!fontsLoaded && !fontsError) {
     return null;

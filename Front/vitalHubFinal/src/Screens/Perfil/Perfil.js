@@ -16,8 +16,7 @@ import { MaterialCommunityIcons } from "@expo/vector-icons"
 import { ButtonCamera } from "./Style";
 import * as MediaLibrary from "expo-media-library"
 import * as ImagePicker from "expo-image-picker"
-import { Camera, useCameraPermissions } from 'expo-camera';
-import { requestForegroundPermissionsAsync } from 'expo-location';
+import { useCameraPermissions } from 'expo-camera';
 
 export const Perfil = ({ navigation, route }) => {
     const [token, setToken] = useState({})
@@ -26,7 +25,6 @@ export const Perfil = ({ navigation, route }) => {
     const [permission, requestPermission] = useCameraPermissions();
     const [permissionMedia, requestMediaPermission] = MediaLibrary.usePermissions();
     const [editing, setEditing] = useState(false);
-    const [attUser, setAttUser] = useState({})
     const [desativarNavigation, setDesativarNavigation] = useState(false)
 
     function EditarFunction() {
@@ -41,6 +39,7 @@ export const Perfil = ({ navigation, route }) => {
 
     async function ProfileLoad() {
         const tokenDecode = await userDecodeToken();
+        console.log(tokenDecode);
         if (tokenDecode) {
             await setToken(tokenDecode)
             await BuscarUsuario(tokenDecode)
@@ -49,20 +48,20 @@ export const Perfil = ({ navigation, route }) => {
 
     async function SalvarFunction() {
         if (token.role == "Medico") {
-            const response = await api.get(`/Especialidade/BuscarPorNome?esp=${attUser.especialidade.especialidade1}`)
-            await setAttUser({ ...attUser, especialidade: { id: response.data.id, especialidade1: attUser.especialidade.especialidade1 } })
+            const response = await api.get(`/Especialidade/BuscarPorNome?esp=${baseUser.especialidade.especialidade1}`)
+            await setbaseUser({ ...baseUser, especialidade: { id: response.data.id, especialidade1: baseUser.especialidade.especialidade1 } })
         }
 
         if (token.role == "Medico") {
             await api.put("/Medicos", {
                 id: token.jti,
-                dataNascimento: attUser.dataNascimento,
-                cep: attUser.cep,
-                logradouro: attUser.logradouro,
-                numero: attUser.numero,
-                cidade: attUser.cidade,
-                crm: attUser.crm,
-                especialidade: attUser.especialidade.id
+                dataNascimento: baseUser.dataNascimento,
+                cep: baseUser.cep,
+                logradouro: baseUser.logradouro,
+                numero: baseUser.numero,
+                cidade: baseUser.cidade,
+                crm: baseUser.crm,
+                especialidade: baseUser.especialidade.id
             }).catch((error) => {
                 console.log(error);
             })
@@ -70,13 +69,13 @@ export const Perfil = ({ navigation, route }) => {
         else {
             await api.put(`/Pacientes?idUsuario=${token.jti}`, {
 
-                rg: attUser.rg,
-                cpf: attUser.cpf,
-                dataNascimento: attUser.dataNascimento,
-                cep: attUser.cep,
-                logradouro: attUser.logradouro,
-                numero: attUser.numero,
-                cidade: attUser.cidade,
+                rg: baseUser.rg,
+                cpf: baseUser.cpf,
+                dataNascimento: baseUser.dataNascimento,
+                cep: baseUser.cep,
+                logradouro: baseUser.logradouro,
+                numero: baseUser.numero,
+                cidade: baseUser.cidade,
             }).catch((error) => {
                 console.log(error);
             })
@@ -98,7 +97,7 @@ export const Perfil = ({ navigation, route }) => {
             const response = await api.get(`/${url}/BuscarPorId?id=${tokenUser.jti}`);
 
             setBaseUser(response.data)
-            console.log(response.data);//colocar foto idnavigation.foto
+            setPhoto(response.data.idNavigation.foto)
 
         } catch (error) {
             console.log(error);
@@ -153,8 +152,6 @@ export const Perfil = ({ navigation, route }) => {
 
     useEffect(() => {
         ProfileLoad();
-        data = new Date(attUser.dataNascimento).toLocaleDateString()
-        console.log(data);
     }, [route]);
 
     useEffect(() => {
@@ -185,10 +182,10 @@ export const Perfil = ({ navigation, route }) => {
                             <ContainerLeft>
                                 <TitleComponent>Especialidade</TitleComponent>
                                 <InputCinza
-                                    value={baseUser.especialidade.especialidade1}
+                                    value={baseUser.especialidade.especialidade1 ? baseUser.especialidade.especialidade1 : ""}
                                     editable={editing}
                                     onChangeText={(txt) => {
-                                        setBaseUser({ ...attUser, especialidade: { id: attUser.especialidade.id, especialidade1: txt } })
+                                        setBaseUser({ ...baseUser, especialidade: { id: baseUser.especialidade.id, especialidade1: txt } })
                                     }}
                                     autoComplete={"off"}
                                 />
@@ -197,10 +194,10 @@ export const Perfil = ({ navigation, route }) => {
                             <ContainerLeft>
                                 <TitleComponent>CRM</TitleComponent>
                                 <InputCinza
-                                    value={baseUser.crm}
+                                    value={baseUser.crm ? baseUser.crm : ""}
                                     editable={editing}
                                     onChangeText={(txt) => {
-                                        setBaseUser({ ...attUser, crm: txt })
+                                        setBaseUser({ ...baseUser, crm: txt })
                                     }}
                                     keyboardType={"numeric"}
                                     autoComplete={"off"}
@@ -215,7 +212,7 @@ export const Perfil = ({ navigation, route }) => {
                                 <InputCinza
                                     value={baseUser.dataNascimento != invalid ? new Date(baseUser.dataNascimento).toLocaleDateString() : null}
                                     editable={editing}
-                                    onChangeText={(txt) => setBaseUser({ ...attUser, dataNascimento: txt })}
+                                    onChangeText={(txt) => setBaseUser({ ...baseUser, dataNascimento: txt })}
                                     keyboardType={"numeric"}
                                     placeholder={"Formato de escrita: (DD-MM-YYYY)"}
                                 />
@@ -224,10 +221,10 @@ export const Perfil = ({ navigation, route }) => {
                             <ContainerLeft>
                                 <TitleComponent>RG</TitleComponent>
                                 <InputCinza
-                                    value={baseUser.rg}
+                                    value={baseUser.rg ? baseUser.rg : ""}
                                     editable={editing}
                                     onChangeText={(txt) => {
-                                        setBaseUser({ ...attUser, rg: txt })
+                                        setBaseUser({ ...baseUser, rg: txt })
                                     }}
                                     keyboardType={"numeric"}
                                     autoComplete={"off"}
@@ -237,9 +234,9 @@ export const Perfil = ({ navigation, route }) => {
                             <ContainerLeft>
                                 <TitleComponent>CPF</TitleComponent>
                                 <InputCinza
-                                    value={baseUser.cpf}
+                                    value={baseUser.cpf ? baseUser.cpf : ""}
                                     editable={editing}
-                                    onChangeText={(txt) => setBaseUser({ ...attUser, cpf: txt })}
+                                    onChangeText={(txt) => setBaseUser({ ...baseUser, cpf: txt })}
                                     keyboardType={"numeric"}
                                     autoComplete={"off"}
                                 />
@@ -253,10 +250,10 @@ export const Perfil = ({ navigation, route }) => {
                             <TitleComponent>Rua/Logadouro</TitleComponent>
 
                             <InputCinzaMenor
-                                value={baseUser.endereco.logradouro}
+                                value={baseUser.endereco.logradouro != undefined ? baseUser.endereco.logradouro : ""}
                                 editable={editing}
                                 onChangeText={(txt) => {
-                                    setBaseUser({ ...attUser, logradouro: txt, })
+                                    setBaseUser({ ...baseUser, endereco: {...baseUser.endereco, logradouro: txt}})
                                 }}
                                 autoComplete={"off"}
                             />
@@ -266,9 +263,9 @@ export const Perfil = ({ navigation, route }) => {
 
                             <TitleComponent>Número</TitleComponent>
                             <InputCinzaMenor
-                                value={baseUser.endereco.numero != undefined ? `${baseUser.endereco.numero}` : null}
+                                value={baseUser.endereco != undefined ? `${baseUser.endereco.numero}` : null}
                                 editable={editing}
-                                onChangeText={(txt) => setBaseUser({ ...attUser, numero: txt })
+                                onChangeText={(txt) => setBaseUser({ ...baseUser, endereco: {...baseUser.endereco, numero: txt} })
                                 }
                                 keyboardType={"numeric"}
                                 autoComplete={"off"}
@@ -281,10 +278,10 @@ export const Perfil = ({ navigation, route }) => {
                         <ContainerLocal>
                             <TitleComponent>CEP</TitleComponent>
                             <InputCinzaMenor
-                                value={baseUser.endereco.cep}
+                                value={baseUser.endereco != undefined ? baseUser.endereco.cep : ""}
                                 editable={editing}
                                 onChangeText={(txt) => {
-                                    setBaseUser({ ...attUser, cep: txt })
+                                    setBaseUser({ ...baseUser, endereco: {...baseUser.endereco, cep: txt} })
                                 }}
                                 keyboardType={"numeric"}
                                 autoComplete={"off"}
@@ -294,10 +291,10 @@ export const Perfil = ({ navigation, route }) => {
                         <ContainerLocal>
                             <TitleComponent>Cidade</TitleComponent>
                             <InputCinzaMenor
-                                value={baseUser.endereco.cidade}
+                                value={baseUser.endereco != undefined ? baseUser.endereco.cidade : ""}
                                 editable={editing}
                                 onChangeText={(txt) => {
-                                    setBaseUser({ ...attUser, cidade: txt })
+                                    setBaseUser({ ...baseUser, endereco: {...baseUser.endereco, cidade: txt}})
                                 }}
                                 autoComplete={"off"}
                             />
