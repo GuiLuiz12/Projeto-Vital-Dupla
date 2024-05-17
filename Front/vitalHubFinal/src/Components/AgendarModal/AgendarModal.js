@@ -97,7 +97,7 @@ export const AgendarModal = ({
 
                     />
 
-                    <Button onPress={() => handleContinue()}>
+                    <Button onPress={() => handleContinue()} disabled={agendamento === null}>
                         <ButtonTitle>Continuar</ButtonTitle>
                     </Button>
 

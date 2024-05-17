@@ -283,6 +283,7 @@ export const Home = ({ navigation, route }) => {
                             setShowModalAppointment={setShowModalAppointment}
                             navigation={navigation}
                             consulta={consultaSelecionada}
+                            setSituacaoConsultaAlterada={setSituacaoConsultaAlterada}
                         />
                         :
                         <LocalModal

@@ -15,14 +15,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import api from "../../Service/Service"
 
 export const Login = ({ navigation }) => {
-
-
     const [email, setEmail] = useState('')
-
-
-
-
-
     const [senha, setSenha] = useState('')
     const [showSpinner, setShowSpinner] = useState(false)
     const [press, setPress] = useState(false)

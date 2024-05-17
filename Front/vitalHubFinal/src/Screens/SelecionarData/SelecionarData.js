@@ -143,7 +143,7 @@ export const SelecionarData = ({ navigation, route }) => {
                         />
                     </View>
 
-                    <Button onPress={() => handleContinue()}>
+                    <Button onPress={() => handleContinue()} disabled={dataSelecionada === "" && horaSelecionada === ""}>
                         <ButtonTitle>Confirmar</ButtonTitle>
                     </Button>
 

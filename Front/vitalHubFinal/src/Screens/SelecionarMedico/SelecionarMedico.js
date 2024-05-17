@@ -65,7 +65,7 @@ export const SelecionarMedico = ({ navigation, route }) => {
                     />
                 </ContainerClinicas>
 
-                <Button onPress={() => Continuar()}>
+                <Button onPress={() => Continuar()} disabled={selected === ""}>
                     <ButtonTitle>Continuar</ButtonTitle>
                 </Button>
 

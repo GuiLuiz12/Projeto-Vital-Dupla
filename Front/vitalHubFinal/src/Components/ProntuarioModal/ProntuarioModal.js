@@ -15,6 +15,7 @@ export const ProntuarioModal = ({
     consulta,
     roleUsuario,
     clinicaId,
+    setSituacaoConsultaAlterada,
     ...rest
 }) => {
 
