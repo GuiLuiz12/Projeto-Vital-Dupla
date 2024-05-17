@@ -12,10 +12,10 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 
 export const CriarConta = ({ navigation }) => {
 
-    const [email, setEmail] = useState("edu@email.com")
-    const [senha, setSenha] = useState("12345")
-    const [confirmSenha, setConfirmSenha] = useState("12345")
-    const [nome, setNome] = useState("Eduardo")
+    const [email, setEmail] = useState("")
+    const [senha, setSenha] = useState("")
+    const [confirmSenha, setConfirmSenha] = useState("")
+    const [nome, setNome] = useState("")
 
     const Cancelar = () => {
         navigation.navigate("Login")
@@ -76,6 +76,13 @@ export const CriarConta = ({ navigation }) => {
                 <SubTitle>Insira seu endereço de e-mail e senha para realizar seu cadastro.</SubTitle>
 
             </ContainerSpace>
+
+            <Input
+                placeholder="Nome"
+                onChangeText={(event) => setNome(event)}
+                value={nome}
+            />
+            
             <Input
                 placeholder="Usuário ou email"
                 onChangeText={(event) => setEmail(event)}
@@ -94,11 +101,6 @@ export const CriarConta = ({ navigation }) => {
                 value={confirmSenha}
             />
 
-            <Input
-                placeholder="Nome"
-                onChangeText={(event) => setNome(event)}
-                value={nome}
-            />
 
             <Button onPress={() => Cadastrar()}>
                 <ButtonTitle>Cadastrar</ButtonTitle>

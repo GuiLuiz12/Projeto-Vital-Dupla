@@ -42,7 +42,13 @@ export const Prontuario = ({ navigation, route }) => {
 
     }
     useEffect( () => {
-        setConsulta({ ...route.params.consulta, medicamento: route.params.consulta.receita.medicamento })
+        if (route.params.consulta.receita) {
+            setConsulta({ ...route.params.consulta, medicamento: route.params.consulta.receita.medicamento })
+        }
+        else{
+            setConsulta({...route.params.consulta})
+        }
+        
     }, [route])
 
     return (

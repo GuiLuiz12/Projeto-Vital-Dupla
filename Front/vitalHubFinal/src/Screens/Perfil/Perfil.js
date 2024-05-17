@@ -9,9 +9,9 @@ import { ButtonTitle } from "../../Components/ButtonTitle/Style";
 import { ScrollView } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useEffect, useState } from "react";
-import { userDecodeToken } from "../../Utils/Auth";
+import { inverterData, userDecodeToken } from "../../Utils/Auth";
 import api from "../../Service/Service";
-import { invalid } from "moment";
+import moment, { invalid } from "moment";
 import { MaterialCommunityIcons } from "@expo/vector-icons"
 import { ButtonCamera } from "./Style";
 import * as MediaLibrary from "expo-media-library"
@@ -26,6 +26,7 @@ export const Perfil = ({ navigation, route }) => {
     const [permissionMedia, requestMediaPermission] = MediaLibrary.usePermissions();
     const [editing, setEditing] = useState(false);
     const [desativarNavigation, setDesativarNavigation] = useState(false)
+    const [dataOriginal, setDataOriginal] = useState('')
 
     function EditarFunction() {
         setEditing(true)
@@ -39,7 +40,6 @@ export const Perfil = ({ navigation, route }) => {
 
     async function ProfileLoad() {
         const tokenDecode = await userDecodeToken();
-        console.log(tokenDecode);
         if (tokenDecode) {
             await setToken(tokenDecode)
             await BuscarUsuario(tokenDecode)
@@ -55,28 +55,44 @@ export const Perfil = ({ navigation, route }) => {
         if (token.role == "Medico") {
             await api.put("/Medicos", {
                 id: token.jti,
-                dataNascimento: baseUser.dataNascimento,
-                cep: baseUser.cep,
-                logradouro: baseUser.logradouro,
-                numero: baseUser.numero,
-                cidade: baseUser.cidade,
+                cep: baseUser.endereco.cep,
+                logradouro: baseUser.endereco.logradouro,
+                numero: baseUser.endereco.numero,
+                cidade: baseUser.endereco.cidade,
                 crm: baseUser.crm,
                 especialidade: baseUser.especialidade.id
+            }).then( async(response) => {
+                console.log(response.data);
+                await ProfileLoad()
+                navigation.navigate('Main')
             }).catch((error) => {
                 console.log(error);
             })
         }
         else {
-            await api.put(`/Pacientes?idUsuario=${token.jti}`, {
-
+            console.log('kjbjkhbjhg');
+            console.log({
                 rg: baseUser.rg,
                 cpf: baseUser.cpf,
-                dataNascimento: baseUser.dataNascimento,
-                cep: baseUser.cep,
-                logradouro: baseUser.logradouro,
-                numero: baseUser.numero,
-                cidade: baseUser.cidade,
-            }).catch((error) => {
+                dataNascimento: `${baseUser.dataNascimento.split('/')[2]}-${baseUser.dataNascimento.split('/')[1]}-${baseUser.dataNascimento.split('/')[0]}`,
+                cep: baseUser.endereco.cep,
+                logradouro: baseUser.endereco.logradouro,
+                numero: baseUser.endereco.numero,
+                cidade: baseUser.endereco.cidade,
+            });
+            await api.put(`/Pacientes?idUsuario=${token.jti}`, {
+                rg: baseUser.rg,
+                cpf: baseUser.cpf,
+                dataNascimento: `${baseUser.dataNascimento.split('/')[2]}-${baseUser.dataNascimento.split('/')[1]}-${baseUser.dataNascimento.split('/')[0]}`,
+                cep: baseUser.endereco.cep,
+                logradouro: baseUser.endereco.logradouro,
+                numero: baseUser.endereco.numero,
+                cidade: baseUser.endereco.cidade,
+            }).then( async(response) => {
+                await ProfileLoad()
+                navigation.navigate('Main')
+            })
+            .catch((error) => {
                 console.log(error);
             })
         }
@@ -96,8 +112,9 @@ export const Perfil = ({ navigation, route }) => {
 
             const response = await api.get(`/${url}/BuscarPorId?id=${tokenUser.jti}`);
 
-            setBaseUser(response.data)
+            setBaseUser({ ...response.data, dataNascimento : moment(response.data.dataNascimento).format('DD/MM/YYYY')})
             setPhoto(response.data.idNavigation.foto)
+            tokenUser.role == "Paciente" && setDataOriginal(response.data.dataNascimento)
 
         } catch (error) {
             console.log(error);
@@ -115,14 +132,12 @@ export const Perfil = ({ navigation, route }) => {
     }
 
     async function AlterarFotoPerfil() {
-        console.log(route);
         const formData = new FormData();
         formData.append("Arquivo", {
             uri: route.params.photoUri,
             name: `image.${route.params.photoUri.split(".")[1]}`,
             type: `image/${route.params.photoUri.split(".")[1]}`
         });
-        console.log("2");
 
         await api.put(`/Usuario/AlterarFotoPerfil?id=${baseUser.id}`, formData, {
             headers: {
@@ -210,9 +225,10 @@ export const Perfil = ({ navigation, route }) => {
                                 <TitleComponent>Data de nascimento</TitleComponent>
 
                                 <InputCinza
-                                    value={baseUser.dataNascimento != invalid ? new Date(baseUser.dataNascimento).toLocaleDateString() : null}
+                                    value={editing ? baseUser.dataNascimento : `${moment(dataOriginal).format("DD/MM/YYYY")}`}
                                     editable={editing}
-                                    onChangeText={(txt) => setBaseUser({ ...baseUser, dataNascimento: txt })}
+                                    onChangeText={(txt) => setBaseUser({ ...baseUser, dataNascimento: txt.replace(/\D/g, '').replace(/(\d{2})(\d{2})(\d{4})/, '$1/$2/$3') })}
+
                                     keyboardType={"numeric"}
                                     placeholder={"Formato de escrita: (DD-MM-YYYY)"}
                                 />
@@ -263,7 +279,7 @@ export const Perfil = ({ navigation, route }) => {
 
                             <TitleComponent>Número</TitleComponent>
                             <InputCinzaMenor
-                                value={baseUser.endereco != undefined ? `${baseUser.endereco.numero}` : null}
+                                value={baseUser.endereco.numero != undefined ? `${baseUser.endereco.numero}` : ""}
                                 editable={editing}
                                 onChangeText={(txt) => setBaseUser({ ...baseUser, endereco: {...baseUser.endereco, numero: txt} })
                                 }

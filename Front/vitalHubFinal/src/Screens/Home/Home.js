@@ -70,11 +70,11 @@ export const Home = ({ navigation, route }) => {
 
     async function ProfileLoad() {
         const token = await userDecodeToken();
-        setToken(token)        
+        setToken(token)
         setDateConsulta(moment().format("YYYY-MM-DD"));
     }
 
-    async function BuscarUsuario( tokenDecode ) {
+    async function BuscarUsuario(tokenDecode) {
         try {
             const url = (tokenDecode.role === 'Medico' ? 'Medicos' : "Pacientes");
 
@@ -83,7 +83,6 @@ export const Home = ({ navigation, route }) => {
             setUser(response.data);
 
         } catch (error) {
-            console.log("0");
             console.log(error);
         }
     }
@@ -132,7 +131,7 @@ export const Home = ({ navigation, route }) => {
     }, [])
 
     useEffect(() => {
-        BuscarUsuario(token); 
+        BuscarUsuario(token);
     }, [token])
 
     useEffect(() => {
@@ -227,16 +226,18 @@ export const Home = ({ navigation, route }) => {
                             renderItem={({ item }) =>
 
                                 statusLista == item.situacao.situacao && (
-                                    <AppointmentCard
-                                        situacao={item.situacao.situacao}
-                                        onPressCancel={() => MostrarModal('cancelar', item)}
-                                        onPressAppointment={() => MostrarModal('prontuario', item)}
-                                        prioridade={item.prioridade.prioridade}
-                                        nome={item.paciente.idNavigation.nome}
-                                        idade={idadeCalc(item.paciente.dataNascimento)}
-                                        data={item.dataConsulta}
-                                        user={item}
-                                    />
+                                    <TouchableOpacity onPress={() => MostrarModal("prontuario", item)} disabled={statusLista != "pendente"}>
+                                        <AppointmentCard
+                                            situacao={item.situacao.situacao}
+                                            onPressCancel={() => MostrarModal('cancelar', item)}
+                                            onPressAppointment={() => navigation.navigate('ProntuarioPronto', { idConsulta: item.id })}
+                                            prioridade={item.prioridade.prioridade}
+                                            nome={item.paciente.idNavigation.nome}
+                                            idade={idadeCalc(item.paciente.dataNascimento)}
+                                            data={item.dataConsulta}
+                                            user={item}
+                                        />
+                                    </TouchableOpacity>
                                 )
                             }
                             showsVerticalScrollIndicator={false}

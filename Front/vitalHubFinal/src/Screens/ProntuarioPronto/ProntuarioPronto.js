@@ -67,8 +67,6 @@ export const ProntuarioPronto = ({ navigation, route }) => {
         // const url = (tokenUsuario.role == 'Medico' ? 'Medicos' : "Pacientes")
         const response2 = await api.get(`/Consultas/BuscarPorId?id=${route.params.idConsulta}`)
         setEspecialidade(response2.data)
-        console.log("oi");
-        console.log(response2.data);
     }
 
 
@@ -86,32 +84,11 @@ export const ProntuarioPronto = ({ navigation, route }) => {
                 "Content-Type": "multipart/form-data"
             }
         }).then(response => {
-            console.log(response)
-            console.log(response.data)
             setDescricaoExame(descricaoExame + "/n" + response.data.descricao)
         }).catch(error => {
             console.log(error);
         })
     }
-
-    // async function BuscarUsuario(tokenUsuario) {
-    //     const url = (tokenUsuario.role == 'Medico' ? 'Medicos' : "Pacientes")
-    //     //console.log(tokenUsuario.role);
-
-    //     const response = await api.get(`/Pacientes/BuscarPorId?id=${tokenUsuario.jti}`)
-    //     setBuscarId(response.data)
-    //     console.log(response.data);
-    // }
-
-    // useEffect(() => {
-    //     // async function xpto  ()  {
-    //     if (route.params != undefined) {
-    //         setSavePhoto(route.params.photo)
-    //     }
-    //     // };
-
-    //     // xpto()
-    // }, [route])
 
     useEffect(() => {
 
@@ -123,10 +100,6 @@ export const ProntuarioPronto = ({ navigation, route }) => {
         BuscarFoto()
         BuscarEspecialidade()
         BuscarProntuario()
-        // console.log(route.params);
-        // BuscarUsuario(
-        // console.log(token.role == "Medico");
-        // console.log(buscarId)
     }, [route])
 
     return (

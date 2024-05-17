@@ -48,3 +48,16 @@ export function idadeCalc(Data) {
     
     return idade < 0 ? 0 : idade;
 }
+
+export function inverterData(data) {
+    
+    const dataSplit = data.split("T")[0]
+    const dataInvertida = dataSplit.split("-")
+    if (dataInvertida[2] != undefined || dataInvertida[1] != undefined || dataInvertida[0] != undefined )  {
+        const dataFinal  = `${dataInvertida[2]}/${dataInvertida[1]}/${dataInvertida[0]}`
+        return dataFinal
+    }
+    else{
+        return ""
+    }
+}

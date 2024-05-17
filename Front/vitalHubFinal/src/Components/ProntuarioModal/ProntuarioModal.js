@@ -6,6 +6,7 @@ import { ButtonModal, ButtonSecondary } from "../Button/Style"
 import { ModalContent, PatientModal } from "../CancelationModal/Style"
 import { idadeCalc } from "../../Utils/Auth"
 import { useEffect } from "react"
+import api from "../../Service/Service"
 
 export const ProntuarioModal = ({
     visible,
@@ -19,6 +20,14 @@ export const ProntuarioModal = ({
 
     function HandlePress(rota) {
         navigation.navigate(rota, { consulta: consulta })
+        setShowModalAppointment(false)
+    }
+
+    async function setarRealizado() {
+        await api.put(`/Consultas/Status?idConsulta=${consulta.id}&status=realizado`)
+        .then(() => {
+            setSituacaoConsultaAlterada("BD931B57-2311-454A-BFBF-E61DB5C8FAFA")
+        })
     }
     return (
         consulta == null ?
@@ -36,7 +45,7 @@ export const ProntuarioModal = ({
                     {/* content */}
                     <ModalContent>
                         <ImagemProntuario
-                            source={{uri : consulta.paciente.idNavigation.foto}}
+                            source={{ uri: consulta.paciente.idNavigation.foto }}
                         />
 
                         <Title>{consulta.paciente.idNavigation.nome}</Title>
@@ -46,7 +55,10 @@ export const ProntuarioModal = ({
                         </IdadeEmail>
 
                         {/* button */}
-                        <ButtonModal onPress={() => HandlePress('Prontuario')}>
+                        <ButtonModal onPress={() => {
+                            setarRealizado()
+                            HandlePress('Prontuario')
+                        }}>
 
                             <ButtonTitle>Inserir prontuário</ButtonTitle>
 

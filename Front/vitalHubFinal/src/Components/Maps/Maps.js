@@ -80,7 +80,6 @@ export default function Maps({ latitude, longitude }) {
 
   useEffect(() => {
     RecarregarVisualizacaoMapa()
-    console.log(finalPosition);
   }, [initialPosition])
 
   return (
